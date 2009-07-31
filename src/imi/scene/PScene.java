@@ -168,6 +168,11 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         m_WorldManager.addToUpdateList(externalKids);
         kids.add(externalKids);
 
+        ////////////////////////////////////////
+        /**
+         * The oldNUmberOfKids ensures that this doesnt return true too much,
+         * as each time it does the jscene's model bounds are recalculated!
+         */
         m_Instances.setDirty(false, false);
         boolean result = (helper.getSharedMeshes().size() != oldNumberOfKids);
         oldNumberOfKids = helper.getSharedMeshes().size();

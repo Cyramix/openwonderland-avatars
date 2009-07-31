@@ -305,30 +305,35 @@ public class AnimationGroup implements Serializable
             switch (mode)
             {
                 case Loop:
-                    if (state.isReverseAnimation() && fCurrentCycleTime < 0)
+                    if (state.isReverseAnimation())
                         state.setCurrentCycleTime(currentCycle.getDuration() + currentCycle.getAverageTimeStep());
                     else if (!state.isReverseAnimation() && fCurrentCycleTime > (currentCycle.getDuration() + currentCycle.getAverageTimeStep()))
                         state.setCurrentCycleTime(0.0f);
                     break;
                 case Oscillate:
-                    if (state.isReverseAnimation() && fCurrentCycleTime < 0)
+                    if (state.isReverseAnimation())
                         state.setCurrentCycleTime(0.0f);
-                    else if (!state.isReverseAnimation() && fCurrentCycleTime > currentCycle.getDuration())
+                    else if (!state.isReverseAnimation())
                         state.setCurrentCycleTime(currentCycle.getDuration());
                     // Flip the direction
                     state.setReverseAnimation(!state.isReverseAnimation());
                     break;
                 case PlayOnce:
-                    if (state.isReverseAnimation() && fCurrentCycleTime < 0)
-                        state.setCurrentCycleTime(0);
-                    else if (!state.isReverseAnimation() && fCurrentCycleTime > currentCycle.getDuration())
-                        state.setCurrentCycleTime(currentCycle.getDuration());
-                    // Let the listeners know
-                    state.sendMessage(AnimationListener.AnimationMessageType.PlayOnceComplete);
+                    if (!state.isPlayOnceComplete()) {
+                        if (state.isReverseAnimation())
+                            state.setCurrentCycleTime(0);
+                        else if (!state.isReverseAnimation())
+                            state.setCurrentCycleTime(currentCycle.getDuration());
+                        state.setPlayOnceComplete(true);
+                        state.sendMessage(AnimationListener.AnimationMessageType.PlayOnceComplete);
+                    }
                     break;
                 default:
                     logger.warning("Unknown playback mode encountered. Mode was " + mode);
             }
+        }
+        else if (state.isPlayOnceComplete()) { // indicates it was a different animation
+            state.setPlayOnceComplete(false);
         }
 
         // Now for transition cycle (if applicable)

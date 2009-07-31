@@ -11,8 +11,8 @@
  * except in compliance with the License. A copy of the License is
  * available at http://www.opensource.org/licenses/gpl-license.php.
  *
- * Sun designates this particular file as subject to the "Classpath" 
- * exception as provided by Sun in the License file that accompanied 
+ * Sun designates this particular file as subject to the "Classpath"
+ * exception as provided by Sun in the License file that accompanied
  * this code.
  */
 package imi.scene;
@@ -137,10 +137,10 @@ public class JScene extends Node implements CharacterMotionListener {
      * Set wireframe renderstate
      * @param on
      */
-    public void setWireframe(boolean on) 
+    public void setWireframe(boolean on)
     {
         WireframeState wireframeState = (WireframeState) getRenderState(RenderState.RS_WIREFRAME);
-        if (wireframeState != null) 
+        if (wireframeState != null)
         {
             wireframeState.setEnabled(on);
             updateRenderState();
@@ -181,7 +181,7 @@ public class JScene extends Node implements CharacterMotionListener {
      */
     public void toggleWireframe() {
         WireframeState wireframeState = (WireframeState) getRenderState(RenderState.RS_WIREFRAME);
-        if (wireframeState != null) 
+        if (wireframeState != null)
         {
             wireframeState.setEnabled(!wireframeState.isEnabled());
             updateRenderState();
@@ -292,14 +292,14 @@ public class JScene extends Node implements CharacterMotionListener {
      * Calls the onDraw method for each JMonkey child maintained by this node.
      * onDraw() will check if the child should be culled and if not it will call
      * the child's draw method.
-     * 
+     *
      * This method is overriden to enable PNode based debug rendering and let
      * the pscene submit itself to this jscene which means that the transform
      * hierarchy will be "flattened" (world matrices will be calculated) and
      * all jscene's kids will be removed(the references are kept by the
      * relevant objects in the pscene) and replaced with the appropriate
      * references to draw this frame.
-     * 
+     *
      * @see com.jme.scene.Spatial#draw(com.jme.renderer.Renderer)
      * @param r - the renderer to draw to.
      */
@@ -332,10 +332,10 @@ public class JScene extends Node implements CharacterMotionListener {
      * matrices will be calculated) and all jscene's kids will be removed
      * (the references are kept by the relevant objects in pscene) and replaced
      * with the appropriate references to draw this frame.
-     * 
+     *
      * Also any geometry in pscene that changed will reconstruct its
      * relevant JME object.
-     * 
+     *
      * @param r - the renderer to draw to.
      */
     private void drawScene(Renderer r) {
@@ -346,7 +346,7 @@ public class JScene extends Node implements CharacterMotionListener {
     }
 
     /**
-     * 
+     *
      * @param translation
      * @param rotation
      */

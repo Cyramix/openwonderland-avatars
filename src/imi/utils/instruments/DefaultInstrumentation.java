@@ -23,8 +23,8 @@ import imi.character.avatar.Avatar;
 import imi.character.FemaleAvatarParams;
 import imi.character.MaleAvatarParams;
 import imi.scene.PMatrix;
-import java.util.HashMap;
 import java.util.Map;
+import javolution.util.FastMap;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -37,7 +37,7 @@ public class DefaultInstrumentation implements Instrumentation
     private WorldManager worldManager = null;
     /** State mapping **/
     private Map<InstrumentedSubsystem, Boolean> enabledMapping =
-            new HashMap<InstrumentedSubsystem, Boolean>();
+            new FastMap<InstrumentedSubsystem, Boolean>();
     /** The default to use for instanced avatars **/
     private CharacterParams defaultInstancedAttributes = null;
 

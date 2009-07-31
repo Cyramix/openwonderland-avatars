@@ -37,10 +37,13 @@ public interface AnimationListener
     }
     
     /**
-     * Handle this message in a *VERY* time efficient manner. No implementation
+     * Receive notice that an animation event has occured.
+     * <p>Handle this message in a *VERY* time efficient manner. No implementation
      * should be performing any complex calculations, just simple variable and
-     * reference assignments.
-     * @param message
+     * reference assignments. The stateID parameter is the "ID" of the state, which
+     * is meaningful within the AnimationComponent(s) using it.</p>
+     * @param message The animation type
+     * @param stateID The "ID" of the affected state.
      */
     public void receiveAnimationMessage(AnimationMessageType message, int stateID);
 }

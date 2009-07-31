@@ -57,12 +57,19 @@ public class AnimationState
     private boolean m_bTransitionReverseAnimation = false;
     
     /** The list of listeners to inform of messages **/
-    private transient FastTable<AnimationListener> m_listeners = null;
+    private FastTable<AnimationListener> m_listeners = null;
 
-    /** **/
-    private transient AnimationCursor m_animCursor = new AnimationCursor();
+    private AnimationCursor m_animCursor = new AnimationCursor();
+
+    private boolean playOnceComplete = false;
+
     /**
-     * Empty Constructor
+     * Construct a new AnimationState with the specified identification number.
+     * <p>
+     * The id provided should be unique to the any AnimationComponent(s) this
+     * state is involved with. It is used to maintain external accounting by
+     * animation system components.
+     * </p>
      */
     public AnimationState(int id)
     {
@@ -403,5 +410,15 @@ public class AnimationState
     public AnimationCursor getCursor()
     {
         return m_animCursor;
+    }
+
+    boolean isPlayOnceComplete()
+    {
+        return playOnceComplete;
+    }
+
+    void setPlayOnceComplete(boolean playOnceComplete)
+    {
+        this.playOnceComplete = playOnceComplete;
     }
 }

@@ -104,14 +104,22 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
      * This method transforms the bounding volume for the shared mesh to match
      * the joint it is attached to.
      */
+    @Deprecated
     private void transformBounds() {
         if (m_influenceIndices.length > 0 && m_skeletonNode != null)
         {
             // get its transform
-            PMatrix jointTransform = m_skeletonNode.getSkinnedMeshJoint(m_influenceIndices[0]).getTransform().getWorldMatrix(false);
+            PMatrix jointTransform = m_skeletonNode.getSkinnedMeshJoint(m_influenceIndices[0]).getMeshSpace().inverse();
             // apply this transform to the jME bounding volume
 //            m_instance.getModelBound().transform(jointTransform.getRotationJME(), jointTransform.getTranslation(), jointTransform.getScaleVector());
-            m_instance.getModelBound().setCenter(jointTransform.getTranslation());
+            Vector3f location = new Vector3f();
+            location.set(m_instance.getLocalTranslation());
+            m_instance.unlockBounds();
+            m_instance.setLocalTranslation(jointTransform.getTranslation());
+            m_instance.updateModelBound();
+//            m_instance.setLocalTranslation(location);
+            m_instance.lockBounds();
+            
             // dassit
         }
     }
@@ -184,6 +192,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
     public SharedMesh updateSharedMesh()
     {
         super.updateSharedMesh();
+//        transformBounds();
         // The new skinning model has this mesh query its skeleton for
         // the appropriate collection of transform matrices
         if (m_skeletonNode == null)

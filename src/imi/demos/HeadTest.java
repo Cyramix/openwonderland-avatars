@@ -44,6 +44,7 @@ import imi.gui.JScreenShotButton;
 import imi.gui.LoadAvatarDialogue;
 import imi.input.CharacterControls;
 import imi.input.DefaultCharacterControls;
+import imi.input.InputClient;
 import imi.input.InputManagerEntity;
 import imi.repository.CacheBehavior;
 import imi.repository.Repository;
@@ -51,6 +52,7 @@ import imi.scene.JScene;
 import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
+import imi.scene.animation.AnimationListener;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import imi.utils.MaterialMeshUtils.ShaderType;
 import java.awt.Canvas;
@@ -62,14 +64,15 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.dnd.DropTarget;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
@@ -151,6 +154,9 @@ public class HeadTest extends JFrame implements BufferUpdater {
                                                                          "AsianFemaleHead.bhf" };
     private static final String     headPath            = "imi/character/data/";
 
+    // Dahlgren: Mouse adapter
+    private final AvatarMouseAdapter      mouse               = new AvatarMouseAdapter();
+
 ////////////////////////////////////////////////////////////////////////////////
 // Class Methods
 ////////////////////////////////////////////////////////////////////////////////
@@ -195,6 +201,8 @@ public class HeadTest extends JFrame implements BufferUpdater {
                     @Override
                     public void initialize(Character character) {
                         m_avatar = (Avatar) character;
+                        // Dahlgren: Added for new avatar behavior
+                        m_avatar.getSkeleton().getAnimationState(1).addListener(mouse);
                         m_pscene = m_avatar.getPScene();
                         character.getSkeleton().resetAllJointsToBindPose();
                         updateCameraPosition();
@@ -391,6 +399,8 @@ public class HeadTest extends JFrame implements BufferUpdater {
         InputManagerEntity ime = (InputManagerEntity)wm.getUserData(InputManagerEntity.class);
         CharacterControls control = new DefaultCharacterControls(wm);
         ime.addInputClient(control);
+        // Dahlgren: Add one of the avatar mouse adapters
+        ime.addInputClient(mouse);
     }
 
     private void createGlobalLighting(WorldManager wm, Vector3f lightPos) {
@@ -675,6 +685,8 @@ public class HeadTest extends JFrame implements BufferUpdater {
 
             gbc.gridx = 0;  gbc.gridy = 3;  gbc.weightx = 1.0f; gbc.weighty = 1.0f; gbc.gridwidth = 2;  gbc.gridheight = 1;
             this.add(statusPanel, gbc);
+
+            
         }
 
         public void currentFramerate(float framerate) {
@@ -725,5 +737,66 @@ public class HeadTest extends JFrame implements BufferUpdater {
                 }
             });
         }
+    }
+
+    private class AvatarMouseAdapter implements InputClient, AnimationListener
+    {
+        // avatar reactions
+        private int[] reactions = new int[] {
+            0, // Smile
+            1, // Smile again
+            2, // Scorn
+        };
+        // How many clicks have occured?
+        private int clickCount = 0;
+        
+        // Keep track of how many are left to play
+        private int pendingAnimations = 0;
+        // Don't let more than two to queue up
+        private final int maxPendingAnimations = 2;
+
+        public void processKeyEvent(KeyEvent keyEvent)
+        {
+            // Do nothing... yet
+        }
+
+        public void processMouseEvent(MouseEvent mouseEvent)
+        {
+            if (mouseEvent.getID() == MouseEvent.MOUSE_CLICKED && pendingAnimations < maxPendingAnimations)
+            {
+                if (m_avatar == null)
+                    m_logger.warning("Clicked when avatar was null.");
+                else {
+                    // make the avatar react
+                    m_logger.info("Playing reaction[" + clickCount + "] : " + reactions[clickCount]);
+                    synchronized(this) { // sychronize on using pendingAnimations
+                        m_avatar.initiateFacialAnimation(reactions[clickCount], 0.1f, 1.0f);
+                        pendingAnimations += 2;
+                    }
+                    // increment click count
+                    clickCount++;
+                    clickCount %= reactions.length;
+            }
+            }
+        }
+
+        public void focusChanged(boolean currentlyInFocus)
+        {
+            m_logger.info("focusChanged: " + currentlyInFocus);
+        }
+
+        public synchronized void receiveAnimationMessage(AnimationMessageType message, int stateID)
+        {
+            // ID 1 is known to be 'facial animations' within the avatar system
+            if (stateID == 1 && message == AnimationMessageType.PlayOnceComplete) {
+                m_logger.info("Received notice that playonce was complete. " +
+                        "Pending animations: " + (pendingAnimations - 1));
+                // ensure this doesnt fall below zero, because the initial loading
+                // smile will finish while we are listening
+                pendingAnimations = ((pendingAnimations -= 2) < 0) ? 0 : pendingAnimations;
+
+            }
+        }
+
     }
 }
