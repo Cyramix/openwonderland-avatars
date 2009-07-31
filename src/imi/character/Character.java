@@ -1649,11 +1649,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Load up any geometry requested by the provided attributes object
         for (String load : attributes.getLoadInstructions()) {
-            URL url = null;//HeadAssets.class.getClassLoader().getResource(load);
-
-            if (url != null)
-                attributeRoot.addChildInstruction(InstructionType.loadGeometry, url.toString());
-            else if (FileUtils.checkURLPath(urlPrefix + load))
+            if (FileUtils.checkURLPath(urlPrefix + load))
                 attributeRoot.addChildInstruction(InstructionType.loadGeometry, urlPrefix + load);
             else
                 throw new RuntimeException("Failed to load " + urlPrefix + load);
