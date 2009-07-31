@@ -17,10 +17,12 @@
  */
 package imi.character;
 
+import com.jme.renderer.ColorRGBA;
 import imi.scene.PMatrix;
 import java.util.ArrayList;
 import java.util.List;
 import javolution.util.FastList;
+import javolution.util.FastTable;
 
 /**
  * This class represents concrete attribute settings for the Avatar. It is
@@ -32,14 +34,8 @@ public class FemaleAvatarParams extends CharacterParams
 {
     /** number of preset features **/
     private enum PresetNumbers {
-        NumberOfFeet(3),
-        NumberOfLegs(3),
-        NumberOfTorsos(4),
-        NumberOfHairs(29),
-        NumberOfHeads(7),
         NumberOfSkinTones(skinTones.length),
         NumberOfEyeColors(eyeTextures.length);
-
         final int count;
         PresetNumbers(int value) {
             count = value;
@@ -73,68 +69,20 @@ public class FemaleAvatarParams extends CharacterParams
      */
     private void customizeHead(int preset)
     {
-        switch (preset)
+        if (preset < FemaleDefaults.headPresetsFileNames.size() && preset < FemaleDefaults.headPresetsPhongLighting.size() && preset < FemaleDefaults.headPresetsSkinTone.size() && preset >= 0)
         {
-            case 0:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FemaleCHead.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f);
+            String headFile = FemaleDefaults.headPresetsFileNames.get(preset);
+            setHeadAttachment(headFile);
+            setUsePhongLightingForHead(FemaleDefaults.headPresetsPhongLighting.get(preset));
+            ColorRGBA skint = FemaleDefaults.headPresetsSkinTone.get(preset);
+            if (skint != null)
+            {
+                setSkinTone(skint.r, skint.g, skint.b);
                 setApplySkinToneOnHead(false);
-                break;
-            case 1:
-                setHeadAttachment("assets/models/collada/Heads/Binary/AsianFemaleHead.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f);
-                setApplySkinToneOnHead(false);
-                break;
-            case 2:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FemaleAAHead.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f);
-                setApplySkinToneOnHead(false);
-                break;
-            case 3:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FemaleHispanicHead.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f);
-                setApplySkinToneOnHead(false);
-                break;
-            case 4:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FG_Female_AF_Head02.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
-                setApplySkinToneOnHead(false);
-                break;
-            case 5:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FG_FemaleLowPoly_01.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
-                setApplySkinToneOnHead(false);
-                break;
-            case 6:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FG_FemaleHead01.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
-                setApplySkinToneOnHead(false);
-                break;
-            case 7:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FG_Female02HighPoly.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(129.0f / 255.0f, 65.0f / 255.0f, 38.0f / 255.0f);
-                setApplySkinToneOnHead(false);
-                break;
-            case 8:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FG_Female01HighPoly.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f);
-                setApplySkinToneOnHead(false);
-                break;
-            default:
-                setHeadAttachment("assets/models/collada/Heads/Binary/FemaleCHead.bhf");
-                setUsePhongLightingForHead(true);
-                setSkinTone(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f);
-                setApplySkinToneOnHead(false);
+            }
         }
+        else
+            throw new RuntimeException("Invalid preset " + preset);
     }
 
     /**
@@ -146,47 +94,27 @@ public class FemaleAvatarParams extends CharacterParams
      */
     private void customizeFeetPresets(int preset, List<String> load, List<SkinnedMeshParams> add)
     {
-        String footFile = null;
-
-        switch(preset)
+        if (preset < FemaleDefaults.feetPresetsFileNames.size() && preset < FemaleDefaults.feetPresetsMeshNames.size() && preset < FemaleDefaults.feetPresetsDisableColorModulation.size() && preset >= 0)
         {
-            case 0:
-            {
-                // Closed to dress shoes
-                footFile   = "assets/models/collada/Clothing/FemaleClothing/Female_ClosedToeDressShoes.dae";
-                load.add(footFile);
-                add.add(new SkinnedMeshParams("Female_ClosedToeDressShoes_Female_DressClosedToe_ShoesShape", "Feet", footFile));
-            }
-            break;
-            case 1:
-            {
-                // Converse shoes
-                footFile   = "assets/models/collada/Clothing/FemaleClothing/Female_ConverseShoes.dae";
-                load.add(footFile);
-                add.add(new SkinnedMeshParams("Female_ConverseShoes_Female_ConverseShoeShape", "Feet", footFile));
-            }
-            break;
-            case 2:
-            {
-                // Flip flops
-                footFile   = "assets/models/collada/Clothing/FemaleClothing/FemaleFlipFlops.dae";
-                load.add(footFile);
-                add.add(new SkinnedMeshParams("FlipFlopsFemaleShape", "Feet", footFile));
-                add.add(new SkinnedMeshParams("FemaleFeet_NudeShape", "Feet", footFile));
-            }
-            break;
-            default:
-            {
-                footFile = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
-                if(!loadedBind)
-                {
-                    loadedBind = true;
-                    load.add(footFile);
-                }
-                add.add(new SkinnedMeshParams("ShoesShape",  "Feet", footFile));
-            }
+            String feetFile = FemaleDefaults.feetPresetsFileNames.get(preset);
+            load.add(feetFile);
+            for (int i = 0; i < FemaleDefaults.feetPresetsMeshNames.get(preset).size(); i++)
+                add.add(new SkinnedMeshParams(FemaleDefaults.feetPresetsMeshNames.get(preset).get(i), "Feet", feetFile));
+            if (FemaleDefaults.feetPresetsDisableColorModulation.get(preset))
+                setShoesColor(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
         }
-            
+        else
+        {
+            throw new RuntimeException("Invalid preset " + preset);
+
+//            String footFile = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
+//            if(!loadedBind)
+//            {
+//                loadedBind = true;
+//                load.add(footFile);
+//            }
+//            add.add(new SkinnedMeshParams("ShoesShape",  "Feet", footFile));
+        }
     }
 
     /**
@@ -198,46 +126,26 @@ public class FemaleAvatarParams extends CharacterParams
      */
     private void customizeLegsPresets(int preset,  List<String> load, List<SkinnedMeshParams> add)
     {
-        String legFile = null;
-
-        switch(preset)
+        if (preset < FemaleDefaults.legsPresetsFileNames.size() && preset < FemaleDefaults.legsPresetsMeshNames.size() && preset < FemaleDefaults.legsPresetsDisableColorModulation.size() && preset >= 0)
         {
-            case 0:
-            {
-                // Jeans
-                legFile   = "assets/models/collada/Clothing/FemaleClothing/FemaleJeansStraight.dae";
-                load.add(legFile);
-                add.add(new SkinnedMeshParams("JeansShape", "LowerBody", legFile));
-                setPantsColor(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-            }
-            break;
-            case 1:
-            {
-                // Dress pants
-                legFile   = "assets/models/collada/Clothing/FemaleClothing/FemaleDressPants.dae";
-                load.add(legFile);
-                add.add(new SkinnedMeshParams("PantsFemaleShape", "LowerBody", legFile));
-            }
-            break;
-            case 2:
-            {
-                // Shorts
-                legFile   = "assets/models/collada/Clothing/FemaleClothing/FemaleShorts.dae";
-                load.add(legFile);
-                add.add(new SkinnedMeshParams("Legs_NudeShape", "LowerBody", legFile));
-                add.add(new SkinnedMeshParams("ShortsShape", "LowerBody", legFile));
-            }
-            break;
-            default:
-            {
-                legFile   = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
-                if(!loadedBind)
-                {
-                    loadedBind = true;
-                    load.add(legFile);
-                }
-                add.add(new SkinnedMeshParams("Legs_NudeShape",  "LowerBody", legFile));
-            }
+            String legsFile = FemaleDefaults.legsPresetsFileNames.get(preset);
+            load.add(legsFile);
+            for (int i = 0; i < FemaleDefaults.legsPresetsMeshNames.get(preset).size(); i++)
+                add.add(new SkinnedMeshParams(FemaleDefaults.legsPresetsMeshNames.get(preset).get(i), "LowerBody", legsFile));
+            if (FemaleDefaults.legsPresetsDisableColorModulation.get(preset))
+                setShoesColor(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+        }
+        else
+        {
+            throw new RuntimeException("Invalid preset " + preset);
+
+//            String legFile   = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
+//            if(!loadedBind)
+//            {
+//                loadedBind = true;
+//                load.add(legFile);
+//            }
+//            add.add(new SkinnedMeshParams("Legs_NudeShape",  "LowerBody", legFile));
         }
             
     }
@@ -253,59 +161,29 @@ public class FemaleAvatarParams extends CharacterParams
     {
         // Add the hands
         String handFile  = "assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
-        
         load.add(handFile);
         add.add(new SkinnedMeshParams("Hands_NudeShape",  "Hands", handFile));
 
-        String torsoFile = null;
-
-        switch(preset)
+        if (preset < FemaleDefaults.torsoPresetsFileNames.size() && preset < FemaleDefaults.torsoPresetsMeshNames.size() && preset < FemaleDefaults.torsoPresetsDisableColorModulation.size() && preset >= 0)
         {
-            case 0:
-            {
-                // Dress Shirt
-                torsoFile  = "assets/models/collada/Clothing/FemaleClothing/FemaleDressShirt.dae";
-                load.add(torsoFile);
-                add.add(new SkinnedMeshParams("ShirtMeshShape", "UpperBody", torsoFile));
-            }
-            break;
-            case 1:
-            {
-                // Sweater
-                torsoFile = "assets/models/collada/Clothing/FemaleClothing/FemaleSweaterCrew.dae";
-                load.add(torsoFile);
-                add.add(new SkinnedMeshParams("SweaterShape", "UpperBody", torsoFile));
-            }
-            break;
-            case 2:
-            {
-                // Jacket
-                torsoFile = "assets/models/collada/Clothing/FemaleClothing/FemaleJacket.dae";
-                load.add(torsoFile);
-                add.add(new SkinnedMeshParams("Jacket1Shape", "UpperBody", torsoFile));
+            String torsoFile = FemaleDefaults.torsoPresetsFileNames.get(preset);
+            load.add(torsoFile);
+            for (int i = 0; i < FemaleDefaults.torsoPresetsMeshNames.get(preset).size(); i++)
+                add.add(new SkinnedMeshParams(FemaleDefaults.torsoPresetsMeshNames.get(preset).get(i), "UpperBody", torsoFile));
+            if (FemaleDefaults.torsoPresetsDisableColorModulation.get(preset))
                 setShirtColor(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-            }
-            break;
-            case 3:      
-            {
-                // Blouse       
-                torsoFile  = "assets/models/collada/Clothing/FemaleClothing/FemaleBlouse.dae";
-                load.add(torsoFile);
-                add.add(new SkinnedMeshParams("TShirt1Shape", "UpperBody", torsoFile));
-                add.add(new SkinnedMeshParams("Arms_NudeShape", "UpperBody", torsoFile));
-                setShirtColor(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-            }
-            break; 
-            default:
-            {
-                torsoFile  = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
-                if(!loadedBind)
-                {
-                    loadedBind = true;
-                    load.add(torsoFile);
-                }
-                add.add(new SkinnedMeshParams("Torso_NudeShape",  "UpperBody", torsoFile));
-            }
+        }
+        else
+        {
+            throw new RuntimeException("Invalid preset " + preset);
+
+//            String torsoFile  = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
+//            if(!loadedBind)
+//            {
+//                loadedBind = true;
+//                load.add(torsoFile);
+//            }
+//            add.add(new SkinnedMeshParams("Torso_NudeShape",  "UpperBody", torsoFile));
         }
     }
 
@@ -318,196 +196,19 @@ public class FemaleAvatarParams extends CharacterParams
      */
     private void customizeHairPresets(int preset, List<String> load, List<SkinnedMeshParams> add, List<AttachmentParams> attachments)
     {
-        String hairFile = null;
-
-        PMatrix orientation = PMatrix.IDENTITY;
-        switch(preset)
+        if (preset < FemaleDefaults.hairPresetsFileNames.size() && preset < FemaleDefaults.hairPresetsMeshNames.size() && preset >= 0)
         {
-            case 0:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("M_PigTailsShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 1:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("CulyPigTailzShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 2:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("L_BunShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 3:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("M_BunShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 4:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("CurlyPonyTailShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 5:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("L_PonyTailShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 6:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("M_PonyTailShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 7:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Long_W_bangsShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 8:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Layered_bangShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 9:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Layered_pt_LShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 10:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Layered_pt_RShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 11:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Layered_pt_centerShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 12:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Curly_bangsShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 13:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Culry_pt_RightShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 14:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Culry_pt_LeftShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 15:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Curly_Mid_PtShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 16:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Long_DredzShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 17:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Med_Pt_BangzShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 18:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Med_pt_CenterShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 19:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Med_Curly_BangzShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 20:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Med_AfricanWBangzShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 21:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Med_African_Pt_RShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 22:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Med_AfricanPT_CenterShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 23:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Med_African_Pt_LShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 24:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Short_African_MessyShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 25:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("short_AfricanPT_CenterShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 26:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Short_PT_RShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 27:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Short_PT_LShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 28:
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-                attachments.add(new AttachmentParams("Short_PT_CenterShape", "HairAttach", orientation, "HairAttachmentJoint", hairFile));
-            }
-            break;
-            case 53: // SPECIAL SKINNED HAIR
-            {
-                hairFile   = "assets/models/collada/Hair/FemaleHair/FemaleFGHair.dae";
-                add.add(new SkinnedMeshParams("HairAShape1", "Head", hairFile));
-            }
-            break;
-            default:
-                // do nothing
-        }
-        if (hairFile != null)
+            String hairFile = FemaleDefaults.hairPresetsFileNames.get(preset);
+            String meshName = FemaleDefaults.hairPresetsMeshNames.get(preset);
             load.add(hairFile);
+            // Special case for the skinned hair
+            if (meshName.equals("HairAShape1"))
+                add.add(new SkinnedMeshParams(meshName, "Head", hairFile));
+            else
+                attachments.add(new AttachmentParams(meshName, "HairAttach", PMatrix.IDENTITY, "HairAttachmentJoint", hairFile));
+        }
+        else
+            throw new RuntimeException("Invalid preset " + preset);
     }
 
     /**
@@ -555,15 +256,15 @@ public class FemaleAvatarParams extends CharacterParams
         if (randomizeUnasignedElements)
         {
             if (!configContext.hairConfigured)
-                configureHair((int)((Math.random() * 10000.0f) % PresetNumbers.NumberOfHairs.count));
+                configureHair((int)((Math.random() * 10000.0f) % getNumberOfHairPresets()));
             if (!configContext.headConfigured)
-                configureHead((int)((Math.random() * 10000.0f) % PresetNumbers.NumberOfHeads.count));
+                configureHead((int)((Math.random() * 10000.0f) % getNumberOfHeadPresets()));
             if (!configContext.torsoConfigured)
-                configureTorso((int)((Math.random() * 10000.0f) % PresetNumbers.NumberOfTorsos.count));
+                configureTorso((int)((Math.random() * 10000.0f) % getNumberOfTorsoPresets()));
             if (!configContext.legsConfigured)
-                configureLegs((int)((Math.random() * 10000.0f) % PresetNumbers.NumberOfLegs.count));
+                configureLegs((int)((Math.random() * 10000.0f) % getNumberOfLegsPresets()));
             if (!configContext.feetConfigured)
-                configureFeet((int)((Math.random() * 10000.0f) % PresetNumbers.NumberOfFeet.count));
+                configureFeet((int)((Math.random() * 10000.0f) % getNumberOfFeetPresets()));
         }
         else
         {
@@ -699,6 +400,306 @@ public class FemaleAvatarParams extends CharacterParams
             torsoConfigured = false;
             legsConfigured  = false;
             feetConfigured  = false;
+        }
+    }
+
+    public FastTable<String> getHairPresetsFileNames() {
+        return FemaleDefaults.hairPresetsFileNames;
+    }
+
+    public FastTable<String> getHairPresetsMeshNames() {
+        return FemaleDefaults.hairPresetsMeshNames;
+    }
+
+    public int getNumberOfHairPresets() {
+        return FemaleDefaults.hairPresetsMeshNames.size();
+    }
+
+    public FastTable<String> getHeadPresetsFileNames() {
+        return FemaleDefaults.headPresetsFileNames;
+    }
+
+    public FastTable<Boolean> getHeadPresetsPhongLighting() {
+        return FemaleDefaults.headPresetsPhongLighting;
+    }
+
+    public FastTable<ColorRGBA> getHeadPresetsSkinTone() {
+        return FemaleDefaults.headPresetsSkinTone;
+    }
+
+    public int getNumberOfHeadPresets() {
+        return FemaleDefaults.headPresetsFileNames.size();
+    }
+
+    public FastTable<String> getTorsoPresetsFileNames() {
+        return FemaleDefaults.torsoPresetsFileNames;
+    }
+
+    public FastTable<FastTable<String>> getTorsoPresetsMeshNames() {
+        return FemaleDefaults.torsoPresetsMeshNames;
+    }
+
+    public int getNumberOfTorsoPresets() {
+        return FemaleDefaults.torsoPresetsFileNames.size();
+    }
+
+    public FastTable<Boolean> getFeetPresetsDisableColorModulation() {
+        return FemaleDefaults.feetPresetsDisableColorModulation;
+    }
+
+    public FastTable<String> getFeetPresetsFileNames() {
+        return FemaleDefaults.feetPresetsFileNames;
+    }
+
+    public FastTable<FastTable<String>> getFeetPresetsMeshNames() {
+        return FemaleDefaults.feetPresetsMeshNames;
+    }
+
+    public FastTable<String> getHairPresetsColladaFileNames() {
+        return FemaleDefaults.hairPresetsFileNames;
+    }
+
+    public FastTable<Boolean> getLegsPresetsDisableColorModulation() {
+        return FemaleDefaults.legsPresetsDisableColorModulation;
+    }
+
+    public FastTable<String> getLegsPresetsFileNames() {
+        return FemaleDefaults.legsPresetsFileNames;
+    }
+
+    public FastTable<FastTable<String>> getLegsPresetsMeshNames() {
+        return FemaleDefaults.legsPresetsMeshNames;
+    }
+
+    public FastTable<Boolean> getTorsoPresetsDisableColorModulation() {
+        return FemaleDefaults.torsoPresetsDisableColorModulation;
+    }
+
+    public int getNumberOfLegsPresets() {
+        return FemaleDefaults.legsPresetsFileNames.size();
+    }
+
+    public int getNumberOfFeetPresets() {
+        return FemaleDefaults.feetPresetsFileNames.size();
+    }
+
+    // holder for the defaults
+    public static class FemaleDefaults
+    {
+        public static final FastTable<String> hairPresetsFileNames = new FastTable<String>();
+        public static final FastTable<String> hairPresetsMeshNames = new FastTable<String>();
+
+        public static final FastTable<String> headPresetsFileNames = new FastTable<String>();
+        public static final FastTable<Boolean> headPresetsPhongLighting = new FastTable<Boolean>();
+        public static final FastTable<ColorRGBA> headPresetsSkinTone = new FastTable<ColorRGBA>();
+
+        public static final FastTable<String> torsoPresetsFileNames = new FastTable<String>();
+        public static final FastTable<FastTable<String>> torsoPresetsMeshNames = new FastTable<FastTable<String>>();
+        public static final FastTable<Boolean> torsoPresetsDisableColorModulation = new FastTable<Boolean>();
+
+        public static final FastTable<String> legsPresetsFileNames = new FastTable<String>();
+        public static final FastTable<FastTable<String>> legsPresetsMeshNames = new FastTable<FastTable<String>>();
+        public static final FastTable<Boolean> legsPresetsDisableColorModulation = new FastTable<Boolean>();
+
+        public static final FastTable<String> feetPresetsFileNames = new FastTable<String>();
+        public static final FastTable<FastTable<String>> feetPresetsMeshNames = new FastTable<FastTable<String>>();
+        public static final FastTable<Boolean> feetPresetsDisableColorModulation = new FastTable<Boolean>();
+
+        static
+        {
+            /////////// Hair default presets //////////////
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("M_PigTailsShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("CulyPigTailzShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("L_BunShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("M_BunShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("CurlyPonyTailShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("L_PonyTailShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("M_PonyTailShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Long_W_bangsShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Layered_bangShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Layered_pt_LShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Layered_pt_RShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Layered_pt_centerShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Curly_bangsShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Culry_pt_RightShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Culry_pt_LeftShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Curly_Mid_PtShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Long_DredzShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Med_Pt_BangzShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Med_pt_CenterShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Med_Curly_BangzShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Med_AfricanWBangzShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Med_African_Pt_RShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Med_AfricanPT_CenterShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Med_African_Pt_LShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Short_African_MessyShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Short_PT_RShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Short_PT_LShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae");
+            hairPresetsMeshNames.add("Short_PT_CenterShape");
+
+            hairPresetsFileNames.add("assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae"); // Special skinned on "Head" joint, not attachment
+            hairPresetsMeshNames.add("HairAShape1");
+
+            /////////// Head default presets //////////////
+
+            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FemaleCHead.bhf");
+            headPresetsPhongLighting.add(true);
+            headPresetsSkinTone.add(new ColorRGBA(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f, 1.0f));
+
+            headPresetsFileNames.add("assets/models/collada/Heads/Binary/AsianFemaleHead.bhf");
+            headPresetsPhongLighting.add(true);
+            headPresetsSkinTone.add(new ColorRGBA(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f, 1.0f));
+
+            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FemaleAAHead.bhf");
+            headPresetsPhongLighting.add(true);
+            headPresetsSkinTone.add(new ColorRGBA(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f, 1.0f));
+
+            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FemaleHispanicHead.bhf");
+            headPresetsPhongLighting.add(true);
+            headPresetsSkinTone.add(new ColorRGBA(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f, 1.0f));
+
+            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_Female_AF_Head02.bhf");
+            headPresetsPhongLighting.add(true);
+            headPresetsSkinTone.add(new ColorRGBA(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f, 1.0f));
+
+            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_FemaleLowPoly_01.bhf");
+            headPresetsPhongLighting.add(true);
+            headPresetsSkinTone.add(new ColorRGBA(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f, 1.0f));
+
+//            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_Female02HighPoly.bhf");
+//            headPresetsPhongLighting.add(true);
+//            headPresetsSkinTone.add(new ColorRGBA(129.0f / 255.0f, 65.0f / 255.0f, 38.0f / 255.0f, 1.0f));
+//
+//            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_Female01HighPoly.bhf");
+//            headPresetsPhongLighting.add(true);
+//            headPresetsSkinTone.add(new ColorRGBA(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f, 1.0f));
+
+            /////////// Torso default presets //////////////
+            FastTable<String> meshnames;
+
+            torsoPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/FemaleDressShirt.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("ShirtMeshShape");
+            torsoPresetsMeshNames.add(meshnames);
+            torsoPresetsDisableColorModulation.add(false);
+            
+            torsoPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/FemaleSweaterCrew.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("SweaterShape");
+            torsoPresetsMeshNames.add(meshnames);
+            torsoPresetsDisableColorModulation.add(false);
+            
+            torsoPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/FemaleJacket.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("Jacket1Shape");
+            torsoPresetsMeshNames.add(meshnames);
+            torsoPresetsDisableColorModulation.add(true);
+            
+            torsoPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/FemaleBlouse.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("TShirt1Shape");
+            meshnames.add("Arms_NudeShape");
+            torsoPresetsMeshNames.add(meshnames);
+            torsoPresetsDisableColorModulation.add(true);
+            
+            /////////// Legs default presets //////////////
+
+            legsPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/FemaleJeansStraight.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("JeansShape");
+            legsPresetsMeshNames.add(meshnames);
+            legsPresetsDisableColorModulation.add(true);
+
+            legsPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/FemaleDressPants.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("PantsFemaleShape");
+            legsPresetsMeshNames.add(meshnames);
+            legsPresetsDisableColorModulation.add(false);
+
+            legsPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/FemaleShorts.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("Legs_NudeShape");
+            meshnames.add("ShortsShape");
+            legsPresetsMeshNames.add(meshnames);
+            legsPresetsDisableColorModulation.add(false);
+
+            /////////// Feet default presets //////////////
+
+            feetPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/Female_ClosedToeDressShoes.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("Female_ClosedToeDressShoes_Female_DressClosedToe_ShoesShape");
+            feetPresetsMeshNames.add(meshnames);
+            feetPresetsDisableColorModulation.add(false);
+            
+            feetPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/Female_ConverseShoes.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("Female_ConverseShoes_Female_ConverseShoeShape");
+            feetPresetsMeshNames.add(meshnames);
+            feetPresetsDisableColorModulation.add(false);
+            
+            feetPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/FemaleFlipFlops.dae");
+            meshnames = new FastTable<String>();
+            meshnames.add("FlipFlopsFemaleShape");
+            meshnames.add("FemaleFeet_NudeShape");
+            feetPresetsMeshNames.add(meshnames);
+            feetPresetsDisableColorModulation.add(false);
+            
         }
     }
 }

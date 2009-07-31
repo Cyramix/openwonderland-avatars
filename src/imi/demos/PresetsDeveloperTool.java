@@ -26,7 +26,6 @@ import imi.character.FemaleAvatarParams;
 import imi.character.MaleAvatarParams;
 import imi.character.Manipulator;
 import imi.character.avatar.Avatar;
-import imi.input.CharacterControls;
 import imi.input.DefaultCharacterControls;
 import imi.input.InputManagerEntity;
 import imi.scene.PMatrix;
@@ -34,7 +33,6 @@ import imi.utils.MaterialMeshUtils.ShaderType;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import javolution.util.FastTable;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -83,11 +81,11 @@ public class PresetsDeveloperTool extends DemoBase
         male = new Avatar.AvatarBuilder(maleParams, wm).transform(mat).build();
         control.addCharacterToTeam(male);
         // Create female avatar
-//        femaleParams = new FemaleAvatarParams("Avatar").build(false);
-//        femaleParams.clearColorsToWhite();
-//        mat.setTranslation(new Vector3f(1.0f, 0.0f, 0.0f));
-//        female = new Avatar.AvatarBuilder(femaleParams, wm).transform(mat).build();
-//        control.addCharacterToTeam(female);
+        femaleParams = new FemaleAvatarParams("Avatar").build(false);
+        femaleParams.clearColorsToWhite();
+        mat.setTranslation(new Vector3f(1.0f, 0.0f, 0.0f));
+        female = new Avatar.AvatarBuilder(femaleParams, wm).transform(mat).build();
+        control.addCharacterToTeam(female);
 
         // WTF
         control.set(male, female, maleParams, femaleParams, camState);
@@ -135,6 +133,14 @@ public class PresetsDeveloperTool extends DemoBase
             {
                 Character avatar = getCurrentlySelectedCharacter();
                 boolean isMale = avatar == male;
+
+                if (ke.getID() == KeyEvent.VK_PAGE_DOWN || ke.getID() == KeyEvent.VK_PAGE_UP)
+                {
+                    if (isMale)
+                        System.out.println("Male selected");
+                    else
+                        System.out.println("Female selected");
+                }
 
                 // Swap mesh
                 if (ke.getKeyCode() == KeyEvent.VK_RIGHT || ke.getKeyCode() == KeyEvent.VK_LEFT)
@@ -199,7 +205,10 @@ public class PresetsDeveloperTool extends DemoBase
                     if (ord >= region.values().length)
                         ord = 0;
                     region = region.values()[ord];
-                    System.out.println("Current mesh region: " + region.toString());
+                    if (isMale)
+                        System.out.println("Current mesh region: " + region.toString() + ". Male is selected.");
+                    else
+                        System.out.println("Current mesh region: " + region.toString() + ". Female is selected.");
                 }
 
                 // Change mesh region
@@ -210,7 +219,10 @@ public class PresetsDeveloperTool extends DemoBase
                     if (ord < 0)
                         ord = region.values().length-1;
                     region = region.values()[ord];
-                    System.out.println("Current mesh region: " + region.toString());
+                    if (isMale)
+                        System.out.println("Current mesh region: " + region.toString() + ". Male is selected.");
+                    else
+                        System.out.println("Current mesh region: " + region.toString() + ". Female is selected.");
                 }
 
                 // Print help
@@ -274,11 +286,11 @@ public class PresetsDeveloperTool extends DemoBase
             maleNumberOfPresets[Regions.Torso.ordinal()] = maleParams.getNumberOfTorsoPresets();
             maleNumberOfPresets[Regions.Legs.ordinal()]  = maleParams.getNumberOfLegsPresets();
             maleNumberOfPresets[Regions.Feet.ordinal()]  = maleParams.getNumberOfFeetPresets();
-//            femaleNumberOfPresets[Regions.Hair.ordinal()]  = femaleParams.getNumberOfHairPresets();
-//            femaleNumberOfPresets[Regions.Head.ordinal()]  = femaleParams.getNumberOfHeadPresets();
-//            femaleNumberOfPresets[Regions.Torso.ordinal()] = femaleParams.getNumberOfTorsoPresets();
-//            femaleNumberOfPresets[Regions.Legs.ordinal()]  = femaleParams.getNumberOfLegsPresets();
-//            femaleNumberOfPresets[Regions.Feet.ordinal()]  = femaleParams.getNumberOfFeetPresets();
+            femaleNumberOfPresets[Regions.Hair.ordinal()]  = femaleParams.getNumberOfHairPresets();
+            femaleNumberOfPresets[Regions.Head.ordinal()]  = femaleParams.getNumberOfHeadPresets();
+            femaleNumberOfPresets[Regions.Torso.ordinal()] = femaleParams.getNumberOfTorsoPresets();
+            femaleNumberOfPresets[Regions.Legs.ordinal()]  = femaleParams.getNumberOfLegsPresets();
+            femaleNumberOfPresets[Regions.Feet.ordinal()]  = femaleParams.getNumberOfFeetPresets();
             printHelp();
         }
 
@@ -313,11 +325,20 @@ public class PresetsDeveloperTool extends DemoBase
             }
             else
             {
-//                int femaleHair = femaleCurrentPresets[Regions.Hair.ordinal()];
-//                String fileName = femaleParams.getHairPresetsColladaFileNames().get(femaleHair);
-//                String meshName = femaleParams.getHairPresetsMeshNames().get(femaleHair);
-//                Manipulator.swapHairMesh(female, true, new File(fileName), meshName);
-//                System.out.println("Current hair preset: " + femaleHair + " mesh name: " + meshName + " file: " + fileName);
+                int femaleHair = femaleCurrentPresets[Regions.Hair.ordinal()];
+                String fileName = femaleParams.getHairPresetsColladaFileNames().get(femaleHair);
+                String meshName = femaleParams.getHairPresetsMeshNames().get(femaleHair);
+                // Special case for the skinned hair
+                if (meshName.equals("HairAShape1"))
+                {
+                    //Manipulator.swapSkinnedMesh(female, true, new File(fileName), "Hair");
+                    System.out.println("Special case skinned hair! The tool does not support it at the moment.");
+                }
+                else
+                {
+                    Manipulator.swapHairMesh(female, true, new File(fileName), meshName);
+                    System.out.println("Current hair preset: " + femaleHair + " mesh name: " + meshName + " file: " + fileName);
+                }
             }
         }
 
@@ -334,7 +355,10 @@ public class PresetsDeveloperTool extends DemoBase
                     maleParams.setApplySkinToneOnHead(false);
                 }
                 else
+                {
                     maleParams.setApplySkinToneOnHead(true);
+                    maleParams.randomizeSkinTone();
+                }
                 if (headFileName.equals("assets/models/collada/Heads/Binary/blackHead.bhf") ||
                         headFileName.equals("assets/models/collada/Heads/Binary/AsianHeadMale.bhf"))
                     maleParams.setAnimateFace(false); // no facial animations for this head (that work!) - this will not do anything on run time, just works on load
@@ -348,25 +372,28 @@ public class PresetsDeveloperTool extends DemoBase
             }
             else
             {
-//                int femaleHead = femaleCurrentPresets[Regions.Head.ordinal()];
-//                String headFileName = femaleParams.getHeadPresetsFileNames().get(femaleHead);
-//                ColorRGBA skint = femaleParams.getHeadPresetsSkinTone().get(femaleHead);
-//                if (skint != null)
-//                {
-//                    Manipulator.setSkinTone(female, new Color(skint.r, skint.g, skint.b));
-//                    femaleParams.setApplySkinToneOnHead(false);
-//                }
-//                else
-//                    femaleParams.setApplySkinToneOnHead(true);
-//                if (headFileName.equals("assets/models/collada/Heads/Binary/blackHead.bhf") ||
-//                        headFileName.equals("assets/models/collada/Heads/Binary/AsianHeadMale.bhf"))
-//                    femaleParams.setAnimateFace(false); // no facial animations for this head (that work!) - this will not do anything on run time, just works on load
-//                boolean phong = femaleParams.getHeadPresetsPhongLighting().get(femaleHead);
-//                if (phong)
-//                    Manipulator.swapHeadMesh(female, true, new File(headFileName), ShaderType.PhongFleshShader);
-//                else
-//                    Manipulator.swapHeadMesh(female, true, new File(headFileName), ShaderType.FleshShader);
-//                System.out.println("Current head preset: " + femaleHead + " file: " + headFileName + " phong: " + phong + " skin tone: " + skint);
+                int femaleHead = femaleCurrentPresets[Regions.Head.ordinal()];
+                String headFileName = femaleParams.getHeadPresetsFileNames().get(femaleHead);
+                ColorRGBA skint = femaleParams.getHeadPresetsSkinTone().get(femaleHead);
+                if (skint != null)
+                {
+                    Manipulator.setSkinTone(female, new Color(skint.r, skint.g, skint.b));
+                    femaleParams.setApplySkinToneOnHead(false);
+                }
+                else
+                {
+                    femaleParams.setApplySkinToneOnHead(true);
+                    femaleParams.randomizeSkinTone();
+                }
+                if (headFileName.equals("assets/models/collada/Heads/Binary/blackHead.bhf") ||
+                        headFileName.equals("assets/models/collada/Heads/Binary/AsianHeadMale.bhf"))
+                    femaleParams.setAnimateFace(false); // no facial animations for this head (that work!) - this will not do anything on run time, just works on load
+                boolean phong = femaleParams.getHeadPresetsPhongLighting().get(femaleHead);
+                if (phong)
+                    Manipulator.swapHeadMesh(female, true, new File(headFileName), ShaderType.PhongFleshShader);
+                else
+                    Manipulator.swapHeadMesh(female, true, new File(headFileName), ShaderType.FleshShader);
+                System.out.println("Current head preset: " + femaleHead + " file: " + headFileName + " phong: " + phong + " skin tone: " + skint);
             }
         }
 
@@ -393,10 +420,10 @@ public class PresetsDeveloperTool extends DemoBase
             }
             else
             {
-//                int femaleTorso = femaleCurrentPresets[Regions.Torso.ordinal()];
-//                String fileName = femaleParams.getTorsoPresetsFileNames().get(femaleTorso);
-//                Manipulator.swapShirtMesh(female, true, new File(fileName));
-//                System.out.println("Current torso preset: " + femaleTorso + " file: " + fileName);
+                int femaleTorso = femaleCurrentPresets[Regions.Torso.ordinal()];
+                String fileName = femaleParams.getTorsoPresetsFileNames().get(femaleTorso);
+                Manipulator.swapShirtMesh(female, true, new File(fileName));
+                System.out.println("Current torso preset: " + femaleTorso + " file: " + fileName);
             }
         }
 
@@ -411,10 +438,10 @@ public class PresetsDeveloperTool extends DemoBase
             }
             else
             {
-//                int femaleLegs = femaleCurrentPresets[Regions.Legs.ordinal()];
-//                String fileName = femaleParams.getLegsPresetsFileNames().get(femaleLegs);
-//                Manipulator.swapPantsMesh(female, true, new File(fileName));
-//                System.out.println("Current legs preset: " + femaleLegs + " file: " + fileName);
+                int femaleLegs = femaleCurrentPresets[Regions.Legs.ordinal()];
+                String fileName = femaleParams.getLegsPresetsFileNames().get(femaleLegs);
+                Manipulator.swapPantsMesh(female, true, new File(fileName));
+                System.out.println("Current legs preset: " + femaleLegs + " file: " + fileName);
             }
         }
 
@@ -429,10 +456,10 @@ public class PresetsDeveloperTool extends DemoBase
             }
             else
             {
-//                int femaleFeet = femaleCurrentPresets[Regions.Feet.ordinal()];
-//                String fileName = femaleParams.getFeetPresetsFileNames().get(femaleFeet);
-//                Manipulator.swapShoesMesh(female, true, new File(fileName));
-//                System.out.println("Current feet preset: " + femaleFeet + " file: " + fileName);
+                int femaleFeet = femaleCurrentPresets[Regions.Feet.ordinal()];
+                String fileName = femaleParams.getFeetPresetsFileNames().get(femaleFeet);
+                Manipulator.swapShoesMesh(female, true, new File(fileName));
+                System.out.println("Current feet preset: " + femaleFeet + " file: " + fileName);
             }
         }
     }
