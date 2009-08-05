@@ -44,7 +44,7 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
 // CLASS DATA MEMBERS
 ////////////////////////////////////////////////////////////////////////////////
     public float                                m_baseSliderVal =   25.0f;
-    private GUI_Enums.m_sliderControl           m_ObjectRef     =   null;
+    private GUI_Enums.sliderControl           m_ObjectRef     =   null;
     private JFrame                              m_ParentFrame   =   null;
     private boolean                             m_SliderInFocus     =   false;
     private boolean                             m_SpinnerInFocus    =   false;
@@ -199,7 +199,7 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
         return jSpinner1;
     }
 
-    public GUI_Enums.m_sliderControl getObjectRef() {
+    public GUI_Enums.sliderControl getObjectRef() {
         return m_ObjectRef;
     }
 
@@ -211,7 +211,7 @@ public class JPanel_HorizontalSliderS extends javax.swing.JPanel {
 // MUTATORS
 ////////////////////////////////////////////////////////////////////////////////
 
-    public void setObjectRef(GUI_Enums.m_sliderControl object) {
+    public void setObjectRef(GUI_Enums.sliderControl object) {
         m_ObjectRef = object;
     }
 

@@ -181,11 +181,11 @@ public class JPanel_BodyOptions extends javax.swing.JPanel {
      * data to be sent to the switchboard found in the base window.
      */
     public void setSliderControls() {
-        AvatarHeight.setObjectRef(GUI_Enums.m_sliderControl.uniformHeight);
-        AvatarThickness.setObjectRef(GUI_Enums.m_sliderControl.uniformThickness);
-        TorsoLength.setObjectRef(GUI_Enums.m_sliderControl.torsoLength);
-        TorsoThickness.setObjectRef(GUI_Enums.m_sliderControl.torsoThickness);
-        StomachRoundness.setObjectRef(GUI_Enums.m_sliderControl.stomachRoundness);
+        AvatarHeight.setObjectRef(GUI_Enums.sliderControl.uniformHeight);
+        AvatarThickness.setObjectRef(GUI_Enums.sliderControl.uniformThickness);
+        TorsoLength.setObjectRef(GUI_Enums.sliderControl.torsoLength);
+        TorsoThickness.setObjectRef(GUI_Enums.sliderControl.torsoThickness);
+        StomachRoundness.setObjectRef(GUI_Enums.sliderControl.stomachRoundness);
 
         AvatarHeight.setParentFrame(m_baseFrame);
         AvatarThickness.setParentFrame(m_baseFrame);

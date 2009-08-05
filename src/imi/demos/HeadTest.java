@@ -65,7 +65,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.dnd.DropTarget;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
@@ -255,6 +254,9 @@ public class HeadTest extends JFrame implements BufferUpdater {
                                                                  .configureTorso(1)
                                                                  .buildSpecific();
         mparams.setShirtColorPreset(1, true);
+        String base = HeadTest.class.getClassLoader().getResource("assets/models/collada/Heads/Binary/FG_MaleHead02Medium.bhf").toString();
+        
+        mparams.setBaseURL(base.split("assets")[0]);
         loadAvatar(mparams);
     }
 

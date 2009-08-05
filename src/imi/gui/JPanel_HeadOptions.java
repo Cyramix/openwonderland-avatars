@@ -644,31 +644,31 @@ public class JPanel_HeadOptions extends javax.swing.JPanel {
      * data to be sent to the switchboard found in the base window.
      */
     public void setSliderControls() {
-        Head_Depth.setObjectRef(GUI_Enums.m_sliderControl.headDepth);
-        Head_Height.setObjectRef(GUI_Enums.m_sliderControl.headHeight);
-        Head_Width.setObjectRef(GUI_Enums.m_sliderControl.headWidth);
-        Head_Uniform.setObjectRef(GUI_Enums.m_sliderControl.headUniform);
-        LeftEye_HPos.setObjectRef(GUI_Enums.m_sliderControl.lefteyeHPos);
-        LeftEye_Size.setObjectRef(GUI_Enums.m_sliderControl.lefteyeSize);
-        LeftEye_VPos.setObjectRef(GUI_Enums.m_sliderControl.lefteyeVPos);
-        LeftEye_Width.setObjectRef(GUI_Enums.m_sliderControl.lefteyeWidth);
-        LowerLip_Size.setObjectRef(GUI_Enums.m_sliderControl.lowerlipSize);
-        Mouth_Width.setObjectRef(GUI_Enums.m_sliderControl.mouthWidth);
-        RightEye_HPos.setObjectRef(GUI_Enums.m_sliderControl.righteyeHPos);
-        RightEye_Size.setObjectRef(GUI_Enums.m_sliderControl.righteyeSize);
-        RightEye_VPos.setObjectRef(GUI_Enums.m_sliderControl.righteyeVPos);
-        RightEye_Width.setObjectRef(GUI_Enums.m_sliderControl.righteyeWidth);
-        UpperLip_Size.setObjectRef(GUI_Enums.m_sliderControl.upperlipSize);
-        LeftEarHPos.setObjectRef(GUI_Enums.m_sliderControl.leftearHPos);
-        LeftEarSize.setObjectRef(GUI_Enums.m_sliderControl.leftearSize);
-        LeftEarVPos.setObjectRef(GUI_Enums.m_sliderControl.leftearVPos);
-        NoseHPos.setObjectRef(GUI_Enums.m_sliderControl.noseHPos);
-        NoseLength.setObjectRef(GUI_Enums.m_sliderControl.noseLength);
-        NoseSize.setObjectRef(GUI_Enums.m_sliderControl.noseSize);
-        NoseVPos.setObjectRef(GUI_Enums.m_sliderControl.noseVPos);
-        RightEarHPos.setObjectRef(GUI_Enums.m_sliderControl.rightearHPos);
-        RightEarSize.setObjectRef(GUI_Enums.m_sliderControl.rightearSize);
-        RightEarVPos.setObjectRef(GUI_Enums.m_sliderControl.rightearVPos);
+        Head_Depth.setObjectRef(GUI_Enums.sliderControl.headDepth);
+        Head_Height.setObjectRef(GUI_Enums.sliderControl.headHeight);
+        Head_Width.setObjectRef(GUI_Enums.sliderControl.headWidth);
+        Head_Uniform.setObjectRef(GUI_Enums.sliderControl.headUniform);
+        LeftEye_HPos.setObjectRef(GUI_Enums.sliderControl.lefteyeHPos);
+        LeftEye_Size.setObjectRef(GUI_Enums.sliderControl.lefteyeSize);
+        LeftEye_VPos.setObjectRef(GUI_Enums.sliderControl.lefteyeVPos);
+        LeftEye_Width.setObjectRef(GUI_Enums.sliderControl.lefteyeWidth);
+        LowerLip_Size.setObjectRef(GUI_Enums.sliderControl.lowerlipSize);
+        Mouth_Width.setObjectRef(GUI_Enums.sliderControl.mouthWidth);
+        RightEye_HPos.setObjectRef(GUI_Enums.sliderControl.righteyeHPos);
+        RightEye_Size.setObjectRef(GUI_Enums.sliderControl.righteyeSize);
+        RightEye_VPos.setObjectRef(GUI_Enums.sliderControl.righteyeVPos);
+        RightEye_Width.setObjectRef(GUI_Enums.sliderControl.righteyeWidth);
+        UpperLip_Size.setObjectRef(GUI_Enums.sliderControl.upperlipSize);
+        LeftEarHPos.setObjectRef(GUI_Enums.sliderControl.leftearHPos);
+        LeftEarSize.setObjectRef(GUI_Enums.sliderControl.leftearSize);
+        LeftEarVPos.setObjectRef(GUI_Enums.sliderControl.leftearVPos);
+        NoseHPos.setObjectRef(GUI_Enums.sliderControl.noseHPos);
+        NoseLength.setObjectRef(GUI_Enums.sliderControl.noseLength);
+        NoseSize.setObjectRef(GUI_Enums.sliderControl.noseSize);
+        NoseVPos.setObjectRef(GUI_Enums.sliderControl.noseVPos);
+        RightEarHPos.setObjectRef(GUI_Enums.sliderControl.rightearHPos);
+        RightEarSize.setObjectRef(GUI_Enums.sliderControl.rightearSize);
+        RightEarVPos.setObjectRef(GUI_Enums.sliderControl.rightearVPos);
 
         Head_Depth.setParentFrame(m_baseFrame);
         Head_Height.setParentFrame(m_baseFrame);

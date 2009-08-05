@@ -45,7 +45,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
 ////////////////////////////////////////////////////////////////////////////////
     private WorldManager                                    worldManager;
     private Character                                       character;
-    private Map<GUI_Enums.m_bodyPart, SkinnedMeshJoint[]>   skeleton;
+    private Map<GUI_Enums.bodyPart, SkinnedMeshJoint[]>   skeleton;
     private boolean                                         loaeEyePane;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -115,7 +115,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    private synchronized void adjustEyes(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustEyes(GUI_Enums.sliderControl type, float mod, float actualval) {
         avatarCheck();
         switch(type)
         {
@@ -177,7 +177,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    private synchronized void adjustHands(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustHands(GUI_Enums.sliderControl type, float mod, float actualval) {
         avatarCheck();
         switch(type)
         {
@@ -215,7 +215,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    private synchronized void adjustForearms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustForearms(GUI_Enums.sliderControl type, float mod, float actualval) {
         avatarCheck();
         switch(type)
         {
@@ -253,7 +253,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    private synchronized void adjustUpperarms(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustUpperarms(GUI_Enums.sliderControl type, float mod, float actualval) {
         avatarCheck();
         switch(type)
         {
@@ -295,7 +295,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    private synchronized void adjustFeet(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustFeet(GUI_Enums.sliderControl type, float mod, float actualval) {
         avatarCheck();
         switch(type)
         {
@@ -333,7 +333,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    private synchronized void adjustCalves(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustCalves(GUI_Enums.sliderControl type, float mod, float actualval) {
         avatarCheck();
         switch(type)
         {
@@ -371,7 +371,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    private synchronized void adjustThighs(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustThighs(GUI_Enums.sliderControl type, float mod, float actualval) {
         avatarCheck();
         switch(type)
         {
@@ -409,7 +409,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    private synchronized void adjustChest(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustChest(GUI_Enums.sliderControl type, float mod, float actualval) {
         avatarCheck();
         switch(type)
         {
@@ -451,7 +451,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the seleted slider/scrollbox
      * @param actualval - the actual value of the modification from the selected slider/scrollbox
      */
-    private synchronized void adjustHead(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustHead(GUI_Enums.sliderControl type, float mod, float actualval) {
         avatarCheck();
         switch(type)
         {
@@ -549,7 +549,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    private synchronized void adjustBody(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustBody(GUI_Enums.sliderControl type, float mod, float actualval) {
         avatarCheck();
         switch(type)
         {
@@ -575,7 +575,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification of the selected slider/scrollbox
      * @param actualval - the actual value of modification from the selected slider/scrollbox
      */
-    private synchronized void adjustMouth(GUI_Enums.m_sliderControl type, float mod, float actualval) {
+    private synchronized void adjustMouth(GUI_Enums.sliderControl type, float mod, float actualval) {
         avatarCheck();
         switch(type)
         {
@@ -670,7 +670,7 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
      * @param mod - delta modification value from the slider
      * @param actualval - actual modification value from the slider
      */
-    public void parseModification(GUI_Enums.m_sliderControl control, float mod, float actualval) {
+    public void parseModification(GUI_Enums.sliderControl control, float mod, float actualval) {
         switch(control)
         {
             case lefteyeHPos:
