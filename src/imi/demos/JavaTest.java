@@ -40,8 +40,8 @@ import imi.camera.FirstPersonCamState;
 import imi.camera.FlexibleCameraProcessor;
 import imi.camera.TumbleObjectCamModel;
 import imi.camera.TumbleObjectCamState;
+import imi.character.AvatarSystem;
 import imi.gui.CanvasDropTargetListener;
-import imi.gui.LoadAvatarDialogue;
 import imi.input.CharacterControls;
 import imi.input.DefaultCharacterControls;
 import imi.input.InputManagerEntity;
@@ -179,6 +179,9 @@ public class JavaTest extends JFrame implements BufferUpdater {
         m_logger.info("Creating Repository...\tDONE");
 
         m_worldManager.addUserData(Repository.class, m_repository);
+
+        // Create avatar repository component
+        AvatarSystem.initialize(m_worldManager);
     }
 
     private void setLogerLevels() {

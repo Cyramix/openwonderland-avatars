@@ -34,12 +34,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -48,6 +50,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
+import javolution.util.FastMap;
 import javolution.util.FastSet;
 import javolution.util.FastTable;
 import org.jdesktop.mtgame.*;
@@ -84,6 +87,9 @@ public class Repository extends Entity
 
     /** All our processors **/
     private final ProcessorCollectionComponent m_processorCollection = new ProcessorCollectionComponent();
+
+    /** Collection of mix-in components **/
+    private final Map<Class<? extends RepositoryComponent>, RepositoryComponent> components = new FastMap();
     
     // The maximum number of load requests that can handled at a time
     private long m_numberOfLoadRequests      = 0l;
@@ -211,6 +217,41 @@ public class Repository extends Entity
 
     public File getCacheFolder() {
         return cacheFolder;
+    }
+
+    /**
+     * Retrieve the repository component of the specified type
+     * @param classz
+     * @return The component, or null if none of that type was found
+     */
+    public RepositoryComponent getRepositoryComponent(Class<? extends RepositoryComponent> classz)
+    {
+        return components.get(classz);
+    }
+
+    /**
+     * This method adds the provided component to the internal collection, removing
+     * any old component previously set.
+     * @param classz
+     * @param component
+     */
+    public void addRepositoryComponent(Class<? extends RepositoryComponent> classz,
+                                        RepositoryComponent component)
+    {
+        removeRepositoryComponent(classz);
+        component.initialize();
+        components.put(classz, component);
+    }
+
+    /**
+     * Remove the component of the specified type.
+     * @param classz
+     */
+    public void removeRepositoryComponent(Class<? extends RepositoryComponent> classz)
+    {
+        RepositoryComponent old = components.remove(classz);
+        if (old != null)
+            old.shutdown();
     }
 
     private void loadTextureCache()
@@ -518,6 +559,15 @@ public class Repository extends Entity
     public void saveCache(OutputStream out) {
         if (m_cache != null)
             m_cache.createCachePackage(out);
+    }
+
+    /**
+     * Load a cache pack from the provided InputStream
+     * @param in The input stream
+     */
+    public void loadCacheState(InputStream in) {
+        if (m_cache != null)
+            m_cache.loadCachePackage(in);
     }
 
     CacheUser user = new CacheUser();

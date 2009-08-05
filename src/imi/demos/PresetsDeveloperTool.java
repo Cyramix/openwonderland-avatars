@@ -28,11 +28,14 @@ import imi.character.Manipulator;
 import imi.character.avatar.Avatar;
 import imi.input.DefaultCharacterControls;
 import imi.input.InputManagerEntity;
+import imi.repository.CacheBehavior;
 import imi.scene.PMatrix;
 import imi.utils.MaterialMeshUtils.ShaderType;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
@@ -54,6 +57,13 @@ public class PresetsDeveloperTool extends DemoBase
     @Override
     protected void createApplicationEntities(WorldManager wm)
     {
+        // Load the binary cache nugget into the repo
+        try {
+            FileInputStream fis = new FileInputStream(new File("assets/models/binary/ClothingHairAccessories.car"));
+            repository.loadCacheState(fis);
+        } catch (IOException ex) {
+            System.out.println(ex);
+        }
         // Create simple floor
         createSimpleFloor(wm, 50.0f, 50.0f, 10.0f, Vector3f.ZERO, null);
 
@@ -196,7 +206,7 @@ public class PresetsDeveloperTool extends DemoBase
                         break;
                     }
                 }
-                
+
                 // Change mesh region
                 if (ke.getKeyCode() == KeyEvent.VK_DOWN)
                 {
@@ -226,13 +236,14 @@ public class PresetsDeveloperTool extends DemoBase
                 }
 
                 // Print help
-                if (ke.getKeyCode() == KeyEvent.VK_H || ke.getKeyCode() == KeyEvent.VK_BACK_SPACE || ke.getKeyCode() == KeyEvent.VK_BACK_QUOTE)
+                if (ke.getKeyCode() == KeyEvent.VK_H || ke.getKeyCode() == KeyEvent.VK_BACK_QUOTE)
                 {
                     printHelp();
                 }
 
                 // Toggle camera/avatar movement
-                if (ke.getKeyCode() == KeyEvent.VK_CAPS_LOCK)
+                if (ke.getKeyCode() == KeyEvent.VK_CAPS_LOCK ||
+                        ke.getKeyCode() == KeyEvent.VK_BACK_SPACE)
                 {
                     AvatarMovementOn = !AvatarMovementOn;
                     if (AvatarMovementOn)
@@ -262,14 +273,60 @@ public class PresetsDeveloperTool extends DemoBase
                     if(isMale)
                     {
                         System.out.println("Male presets:");
-                        for (int i = 0; i < regions.length; i++)
-                            System.out.println(regions[i].toString() + ": " + maleCurrentPresets[regions[i].ordinal()]);
+                        for (int i = 0; i < regions.length; i++) {
+                            int preset = maleCurrentPresets[regions[i].ordinal()];
+                            System.out.println(regions[i] + ": " + preset);
+                            // Dahlgren: Adding file names to the output
+                            String fileName = null;
+                            switch (regions[i])
+                            {
+                                case Feet:
+                                    fileName = maleParams.getFeetPresetsFileNames().get(preset);
+                                    break;
+                                case Hair:
+                                    fileName = maleParams.getHairPresetsFileNames().get(preset);
+                                    break;
+                                case Head:
+                                    fileName = maleParams.getHeadPresetsFileNames().get(preset);
+                                    break;
+                                case Legs:
+                                    fileName = maleParams.getLegsPresetsFileNames().get(preset);
+                                    break;
+                                case Torso:
+                                    fileName = maleParams.getTorsoPresetsFileNames().get(preset);
+                                    break;
+                            }
+                            System.out.println("Filename for " + regions[i] + ", " + fileName);
+                        }
                     }
                     else
                     {
                         System.out.println("Female presets:");
-                        for (int i = 0; i < regions.length; i++)
-                            System.out.println(regions[i].toString() + ": " + femaleCurrentPresets[regions[i].ordinal()]);
+                        for (int i = 0; i < regions.length; i++) {
+                            int preset = femaleCurrentPresets[regions[i].ordinal()];
+                            System.out.println(regions[i] + ": " + preset);
+                            // Dahlgren: Adding file names to the output
+                            String fileName = null;
+                            switch (regions[i])
+                            {
+                                case Feet:
+                                    fileName = femaleParams.getFeetPresetsFileNames().get(preset);
+                                    break;
+                                case Hair:
+                                    fileName = femaleParams.getHairPresetsFileNames().get(preset);
+                                    break;
+                                case Head:
+                                    fileName = femaleParams.getHeadPresetsFileNames().get(preset);
+                                    break;
+                                case Legs:
+                                    fileName = femaleParams.getLegsPresetsFileNames().get(preset);
+                                    break;
+                                case Torso:
+                                    fileName = femaleParams.getTorsoPresetsFileNames().get(preset);
+                                    break;
+                            }
+                            System.out.println("Filename for " + regions[i] + ", " + fileName);
+                        }
                     }
                 }
             }
@@ -296,20 +353,20 @@ public class PresetsDeveloperTool extends DemoBase
 
         public void printHelp() {
             System.out.println("\n\nWellcome to the amazing developer tool\n" +
-                "PageUp/Down    -   Toggle Male/Female control\n" +
-                "CapsLock       -   Toggle camera/avatar controls\n" +
-                "A,D,W,S,Q,E    -   Camera/avatar movement\n" +
-                "<>             -   Cycle animations\n" +
-                "Ctrl           -   Perform currently selected animation\n" +
-                "0,9,8          -   Facial animations\n" +
-                "Up/Down        -   Cycle body parts for mesh swaping\n" +
-                "Right/Left     -   Swap current body part preset mesh\n" +
-                "I              -   Shut eyes\n" +
-                "P              -   Take a screen shot\n" +
-                "T              -   Wireframe toggle\n" +
-                "R              -   Skeleton debug render\n" +
-                "Enter          -   Print current presets\n" +
-                "Backspace,~,h  -   Print Help\n" +
+                "PageUp/Down            -   Toggle Male/Female control\n" +
+                "CapsLock, Backspace    -   Toggle camera/avatar controls\n" +
+                "A,D,W,S,Q,E            -   Camera/avatar movement\n" +
+                "<>                     -   Cycle animations\n" +
+                "Ctrl                   -   Perform currently selected animation\n" +
+                "0,9,8                  -   Facial animations\n" +
+                "Up/Down                -   Cycle body parts for mesh swaping\n" +
+                "Right/Left             -   Swap current body part preset mesh\n" +
+                "I                      -   Shut eyes\n" +
+                "P                      -   Take a screen shot\n" +
+                "T                      -   Wireframe toggle\n" +
+                "R                      -   Skeleton debug render\n" +
+                "Space                  -   Print current presets\n" +
+                "~,h                    -   Print Help\n" +
                 "\n\n");
         }
 

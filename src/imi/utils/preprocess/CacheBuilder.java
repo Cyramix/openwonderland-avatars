@@ -17,6 +17,7 @@
  */
 package imi.utils.preprocess;
 
+import imi.character.AvatarSystem;
 import imi.repository.AssetDescriptor;
 import imi.repository.Repository;
 import imi.repository.RepositoryUser;
@@ -128,6 +129,9 @@ public class CacheBuilder {
         repo.setToolMode(true);
         // add repository to the user data of the world manager
         wm.addUserData(Repository.class, repo);
+
+        // Create avatar repository component
+        AvatarSystem.initialize(wm);
     }
     /**
      * The main running method to start this tool.

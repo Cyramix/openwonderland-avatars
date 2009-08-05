@@ -33,14 +33,12 @@ import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
 import com.jme.scene.state.ZBufferState;
 import com.jme.scene.shape.Box;
-import headtestassets.HeadAssets;
 import imi.character.avatar.AvatarContext;
 import imi.input.CharacterControls;
 import imi.objects.ObjectCollectionBase;
 import imi.objects.SpatialObject;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.TransitionObject;
-import imi.loaders.BinaryHeadFileImporter;
 import imi.utils.Updatable;
 import imi.loaders.Instruction;
 import imi.loaders.Instruction.InstructionType;
@@ -49,6 +47,7 @@ import imi.loaders.Collada;
 import imi.loaders.ColladaLoaderParams;
 import imi.loaders.ColladaLoadingException;
 import imi.repository.AssetDescriptor;
+import imi.repository.AvatarRepoComponent;
 import imi.repository.Repository;
 import imi.repository.SharedAsset;
 import imi.repository.SharedAsset.SharedAssetType;
@@ -1650,11 +1649,12 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Load up any geometry requested by the provided attributes object
         for (String load : attributes.getLoadInstructions()) {
-            URL url = HeadAssets.class.getClassLoader().getResource(load);
-
-            if (url != null)
-                attributeRoot.addChildInstruction(InstructionType.loadGeometry, url.toString());
-            else if (FileUtils.checkURLPath(urlPrefix + load))
+//            URL url = HeadAssets.class.getClassLoader().getResource(load);
+//
+//            if (url != null)
+//                attributeRoot.addChildInstruction(InstructionType.loadGeometry, url.toString());
+//            else
+            if (FileUtils.checkURLPath(urlPrefix + load))
                 attributeRoot.addChildInstruction(InstructionType.loadGeometry, urlPrefix + load);
             else
                 throw new RuntimeException("Failed to load " + urlPrefix + load);
@@ -2098,15 +2098,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         m_AnimationProcessor.setEnabled(false);
         m_characterProcessor.setEnabled(false);
 
-        System.out.println("Installing head from " + headLocation.toString());
-        try {
-            SkeletonNode newHeadSkeleton = BinaryHeadFileImporter.loadHeadFile(headLocation.openStream());
-            attachHeadSkeleton(newHeadSkeleton);
-            initializeMeshInstanceMaterialStates();
-            setDefaultHeadShaders();
-        } catch (IOException ex) {
-            logger.log(Level.SEVERE, "IO Exception while trying to install head!", ex);
-        }
+        AvatarRepoComponent avatarRepo = ((AvatarRepoComponent)m_pscene.getRepository().getRepositoryComponent(AvatarRepoComponent.class));
+        if (avatarRepo == null) // Known problem
+            throw new RuntimeException("No AvatarRepoComponent found in the Repository. Was AvatarSystem.initialize() called?");
 
         // Re-enable all the processors that affect us.
         m_AnimationProcessor.setEnabled(animProcEnabled);

@@ -34,6 +34,7 @@ import imi.camera.FirstPersonCamState;
 import imi.camera.FlexibleCameraProcessor;
 import imi.camera.TumbleObjectCamModel;
 import imi.camera.TumbleObjectCamState;
+import imi.character.AvatarSystem;
 import imi.character.CharacterInitializationInterface;
 import imi.character.CharacterParams;
 import imi.character.FemaleAvatarParams;
@@ -298,6 +299,9 @@ public class HeadTest extends JFrame implements BufferUpdater {
         m_logger.info("Creating Repository...\tDONE");
 
         m_worldManager.addUserData(Repository.class, m_repository);
+
+        // Create avatar repository component
+        AvatarSystem.initialize(m_worldManager);
     }
 
     private void setLogerLevels() {

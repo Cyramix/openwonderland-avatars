@@ -71,7 +71,10 @@ import imi.camera.AbstractCameraState;
 import imi.camera.CameraModels;
 import imi.camera.FirstPersonCamState;
 import imi.camera.FlexibleCameraProcessor;
+import imi.character.AvatarSystem;
 import imi.input.InputManagerEntity;
+import imi.repository.AvatarRepoComponent;
+import imi.repository.DefaultAvatarCache;
 import imi.utils.instruments.DefaultInstrumentation;
 import java.net.URL;
 import org.jdesktop.mtgame.OnscreenRenderBuffer;
@@ -153,6 +156,8 @@ public class DemoBase {
         Thread.yield();
         System.out.println("done.");
         worldManager.addUserData(Repository.class, repository);
+        // Create avatar repository component
+        AvatarSystem.initialize(worldManager);
 
         System.out.print("Creating UI...");
         createUI(worldManager);
