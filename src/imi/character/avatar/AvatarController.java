@@ -304,11 +304,20 @@ public class AvatarController extends CharacterController
         //System.out.println(newPos);
         PickInfo pi = collisionController.getCollisionSystem().pickAllWorldRay(heightRay, true, false);
         if (pi.size() != 0) {
-            // Grab the first one
-            PickDetails pd = pi.get(0);
-            dy = pd.getDistance() - yDelta;
+            // Grab the first collidable
+            PickDetails pd = null;
+            int i = 0;
+            pd = pi.get(i);
+            while(!pd.getCollisionComponent().isCollidable()) {
+                i++;
+                pd = pi.get(i);
+            }
 
-            newPos.y -= dy;
+            if (pd!=null) {
+                dy = pd.getDistance() - yDelta;
+
+                newPos.y -= dy;
+            }
         } else {
             //System.out.println("NO GROUND!!!");
         }
@@ -333,7 +342,7 @@ public class AvatarController extends CharacterController
             ArrayList<Integer> tris = tcr.getCollisionData(i).getSourceTris();
             if (tris.size() != 0) {
                 collision = true;
-                System.err.println("OUCH ! "+tris.size());
+//                System.err.println("OUCH ! "+tris.size());
                 //TriMesh mesh = (TriMesh)tcr.getCollisionData(i).getSourceMesh();
                 //mesh.getTriangle(tris.get(0).intValue(), triData2);
                 //computeCollisionResponse(position, potentialPos, rotatedFwdDirection, triData2, walkInc);
