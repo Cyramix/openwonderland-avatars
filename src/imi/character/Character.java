@@ -2101,7 +2101,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         AvatarRepoComponent avatarRepo = ((AvatarRepoComponent)m_pscene.getRepository().getRepositoryComponent(AvatarRepoComponent.class));
         if (avatarRepo == null) // Known problem
             throw new RuntimeException("No AvatarRepoComponent found in the Repository. Was AvatarSystem.initialize() called?");
-
+        else
+            attachHeadSkeleton(avatarRepo.getBinaryHead(headLocation, m_pscene));
+        
         // Re-enable all the processors that affect us.
         m_AnimationProcessor.setEnabled(animProcEnabled);
         m_characterProcessor.setEnabled(charProcEnabled);
