@@ -22,6 +22,7 @@ import imi.repository.AssetDescriptor;
 import imi.repository.SharedAsset;
 import java.util.List;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import org.collada.colladaschema.COLLADA;
 import org.collada.xml_walker.ProcessorFactory;
@@ -58,6 +59,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import javolution.util.FastMap;
 import javolution.util.FastTable;
@@ -82,6 +85,13 @@ public class Collada
     private static final Object contextLock = new Object();
     /** The unmarshaller used to generate the DOM each time a file is loaded **/
     private static javax.xml.bind.Unmarshaller unmarshaller = null;
+
+    /**
+     * A map from file extensions to Collada parsers for that extension. If an
+     * extension is not in the map, the default parser will be used.
+     */
+    private static final Map<String, ColladaParser> parsers =
+            new HashMap<String, ColladaParser>();
 
     static
     {
@@ -204,6 +214,15 @@ public class Collada
         applyConfiguration(params);
     }
 
+    /**
+     * Add a mapping from extension to a ColladaParser for that extension.
+     * @param extension the file extension to map (without the ".")
+     * @param the parser for that extension
+     */
+    public static void addParser(String extension, ColladaParser parser) {
+        parsers.put(extension, parser);
+    }
+
     //  Gets the name of the Collada file.
     public String getName()
     {
@@ -319,20 +338,13 @@ public class Collada
         m_loadingPScene.setUseRepository(false); // the repository will extract the data later
 
         m_fileLocation = colladaFile;
-        URLConnection conn = null;
-        InputStream in = null;
-
+       
         // Our collada DOM
         org.collada.colladaschema.COLLADA collada = null;
         try {
-            conn = colladaFile.openConnection();
-            in = conn.getInputStream();
-            synchronized (contextLock) {
-                unmarshaller = jaxbContext.createUnmarshaller();
-                collada = (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
-            }
+            collada = parseCollada(jaxbContext, colladaFile);
         } catch (JAXBException ex) {
-            throw new IllegalArgumentException("JAXB was unable to parse " + colladaFile.getFile());
+            throw new IllegalArgumentException("JAXB was unable to parse " + colladaFile.getFile(), ex);
         }
 
         doLoad(collada);
@@ -344,6 +356,36 @@ public class Collada
             m_loadingPScene.getInstances().removeChild(m_skeletonNode);
 
         return result;
+    }
+
+    /**
+     * Parse the collada file into an object representation.
+     * @param context the JAXB context
+     * @param colladaFile the URL of the collada file to parse
+     */
+    protected COLLADA parseCollada(JAXBContext context, URL colladaFile)
+        throws JAXBException, IOException
+    {
+        ColladaParser parser = null;
+
+        // find the extension to map
+        String path = colladaFile.getPath();
+        int idx = path.lastIndexOf(".");
+        if (idx != -1 && path.length() > idx) {
+            String extension = path.substring(idx + 1);
+
+            // map the extension to a parser
+            parser = parsers.get(extension);
+        }
+
+        // if we didn't find a parser by mapping the extension, use
+        // the default
+        if (parser == null) {
+            parser = DefaultColladaParser.INSTANCE;
+        }
+
+        // now use the parser to read the Collada file
+        return parser.parse(context, colladaFile);
     }
 
     /**
@@ -1328,9 +1370,37 @@ public class Collada
             logger.warning("No contributors for for this asset.");
         return result;
     }
+
+    /**
+     * Interface for a Collada parser
+     */
+    public interface ColladaParser {
+        /**
+         * Parse the given URL into a collada file.
+         * @param context the JAXB context to generate the unmarshaller
+         * @param colladaURL the URL of the collada file
+         * @return the parsed collada information
+         * @throws JAXBException if there is an error parsing
+         */
+        public COLLADA parse(JAXBContext context, URL colladaURL)
+            throws JAXBException, IOException;
+    }
+
+    /**
+     * The default collada parser
+     */
+    private static class DefaultColladaParser implements ColladaParser {
+        private static final DefaultColladaParser INSTANCE = new DefaultColladaParser();
+
+        public COLLADA parse(JAXBContext context, URL colladaURL)
+                throws JAXBException, IOException
+        {
+            URLConnection conn = colladaURL.openConnection();
+            InputStream in = conn.getInputStream();
+            synchronized (contextLock) {
+                unmarshaller = jaxbContext.createUnmarshaller();
+                return (org.collada.colladaschema.COLLADA) unmarshaller.unmarshal(in);
+            }
+        }
+    }
 }
-
-
-
-
-
