@@ -47,6 +47,8 @@ import org.jdesktop.mtgame.WorldManager;
  */
 public class InstructionProcessor
 {
+    private static SkeletonNode femaleSkeleton = null;
+    private static SkeletonNode maleSkeleton = null;
     /** The WorldManager! **/
     private WorldManager        m_wm = null;
     /** PScene that will be used for loading **/
@@ -70,6 +72,13 @@ public class InstructionProcessor
     {
         m_wm = wm;
         m_repository = (Repository)m_wm.getUserData(Repository.class);
+
+        if (femaleSkeleton == null) // assume male to be null as well
+        {
+            // load up the skeletons
+            femaleSkeleton = m_repository.getSkeleton("FemaleSkeleton");
+            maleSkeleton = m_repository.getSkeleton("MaleSkeleton");
+        }
     }
 
     /**
@@ -271,7 +280,11 @@ public class InstructionProcessor
         if (node instanceof PPolygonSkinnedMeshInstance)
         {
             PPolygonSkinnedMeshInstance mesh = (PPolygonSkinnedMeshInstance)node;
-            PPolygonMesh unskined = PMeshUtils.unskinMesh(m_skeleton,(PPolygonSkinnedMesh) mesh.getGeometry(), joint);
+
+            // if female
+//            PPolygonMesh unskined = PMeshUtils.unskinMesh(femaleSkeleton,(PPolygonSkinnedMesh) mesh.getGeometry(), joint);
+            // if male
+            PPolygonMesh unskined = PMeshUtils.unskinMesh(maleSkeleton,(PPolygonSkinnedMesh) mesh.getGeometry(), joint);
             node = new PPolygonMeshInstance(meshName, unskined, new PMatrix(), m_loadingPScene, false);
         } 
         else if (node == null)
