@@ -14,6 +14,7 @@ import imi.scene.PMatrix;
 import imi.scene.PNode;
 import imi.scene.PScene;
 import imi.scene.PTransform;
+import imi.scene.SkeletonNode;
 import imi.scene.SkinnedMeshJoint;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
@@ -288,9 +289,10 @@ public class AttachmentControlFrame extends JFrame implements ActionListener
         for (int i = 0; i < ppsmInstances.size(); i++) {
             if (ppsmInstances.get(i) instanceof PPolygonSkinnedMeshInstance) {
                 PPolygonSkinnedMeshInstance instance = (PPolygonSkinnedMeshInstance)ppsmInstances.get(i);
-                meshes.add(PMeshUtils.unskinMesh(targetAvatar.getSkeleton(),
+                SkeletonNode maleOrFemaleDeafaultSkeleton = null; // TODO get from the repository the default male or female skeleton... the repository returns a copy so better cache it in a static member variable in this class.
+                meshes.add(PMeshUtils.unskinMesh(maleOrFemaleDeafaultSkeleton,
                            (PPolygonSkinnedMesh)instance.getGeometry(),
-                           skeletonAttachPoint));
+                           "Hair"));
             } else {
                 logger.warning("TEST FAILED... NOT PPOLYGONSKINNEDMESHINSTANCE: " + ppsmInstances.get(i).getName());
             }

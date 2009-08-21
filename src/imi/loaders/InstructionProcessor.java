@@ -17,6 +17,7 @@
  */
 package imi.loaders;
 
+import com.jme.scene.state.CullState.Face;
 import imi.repository.Repository;
 import imi.scene.PJoint;
 import imi.scene.PMatrix;
@@ -280,12 +281,13 @@ public class InstructionProcessor
         if (node instanceof PPolygonSkinnedMeshInstance)
         {
             PPolygonSkinnedMeshInstance mesh = (PPolygonSkinnedMeshInstance)node;
-
-            // if female
-//            PPolygonMesh unskined = PMeshUtils.unskinMesh(femaleSkeleton,(PPolygonSkinnedMesh) mesh.getGeometry(), joint);
-            // if male
-            PPolygonMesh unskined = PMeshUtils.unskinMesh(maleSkeleton,(PPolygonSkinnedMesh) mesh.getGeometry(), joint);
+            PPolygonMesh unskined = null;
+            if (m_skeleton.getName().equals("FemaleSkeleton"))
+                unskined = PMeshUtils.unskinMesh(femaleSkeleton,(PPolygonSkinnedMesh) mesh.getGeometry(), "Head");
+            else
+                unskined = PMeshUtils.unskinMesh(maleSkeleton,(PPolygonSkinnedMesh) mesh.getGeometry(), "Head");
             node = new PPolygonMeshInstance(meshName, unskined, new PMatrix(), m_loadingPScene, false);
+            ((PPolygonMeshInstance)node).getMaterialRef().setCullFace(Face.None);
         } 
         else if (node == null)
         {

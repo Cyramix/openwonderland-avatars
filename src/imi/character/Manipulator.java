@@ -1566,6 +1566,11 @@ public class Manipulator {
                                           String attatchJoint) {
         WorldManager worldManager   = character.getWorldManager();
         PNode parent                = character.getSkeleton().findChild(attatchJoint);
+        if (parent == null)
+        {
+            logger.severe("Attempting to modulate color on NON-EXISTANT mesh");
+            return;
+        }
         PPolygonMeshInstance meshInst   = null;
         if (parent.getChild(0) instanceof PPolygonMeshInstance)
             meshInst = (PPolygonMeshInstance) parent.getChild(0);

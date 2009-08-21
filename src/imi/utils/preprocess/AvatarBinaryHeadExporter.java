@@ -78,12 +78,9 @@ public final class AvatarBinaryHeadExporter {
 
     private static final String     femaleRelPath           = "assets/models/collada/Heads/FemaleHead/";
 
-    private static final String[]   femaleFGHeads           = new String[] { "FG_FemaleLowPoly_01.dae",
-                                                                             "FG_FemaleHead01.dae",
-                                                                             "FG_Female02HighPoly.dae",
+    private static final String[]   femaleFGHeads           = new String[] { "FG_Female02HighPoly.dae",
                                                                              "FG_Female01LowPoly.dae",
-                                                                             "FG_Female01HighPoly.dae",
-                                                                             "FG_Female_AF_Head02.dae" };
+                                                                             "FG_Female01HighPoly.dae" };
     private static final String[]   femaleHeads = new String[] {             "FemaleHispanicHead.dae",
                                                                              "FemaleCHead.dae",
                                                                              "FemaleAAHead.dae",
@@ -134,6 +131,8 @@ public final class AvatarBinaryHeadExporter {
             else if (arg.startsWith("-type:"))
                 type = Enum.valueOf(HeadTypes.class, arg.split(":")[1]);
         }
+        if (args.length == 0)
+            loadAll = true;
         if (loadAll == false && type == null) // Nothing to do
             return; // Can just return, because nothing weird has happened
         // Set up the framework

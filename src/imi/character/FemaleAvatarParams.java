@@ -600,27 +600,28 @@ public class FemaleAvatarParams extends CharacterParams
 
             headPresetsFileNames.add("assets/models/collada/Heads/Binary/FemaleCHead.bhf");
             headPresetsPhongLighting.add(true);
-            headPresetsSkinTone.add(new ColorRGBA(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f, 1.0f));
+            headPresetsSkinTone.add(null);
+            //headPresetsSkinTone.add(new ColorRGBA(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f, 1.0f));
 
             headPresetsFileNames.add("assets/models/collada/Heads/Binary/AsianFemaleHead.bhf");
             headPresetsPhongLighting.add(true);
-            headPresetsSkinTone.add(new ColorRGBA(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f, 1.0f));
+            headPresetsSkinTone.add(null);
+            //headPresetsSkinTone.add(new ColorRGBA(255.0f / 255.0f, 139.0f / 255.0f, 95.0f / 255.0f, 1.0f));
 
             headPresetsFileNames.add("assets/models/collada/Heads/Binary/FemaleAAHead.bhf");
             headPresetsPhongLighting.add(true);
-            headPresetsSkinTone.add(new ColorRGBA(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f, 1.0f));
+            headPresetsSkinTone.add(null);
+            //headPresetsSkinTone.add(new ColorRGBA(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f, 1.0f));
 
             headPresetsFileNames.add("assets/models/collada/Heads/Binary/FemaleHispanicHead.bhf");
             headPresetsPhongLighting.add(true);
-            headPresetsSkinTone.add(new ColorRGBA(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f, 1.0f));
+            headPresetsSkinTone.add(null);
+            //headPresetsSkinTone.add(new ColorRGBA(242.0f / 255.0f, 159.0f / 255.0f, 122.0f / 255.0f, 1.0f));
 
-            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_Female_AF_Head02.bhf");
+            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_Female01LowPoly.bhf");
             headPresetsPhongLighting.add(true);
-            headPresetsSkinTone.add(new ColorRGBA(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f, 1.0f));
-
-            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_FemaleLowPoly_01.bhf");
-            headPresetsPhongLighting.add(true);
-            headPresetsSkinTone.add(new ColorRGBA(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f, 1.0f));
+            headPresetsSkinTone.add(null);
+            //headPresetsSkinTone.add(new ColorRGBA(238.0f / 255.0f, 161.0f / 255.0f, 134.0f / 255.0f, 1.0f));
 
 //            headPresetsFileNames.add("assets/models/collada/Heads/Binary/FG_Female02HighPoly.bhf");
 //            headPresetsPhongLighting.add(true);
@@ -649,14 +650,14 @@ public class FemaleAvatarParams extends CharacterParams
             meshnames = new FastTable<String>();
             meshnames.add("Jacket1Shape");
             torsoPresetsMeshNames.add(meshnames);
-            torsoPresetsDisableColorModulation.add(true);
+            torsoPresetsDisableColorModulation.add(false);
             
             torsoPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/FemaleBlouse.dae");
             meshnames = new FastTable<String>();
             meshnames.add("TShirt1Shape");
             meshnames.add("Arms_NudeShape");
             torsoPresetsMeshNames.add(meshnames);
-            torsoPresetsDisableColorModulation.add(true);
+            torsoPresetsDisableColorModulation.add(false);
             
             /////////// Legs default presets //////////////
 
@@ -664,7 +665,7 @@ public class FemaleAvatarParams extends CharacterParams
             meshnames = new FastTable<String>();
             meshnames.add("JeansShape");
             legsPresetsMeshNames.add(meshnames);
-            legsPresetsDisableColorModulation.add(true);
+            legsPresetsDisableColorModulation.add(false);
 
             legsPresetsFileNames.add("assets/models/collada/Clothing/FemaleClothing/FemaleDressPants.dae");
             meshnames = new FastTable<String>();

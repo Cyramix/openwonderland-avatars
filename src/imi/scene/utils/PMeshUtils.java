@@ -1577,17 +1577,14 @@ public class PMeshUtils
      */
     public static PPolygonMesh unskinMesh(SkeletonNode owningSkeleton,
                                     PPolygonSkinnedMesh skinnedGeometry,
-                                    SkinnedMeshJoint jointToAttachTo)
+                                    String jointToUnskinFrom)
     {
         PPolygonMesh result = null;
-        // Pause the animation
-        for (AnimationState state : owningSkeleton.getAnimationStates())
-            state.setPauseAnimation(true);
 
         // Flatten the skeleton hierarchy
-        owningSkeleton.buildFlattenedSkinnedMeshJointHierarchy();
+        owningSkeleton.refresh();
         // Get the mesh space transform of the attach joint and invert it
-        int jointindex = owningSkeleton.getSkinnedMeshJointIndex(jointToAttachTo);
+        int jointindex = owningSkeleton.getSkinnedMeshJointIndex(jointToUnskinFrom);
         PMatrix inverseBindPose = owningSkeleton.getFlattenedInverseBindPose(new int[] { jointindex })[0];
         // Construct a poly mesh out of the skinned mesh
         result = new PPolygonMesh(skinnedGeometry);
@@ -1602,10 +1599,6 @@ public class PMeshUtils
         result.endBatch(); // This will recalculate the bounds
         // reconstruct the result
         result.submit();
-
-        // Unpause animation
-        for (AnimationState state : owningSkeleton.getAnimationStates())
-            state.setPauseAnimation(false);
 
         // Dassit
         return result;

@@ -1117,7 +1117,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     void update(float deltaTime) {
         if (characterParams.isUseSimpleStaticModel())
             m_modelInst.setDirty(true, true);
-        if (m_facialAnimations != null)
+        if (m_facialAnimations != null && m_AnimationProcessor.isAnimatingFace())
             m_facialAnimations.update(deltaTime);
         if (m_context != null)
             m_context.update(deltaTime);
@@ -1615,6 +1615,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
            m_skeleton = m_pscene.getRepository().getSkeleton("FemaleSkeleton");
     }
 
+    public void setEnableFacialAnimation(boolean enable) {
+        m_AnimationProcessor.setAnimateFace(enable);
+    }
+
     /**
      * This method applies all the commands of the CharacterParams object.
      * Things such as animation files to load, geometry to remove or add, etc.
@@ -1872,7 +1876,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param fExpressionDuration How long the pose should be held
      */
     public void initiateFacialAnimation(String cycleName, float fTransitionTime, float fExpressionDuration) {
-        if (m_skeleton == null) // Not ready to handle facial animations yet
+        if (m_skeleton == null || !m_AnimationProcessor.isAnimatingFace()) // Not ready to handle facial animations yet
             return;
         if (m_facialAnimations == null)
         {
@@ -1904,7 +1908,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @param fExpressionDuration How long the pose should be held
      */
     public void initiateFacialAnimation(int cycleIndex, float fTransitionTime, float fExpressionDuration) {
-        if (m_skeleton == null) // No skeleton, do not animate
+        if (m_skeleton == null || !m_AnimationProcessor.isAnimatingFace()) // No skeleton, do not animate
             return;
         if (m_facialAnimations == null)
         {

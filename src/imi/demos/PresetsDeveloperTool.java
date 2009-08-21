@@ -94,8 +94,17 @@ public class PresetsDeveloperTool extends DemoBase
         femaleParams = new FemaleAvatarParams("Avatar").build(false);
         femaleParams.clearColorsToWhite();
         mat.setTranslation(new Vector3f(1.0f, 0.0f, 0.0f));
-        female = new Avatar.AvatarBuilder(femaleParams, wm).transform(mat).build();
-        control.addCharacterToTeam(female);
+//        female = new Avatar.AvatarBuilder(femaleParams, wm).transform(mat).build();
+//        control.addCharacterToTeam(female);
+
+        // TEST head
+        male.setEnableFacialAnimation(false);
+        Manipulator.swapHeadMesh(male, true, new File("assets/models/collada/Heads/MaleHead/FG_Male02LowPoly.dae"), ShaderType.PhongFleshShader);
+
+        // TEST hair
+//        String fileName = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
+//        String meshName = "Short_PT_RShape";// "Curly_bangsShape";
+//        Manipulator.swapHairMesh(female, true, new File(fileName), meshName);
 
         // WTF
         control.set(male, female, maleParams, femaleParams, camState);
