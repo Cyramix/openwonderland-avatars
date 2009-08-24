@@ -22,13 +22,13 @@ import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import imi.camera.FirstPersonCamState;
 import imi.character.Character;
+import imi.character.CharacterInitializationInterface;
 import imi.character.FemaleAvatarParams;
 import imi.character.MaleAvatarParams;
 import imi.character.Manipulator;
 import imi.character.avatar.Avatar;
 import imi.input.DefaultCharacterControls;
 import imi.input.InputManagerEntity;
-import imi.repository.CacheBehavior;
 import imi.scene.PMatrix;
 import imi.utils.MaterialMeshUtils.ShaderType;
 import java.awt.Color;
@@ -36,13 +36,15 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdesktop.mtgame.WorldManager;
 
 /**
  *
  * @author Lou Hayt
  */
-public class PresetsDeveloperTool extends DemoBase
+public class PresetsDeveloperTool extends DemoBase implements CharacterInitializationInterface
 {
     public PresetsDeveloperTool(String[] args) {
         super(args);
@@ -54,6 +56,7 @@ public class PresetsDeveloperTool extends DemoBase
     FemaleAvatarParams femaleParams = null;
     Avatar male = null;
     Avatar female = null;
+    int init = 0;
     @Override
     protected void createApplicationEntities(WorldManager wm)
     {
@@ -88,26 +91,29 @@ public class PresetsDeveloperTool extends DemoBase
         mat.setRotation(new Vector3f(0.0f, (float)Math.toRadians(180), 0.0f));
         maleParams = new MaleAvatarParams("Avatar").build(false);
         maleParams.clearColorsToWhite();
-        male = new Avatar.AvatarBuilder(maleParams, wm).transform(mat).build();
+        male = new Avatar.AvatarBuilder(maleParams, wm).transform(mat).initializer(this).build();
         control.addCharacterToTeam(male);
         // Create female avatar
         femaleParams = new FemaleAvatarParams("Avatar").build(false);
         femaleParams.clearColorsToWhite();
         mat.setTranslation(new Vector3f(1.0f, 0.0f, 0.0f));
-        female = new Avatar.AvatarBuilder(femaleParams, wm).transform(mat).build();
+        female = new Avatar.AvatarBuilder(femaleParams, wm).transform(mat).initializer(this).build();
         control.addCharacterToTeam(female);
 
-        // TEST head
-//        male.setEnableFacialAnimation(false);
-//        Manipulator.swapHeadMesh(male, true, new File("assets/models/collada/Heads/MaleHead/FG_Male02LowPoly.dae"), ShaderType.PhongFleshShader);
-
-        // TEST hair
-//        String fileName = "assets/models/collada/Hair/FemaleHair/FG_Female01DefaultHair.dae";
-//        String meshName = "Short_PT_RShape";// "Curly_bangsShape";
-//        Manipulator.swapHairMesh(female, true, new File(fileName), meshName);
-
-        // WTF
+        // Wait for both to load before enabling input
+        while (init != 2)
+        {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(PresetsDeveloperTool.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         control.set(male, female, maleParams, femaleParams, camState);
+    }
+
+    public void initialize(Character character) {
+        init++;
     }
 
     public static enum Regions {
@@ -138,6 +144,9 @@ public class PresetsDeveloperTool extends DemoBase
         @Override
         public void processKeyEvent(KeyEvent ke)
         {
+            if (male == null && female == null)
+                return;
+
             if (AvatarMovementOn)
                 super.processKeyEvent(ke);
             else if (   ke.getKeyCode() != KeyEvent.VK_Q &&

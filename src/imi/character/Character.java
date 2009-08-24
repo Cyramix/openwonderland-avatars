@@ -890,7 +890,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             {
                 PPolygonMeshInstance meshInst = (PPolygonMeshInstance) current;
                 PMeshMaterial meshMat = meshInst.getMaterialRef();
-                if (meshInst.getParent().getName().equals("Hair"))
+                if (meshInst.getParent().getName().equals("HairAttachmentJoint"))
                 {
                     float[] color = new float[3];
                     AbstractShaderProgram hairShader = repo.newShader(HairShader.class);
