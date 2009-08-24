@@ -175,12 +175,7 @@ public class PPolygonSkinnedMeshInstance extends PPolygonMeshInstance implements
         for (String jointName : skinnedGeometry.getJointNames())
         {
             jointIndex = m_skeletonNode.getSkinnedMeshJointIndex(jointName);
-            if (jointIndex == -1) // Not found!
-            {
-                logger.info("Joint not found for influence #" + counter + ", name: " + jointName + " - Skipping...");
-                continue;
-            }
-            else
+            if (jointIndex != -1) // Not found!
                 influenceIndices[counter] = jointIndex;
             counter++;
         }
