@@ -206,7 +206,7 @@ public class Repository extends Entity
         // Boot up the cache
         m_cache = cache;
         if (m_cache != null)
-            initCache();
+            m_cache.initialize(null);
 
         // create the shader factory
         m_shaderFactory = new ShaderFactory(wm);
@@ -526,21 +526,6 @@ public class Repository extends Entity
             m_Skeletons.add(MaleSkeleton);
             m_Skeletons.add(FemaleSkeleton);
         }
-    }
-
-    /**
-     * Get the cache directory ready.
-     */
-    public void initCache()
-    {
-        // Determine if the directory exists. If not, create it.
-        if (cacheFolder.exists() == false)
-            if (cacheFolder.mkdir() == false) // error
-                logger.severe("Cache is unavailable!");
-        // Now boot up the cache object
-        if (m_cache != null)
-            m_cache.initialize(null);
-
     }
 
     /**

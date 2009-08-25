@@ -83,7 +83,10 @@ public class DefaultAvatarCache implements CacheBehavior
 
     @Override
     public boolean initialize(Object[] params) {
-        // Nothing needs to be done currently.
+        // Determine if the directory exists. If not, create it.
+        if (cacheFolder.exists() == false)
+            if (cacheFolder.mkdir() == false) // error
+                logger.severe("Cache is unavailable!");
         return true;
     }
 
