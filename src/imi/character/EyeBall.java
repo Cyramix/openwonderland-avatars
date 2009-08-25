@@ -209,6 +209,8 @@ public final class EyeBall extends PPolygonSkinnedMeshInstance implements Serial
         try {
             URL urlPath     = new URL(path);
             InputStream is  = urlPath.openStream();
+            if (is==null)
+                return false;
             is.close();
             return true;
         } catch (MalformedURLException ex) {
