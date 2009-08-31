@@ -34,6 +34,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ import javolution.util.FastTable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.bind.JAXBException;
 import org.jdesktop.mtgame.WorldManager;
@@ -56,7 +58,7 @@ public class FileUtils
 {
     private static final Logger logger      = Logger.getLogger(FileUtils.class.getName());
     public static final File    rootPath    = new File(System.getProperty("user.dir"));
-    private static JFileChooser fileChooser = new JFileChooser();
+    private static JFileChooser fileChooser = null;
 
     //  Returns a string containing just the short filename.
     public static final String getShortFilename(String fullFilename) {
@@ -360,6 +362,11 @@ public class FileUtils
     public static void loadAvatarConfiguration(Character character, WorldManager wm, Component parent, CharacterInitializationInterface init) {
         FileFilter filter   = createFileFilter(".xml", "Extensible Markup Language (*.xml)");
         File fileDirectory  = new File("." + File.separatorChar + "assets" + File.separatorChar);
+
+        if (fileChooser==null) {
+            fileChooser = getFileChooser();
+        }
+
         setFileChooserProperty(fileChooser, filter, "Load Avatar Configuration File", fileDirectory);
         
         int retVal = fileChooser.showOpenDialog(parent);
@@ -399,6 +406,10 @@ public class FileUtils
                     " || character = " + character);
         }
         
+        if (fileChooser==null) {
+            fileChooser = getFileChooser();
+        }
+
         FileFilter filter   = createFileFilter(".xml", "Extensible Markup Language (*.xml)");
         File fileDirectory  = new File("." + File.separatorChar + "assets" + File.separatorChar);
         File saveFile       = new File("saveme.xml");
@@ -463,6 +474,19 @@ public class FileUtils
     }
 
     public static JFileChooser getFileChooser() {
+        if (fileChooser==null) {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
+                    public void run() {
+                        fileChooser = new JFileChooser();
+                    }
+                });
+            } catch (InterruptedException ex) {
+                Logger.getLogger(FileUtils.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(FileUtils.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return fileChooser;
     }
 
