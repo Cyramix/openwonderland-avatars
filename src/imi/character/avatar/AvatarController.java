@@ -17,7 +17,6 @@
  */
 package imi.character.avatar;
 
-import com.jme.intersection.TriangleCollisionResults;
 import com.jme.math.Quaternion;
 import com.jme.math.Ray;
 import com.jme.math.Vector3f;
@@ -32,6 +31,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import org.jdesktop.mtgame.CollisionInfo;
 import org.jdesktop.mtgame.PickDetails;
 import org.jdesktop.mtgame.PickInfo;
 import org.jdesktop.wonderland.common.ExperimentalAPI;
@@ -88,6 +88,8 @@ public class AvatarController extends CharacterController
 
     /** Collision Controller **/
     private CollisionController collisionController = null;
+
+    private ArrayList<AvatarCollisionListener> collisionListeners = null;
 
     /**
      * If true, the TransformUpdateManager will be used to try and synch transform updates.
@@ -267,10 +269,14 @@ public class AvatarController extends CharacterController
             if (collisionController!=null && groundClampEnabled) {
                 if (collisionController.isGravityEnabled())
                     checkGround(position);
-                if (collisionController.isCollisionEnabled() && collisionCheck(position, currentRot)) {
-                    position.set(previousPos);
-                    currentRot.set(previousRot);
+                if (collisionCheck(position, currentRot)) {   // Check for collision and notify listeners
+                    if (collisionController.isCollisionResponseEnabled()) {
+                        position.set(previousPos);
+                        currentRot.set(previousRot);
+                    } else {
+                        System.err.println("CollisionResponse Disabled");
                     }
+                }
             }
 
             if (fwdAcceleration < 1.0f && Math.max(Math.max(acceleration.x, acceleration.y), acceleration.z) < 1.0f)
@@ -323,9 +329,7 @@ public class AvatarController extends CharacterController
         }
     }
 
-    private TriangleCollisionResults tcr = new TriangleCollisionResults();
     private boolean collisionCheck(Vector3f potentialPos, PMatrix potentialRot) {
-        tcr.clear();
         boolean collision = false;
         Spatial collisionGraph = collisionController.getCollisionGraph();
         collisionGraph.setLocalTranslation(potentialPos.x, potentialPos.y, potentialPos.z);
@@ -337,19 +341,35 @@ public class AvatarController extends CharacterController
         // SkinnedMeshJoint specificJoint = skeleton.getSkinnedMeshJoint(jointIndex);
         // specificJoint.getTransform().getWorldMatrix(false)
 
-        collisionController.getCollisionSystem().findCollisions(collisionGraph, tcr);
-        for (int i=0; i<tcr.getNumber(); i++) {
-            ArrayList<Integer> tris = tcr.getCollisionData(i).getSourceTris();
-            if (tris.size() != 0) {
-                collision = true;
+        CollisionInfo collisionInfo = collisionController.getCollisionSystem().findAllCollisions(collisionGraph, true);
+        if (collisionInfo.size() != 0) {
+            collision = true;
 //                System.err.println("OUCH ! "+tris.size());
-                //TriMesh mesh = (TriMesh)tcr.getCollisionData(i).getSourceMesh();
-                //mesh.getTriangle(tris.get(0).intValue(), triData2);
-                //computeCollisionResponse(position, potentialPos, rotatedFwdDirection, triData2, walkInc);
-                break;
-            }
+//                TriMesh mesh = (TriMesh)tcr.getCollisionData(i).getSourceMesh();
+            //computeCollisionResponse(position, potentialPos, rotatedFwdDirection, triData2, walkInc);
+            notifyCollisionListeners(collisionInfo);
         }
         return collision;
+    }
+
+    public void addCollisionListener(AvatarCollisionListener listener) {
+        if (collisionListeners==null)
+            collisionListeners = new ArrayList();
+        collisionListeners.add(listener);
+    }
+
+    public void removeCollisionListener(AvatarCollisionListener listener) {
+        if (collisionListeners!=null) {
+            collisionListeners.remove(listener);
+        }
+    }
+
+    private void notifyCollisionListeners(CollisionInfo collision) {
+        if (collisionListeners==null)
+            return;
+
+        for(AvatarCollisionListener listener : collisionListeners)
+            listener.processCollision(collision);
     }
 
     @Override

@@ -115,7 +115,7 @@ public class TextureMaterialProperties implements Serializable
             apply(result);
             return result;
         } catch(Exception e) {
-            Logger.getAnonymousLogger().warning("Error Loading Texture"+imageLocation);
+            Logger.getAnonymousLogger().log(Level.WARNING, "Error Loading Texture"+imageLocation, e);
         }
         return null;
     }

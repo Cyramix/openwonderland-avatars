@@ -26,6 +26,7 @@ import org.jdesktop.mtgame.JMECollisionSystem;
  */
 public class CollisionController {
 
+    private boolean collisionResponseEnabled=true;
     private boolean collisionEnabled=true;
     private boolean gravityEnabled=true;
     private JMECollisionSystem collisionSystem;
@@ -77,4 +78,19 @@ public class CollisionController {
     public void setGravityEnabled(boolean gravityEnabled) {
         this.gravityEnabled = gravityEnabled;
     }
+
+    /**
+     * @return the collisionResponseEnabled
+     */
+    public boolean isCollisionResponseEnabled() {
+        return collisionResponseEnabled;
+    }
+
+    /**
+     * @param collisionResponseEnabled the collisionResponseEnabled to set
+     */
+    public void setCollisionResponseEnabled(boolean collisionResponseEnabled) {
+        this.collisionResponseEnabled = collisionResponseEnabled;
+    }
+
 }
