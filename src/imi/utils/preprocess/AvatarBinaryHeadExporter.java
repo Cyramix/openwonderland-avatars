@@ -122,7 +122,7 @@ public final class AvatarBinaryHeadExporter {
      */
     public static void main(String[] args) {
         // process the command line arguments
-        boolean loadAll = false;
+        boolean loadAll = true;
         HeadTypes type = null;
         for (String arg : args)
         {
