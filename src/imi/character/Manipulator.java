@@ -853,6 +853,10 @@ public class Manipulator {
         PNode hairParent                = character.getSkeleton().findChild("HairAttachmentJoint");
         PPolygonMeshInstance meshInst   = null;
 
+        // If there is no hair, then do not set the hair color
+        if (hairParent == null)
+            return;
+
         if (hairParent.getChild(0) == null)
             throw new IllegalArgumentException("SEVERE ERROR: Attempting to modulate color on NON-EXISTANT hair mesh");
 
