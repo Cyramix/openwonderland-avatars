@@ -218,8 +218,8 @@ public class AvatarContext extends GameContext
     @Override
     public void initDefaultActionMap(Hashtable<Integer, Action> actionMap)
     {
-        actionMap.put(TriggerNames.Move_Left.ordinal(),     new Action(AvatarContext.ActionNames.Movement_Rotate_Y.ordinal(), -0.2f));
-        actionMap.put(TriggerNames.Move_Right.ordinal(),    new Action(AvatarContext.ActionNames.Movement_Rotate_Y.ordinal(), 0.2f));
+        actionMap.put(TriggerNames.Move_Left.ordinal(),     new Action(AvatarContext.ActionNames.Movement_Rotate_Y.ordinal(), -0.1f));
+        actionMap.put(TriggerNames.Move_Right.ordinal(),    new Action(AvatarContext.ActionNames.Movement_Rotate_Y.ordinal(), 0.1f));
         actionMap.put(TriggerNames.Move_Strafe_Left.ordinal(),  new Action(AvatarContext.ActionNames.Movement_X.ordinal(), -0.4f));
         actionMap.put(TriggerNames.Move_Strafe_Right.ordinal(), new Action(AvatarContext.ActionNames.Movement_X.ordinal(), 0.4f));
         actionMap.put(TriggerNames.Move_Forward.ordinal(),  new Action(AvatarContext.ActionNames.Movement_Z.ordinal(), 0.4f));

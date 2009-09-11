@@ -274,7 +274,7 @@ public class AvatarController extends CharacterController
                         position.set(previousPos);
                         currentRot.set(previousRot);
                     } else {
-                        System.err.println("CollisionResponse Disabled");
+//                        System.err.println("CollisionResponse Disabled");
                     }
                 }
             }
