@@ -55,6 +55,8 @@ public class JScene extends Node implements CharacterMotionListener {
     private Vector3f    m_ExternalKidsRootPosition = new Vector3f(); // applied by the PScene
     private Quaternion  m_ExternalKidsRootRotation = new Quaternion();
 
+    private Vector3f worldPos = new Vector3f();
+
     private boolean kidsChanged = false;
 
     /**
@@ -351,6 +353,20 @@ public class JScene extends Node implements CharacterMotionListener {
      * @param rotation
      */
     public void transformUpdate(Vector3f translation, PMatrix rotation) {
+        worldPos.set(translation);
         m_PScene.getWorldManager().addToUpdateList(this);
     }
+
+    @Override
+    public void updateWorldBound() {
+        // TOOD, this is a temporary work around for incorrect bounds when
+        // an avatar jumps out of the view frustum. Before this fix the bounds
+        // did not update once the avatar was outside the view frustum, they
+        // are updated in the draw call, which is not called if this node is
+        // frustum culled. Hence this workaround to compute the bounds in
+        // the normal JME style.
+        // This fix does not take into account the bounds of external kids etc.
+        worldBound = new BoundingSphere(1.5f, Vector3f.ZERO).transform(getWorldRotation(),
+            worldPos, getWorldScale(), worldBound);
+   } 
 }
