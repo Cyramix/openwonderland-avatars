@@ -105,7 +105,7 @@ public class DefaultCharacterControls implements CharacterControls
                 character.keyPressed(ke.getKeyCode());
         }
         // Utilities
-        processUtilityKeys(ke);
+//        processUtilityKeys(ke);
     }
 
     /**
