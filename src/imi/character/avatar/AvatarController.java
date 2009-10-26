@@ -229,6 +229,8 @@ public class AvatarController extends CharacterController
         if (!bSlide)
         {
             velocity = currentDirection.normalize().mult(currentDirection.dot(velocity));
+        } else {
+            velocity.set(0,0,0);
         }
         velocity.addLocal(currentDirection.mult(fwdAcceleration * (-deltaTime)));
         velocity.addLocal(acceleration);

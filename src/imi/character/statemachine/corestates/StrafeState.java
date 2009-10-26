@@ -82,8 +82,9 @@ public class StrafeState extends GameState
         if (modelInst != null)
             localX = modelInst.getTransform().getLocalMatrix(false).getLocalXNormalized();
         // Side step
-        if (x != 0.0f && localX != null)
+        if (x != 0.0f && localX != null) {
             controller.accelerate(localX.mult(x * impulse));
+        }
     }
     
     @Override
@@ -129,6 +130,7 @@ public class StrafeState extends GameState
         
         owner.getController().setMaxAcceleration(8.0f);
         owner.getController().setMaxVelocity(3.0f);
+        ((AvatarController)owner.getController()).setSlide(true);
         
 //        if (bHack)
 //        {
@@ -150,6 +152,7 @@ public class StrafeState extends GameState
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
+        ((AvatarController)owner.getController()).setSlide(false);
     }
         
     public void setImpulse(float amount)
