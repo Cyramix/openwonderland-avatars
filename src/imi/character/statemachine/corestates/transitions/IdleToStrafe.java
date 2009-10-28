@@ -28,7 +28,7 @@ import imi.character.statemachine.TransitionObject;
  */
 public class IdleToStrafe extends TransitionObject
 {
-    private float moveDelay = 0.075f; //  how long do we need to press forward\backward to exit idle
+    private float moveDelay = 0.00005f; //  how long do we need to press forward\backward to exit idle
     
     @Override
     protected boolean testCondition(GameState state) 

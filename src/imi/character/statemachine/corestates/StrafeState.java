@@ -42,7 +42,9 @@ public class StrafeState extends GameState
     
     protected float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.05f; // still needed?
-    
+    private float enterX;
+    private long enterTime;
+
     public StrafeState(AvatarContext master)
     {
         super(master);
@@ -109,12 +111,6 @@ public class StrafeState extends GameState
             else
                 skeleton.getAnimationState().setReverseAnimation(false);
             
-            // Set animation speed
-//            float velocity = context.getController().getVelocityScalar();
-//            float speed    = velocity * walkSpeedFactor;
-//            if (speed > walkSpeedMax)
-//                speed = walkSpeedMax;
-//            skeleton.getAnimationState().setAnimationSpeed(speed);
         }
         
         if (exitCounter > minimumTimeBeforeTransition)
@@ -125,48 +121,44 @@ public class StrafeState extends GameState
     protected void stateEnter(GameContext owner)
     {
         super.stateEnter(owner);
-        
+
         exitCounter   = 0.0f;
         
-        owner.getController().setMaxAcceleration(8.0f);
-        owner.getController().setMaxVelocity(3.0f);
+        owner.getController().setMaxAcceleration(1.0f);
+        owner.getController().setMaxVelocity(2.0f);
         ((AvatarController)owner.getController()).setSlide(true);
         
-//        if (bHack)
-//        {
-//            // Debug
-//            if (avatarContext != null && avatarContext.getSkeleton() != null)
-//            {
-//                int cycleIndex = avatarContext.getSkeleton().getAnimationGroup().findAnimationCycle(animationName);
-//                float startTime = avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).getStartTime();
-//                float endTime = avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).getEndTime();
-//                avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).setEndTime(endTime - magic);
-//                avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).setEndTime(startTime - magic);
-//                
-//                bHack = false;
-//            }
-//        }
+        enterX = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
+        enterTime = System.nanoTime();
     }
     
     @Override
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
-        ((AvatarController)owner.getController()).setSlide(false);
+
+        // Nudging, like we do for other motion won't work because
+        // once setSlide(false) is called the avatar no longer side steps.
+
+        // If we were only in this state briefly (because the user just
+        // tapped a key) then nudge the avatar slightly
+//        if ((System.nanoTime()-enterTime)/1000000 < 100) {
+//            PPolygonModelInstance modelInst = context.getController().getModelInstance();
+//            Vector3f localX = null;
+//            if (modelInst != null)
+//                localX = modelInst.getTransform().getLocalMatrix(false).getLocalXNormalized();
+//            // Side step
+//            if (enterX != 0.0f && localX != null) {
+//                context.getController().accelerate(localX.mult(enterX*60));
+//            }
+//        }
+//        ((AvatarController)owner.getController()).setSlide(false);
     }
         
     public void setImpulse(float amount)
     {
         impulse = amount;
     }
-
-//    public void setWalkSpeedFactor(float walkSpeedFactor) {
-//        this.walkSpeedFactor = walkSpeedFactor;
-//    }
-//
-//    public void setWalkSpeedMax(float walkSpeedMax) {
-//        this.walkSpeedMax = walkSpeedMax;
-//    }
 
     public float getMinimumTimeBeforeTransition() {
         return minimumTimeBeforeTransition;

@@ -1108,6 +1108,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public final void selectForInput() {
         CharacterControls input = (CharacterControls)worldManager.getUserData(CharacterControls.class);
         input.setCharacter(this);
+        m_characterProcessor.setRunInRenderer(true);  // Run local avatar on render thread so key taps are processed correctly
     }
 
     /**

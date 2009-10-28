@@ -40,6 +40,9 @@ public class TurnState extends GameState
     
     private boolean bMoveInput = false;
     private float moveCounter  = 0.0f;
+    private long enterTime;
+    private float enterX;
+    private float enterZ;
 
     /**
      * Construct a new turn state instance with the provided context
@@ -101,11 +104,11 @@ public class TurnState extends GameState
             }
             
             // Turn only if transitioned to the turning animation
-            if (!context.isTransitioning())
-            {
+//            if (!context.isTransitioning())
+//            {
                 Vector3f direction = new Vector3f(x, 0.0f, z);
                 controller.turnTo(direction);
-            }
+//            }
         }
         else
             bTurning = false;
@@ -128,6 +131,13 @@ public class TurnState extends GameState
         // Make sure the animation is not set to reverse
         if (skeleton != null)
             skeleton.getAnimationState().setReverseAnimation(false);
+
+        // If we were only in this state briefly (because the user just
+        // tapped a key) then nudge the avatar slightly
+        if ((System.nanoTime()-enterTime)/1000000 < 100) {
+                Vector3f direction = new Vector3f(enterX/2, 0.0f, enterZ/2);
+                context.getController().turnTo(direction);
+        }
     }
     
     @Override
@@ -138,6 +148,9 @@ public class TurnState extends GameState
         exitCounter   = 0.0f;
         
         moveCounter   = 0.0f;
+        enterX = context.getActions()[AvatarContext.ActionNames.Movement_Rotate_Y.ordinal()];
+        enterZ = context.getActions()[AvatarContext.ActionNames.Movement_Z.ordinal()];
+        enterTime = System.nanoTime();
     }
     
     @Override

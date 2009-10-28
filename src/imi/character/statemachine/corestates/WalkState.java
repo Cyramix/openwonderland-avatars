@@ -41,6 +41,9 @@ public class WalkState extends GameState
     
     protected float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.05f; // still needed?
+    private long enterTime;
+    private float enterX;
+    private float enterZ;
     
     public WalkState(AvatarContext master)
     {
@@ -78,7 +81,7 @@ public class WalkState extends GameState
         float z = context.getActions()[AvatarContext.ActionNames.Movement_Z.ordinal()];
         
         CharacterController controller = context.getController();
-        
+
         // Turn
         if (x != 0.0f)
         {
@@ -133,30 +136,31 @@ public class WalkState extends GameState
         super.stateEnter(owner);
         
         exitCounter   = 0.0f;
+        enterX = context.getActions()[AvatarContext.ActionNames.Movement_Rotate_Y.ordinal()];
+        enterZ = context.getActions()[AvatarContext.ActionNames.Movement_Z.ordinal()];
+        enterTime = System.nanoTime();
         
         owner.getController().setMaxAcceleration(8.0f);
         owner.getController().setMaxVelocity(3.0f);
         
-//        if (bHack)
-//        {
-//            // Debug
-//            if (avatarContext != null && avatarContext.getSkeleton() != null)
-//            {
-//                int cycleIndex = avatarContext.getSkeleton().getAnimationGroup().findAnimationCycle(animationName);
-//                float startTime = avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).getStartTime();
-//                float endTime = avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).getEndTime();
-//                avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).setEndTime(endTime - magic);
-//                avatarContext.getSkeleton().getAnimationGroup().getCycle(cycleIndex).setEndTime(startTime - magic);
-//                
-//                bHack = false;
-//            }
-//        }
     }
     
     @Override
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
+
+        // If we were only in this state briefly (because the user just
+        // tapped a key) then nudge the avatar slightly
+        if ((System.nanoTime()-enterTime)/1000000 < 100) {
+            if (enterZ!=0)
+                context.getController().accelerate(enterZ*30);
+            if (enterX != 0.0f)
+            {
+                Vector3f direction = new Vector3f(enterX, 0.0f, enterZ);
+                context.getController().turnTo(direction);
+            }
+        }
     }
         
     public void setImpulse(float amount)

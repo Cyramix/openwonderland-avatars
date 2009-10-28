@@ -219,7 +219,7 @@ public class GameContext
             return;
         if (!initalized)
             initialize();
-        
+
         if (currentState != null && currentState.enabledState)
             currentState.update(deltaTime);
     }

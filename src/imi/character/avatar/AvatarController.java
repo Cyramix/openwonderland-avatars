@@ -84,8 +84,6 @@ public class AvatarController extends CharacterController
 
     private PMatrix currentRot = new PMatrix();
     
-    private JFrame window = null; // use this to set title name for debugging info
-
     /** Collision Controller **/
     private CollisionController collisionController = null;
 
@@ -106,10 +104,6 @@ public class AvatarController extends CharacterController
     public AvatarController(Avatar theAvatar)
     {
         avatar = theAvatar;
-        
-        // Set the window to have access for the window title
-        // used for displaying debugging info
-        setWindow((JFrame) avatar.getWorldManager().getUserData(JFrame.class));
     }
 
     /**
@@ -265,7 +259,7 @@ public class AvatarController extends CharacterController
             fwdAcceleration *= accelerationDamp;
             if (fwdAcceleration < 0.5f)
                 fwdAcceleration = 0.0f;
-            
+
             acceleration.multLocal(accelerationDamp);
             // TODO clamp down?
             if (collisionController!=null && groundClampEnabled) {
@@ -414,10 +408,6 @@ public class AvatarController extends CharacterController
             return false;
         else
             return true;
-    }
-
-    public void setWindow(JFrame window) {
-        this.window = window;
     }
 
     @Override
