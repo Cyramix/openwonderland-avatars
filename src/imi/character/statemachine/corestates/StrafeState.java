@@ -42,8 +42,8 @@ public class StrafeState extends GameState
     
     protected float exitCounter           = 0.0f;
     private float minimumTimeBeforeTransition = 0.05f; // still needed?
-    private float enterX;
-    private long enterTime;
+//    private float enterX;
+//    private long enterTime;
 
     public StrafeState(AvatarContext master)
     {
@@ -128,14 +128,15 @@ public class StrafeState extends GameState
         owner.getController().setMaxVelocity(2.0f);
         ((AvatarController)owner.getController()).setSlide(true);
         
-        enterX = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
-        enterTime = System.nanoTime();
+//        enterX = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
+//        enterTime = System.nanoTime();
     }
     
     @Override
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
+        ((AvatarController)owner.getController()).setSlide(false);
 
         // Nudging, like we do for other motion won't work because
         // once setSlide(false) is called the avatar no longer side steps.
