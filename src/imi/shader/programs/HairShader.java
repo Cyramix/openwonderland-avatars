@@ -47,7 +47,8 @@ public class HairShader extends BaseShaderProgram implements Serializable
         "    	gl_TexCoord[0] = gl_MultiTexCoord0; " +
         "    	position = gl_Vertex.xyz;" +
         "    	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;" +
-        " 	    vec3 binormal = normalize(cross(gl_SecondaryColor.rgb, gl_Normal));" +
+        "           vec3 sccopy = gl_SecondaryColor.rgb;" +
+        " 	    vec3 binormal = normalize(cross(sccopy, gl_Normal));" +
         "	    mat3 TBNMatrix = mat3(gl_SecondaryColor.rgb, binormal, gl_Normal); " +
         "  	    ToLight = (gl_ModelViewMatrixInverse * gl_LightSource[0].position).xyz - position;" +
         "  	    ToLight *= TBNMatrix;  " +

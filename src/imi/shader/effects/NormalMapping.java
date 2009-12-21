@@ -101,7 +101,8 @@ public class NormalMapping extends GLSLShaderEffect
     private void createVertexLogic()
     {
         StringBuilder vertexLogic = new StringBuilder();
-        vertexLogic.append("vec3 binormal = normalize(cross(gl_SecondaryColor.rgb, " + m_varying[0].getName() + "));" + NL);
+        vertexLogic.append("vec3 sccopy = gl_SecondaryColor.rgb;" + NL);
+        vertexLogic.append("vec3 binormal = normalize(cross(sccopy, " + m_varying[0].getName() + "));" + NL);
         vertexLogic.append(m_vertexGlobals[0].getName() + " = mat3(gl_SecondaryColor.rgb, binormal, " + m_varying[0].getName() + ");" + NL);
         // transform the ToLight vector
         vertexLogic.append(m_VertexModifications.get(0).getName() + " *= " + m_vertexGlobals[0].getName() + ";" + NL);

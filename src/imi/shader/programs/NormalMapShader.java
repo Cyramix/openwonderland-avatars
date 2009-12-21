@@ -52,7 +52,8 @@ public class NormalMapShader extends GLSLShaderProgram implements Serializable
         "        Position = gl_Vertex;" +
         "        gl_TexCoord[0] = gl_MultiTexCoord0;" +
         "        ToLight = (gl_ModelViewMatrixInverse * (gl_LightSource[0].position - gl_Vertex)).xyz;" +
-        "        vec3 binormal = normalize(cross(gl_SecondaryColor.rgb, gl_Normal));" +
+        "        vec3 sccopy = gl_SecondaryColor.rgb;" +
+        "        vec3 binormal = normalize(cross(sccopy, gl_Normal));" +
         "        mat3 TBNMatrix = mat3(gl_SecondaryColor.rgb, binormal, gl_Normal);" +
         "        ToLight *= TBNMatrix;" +
         "        gl_Position = gl_ModelViewProjectionMatrix * Position;" +
