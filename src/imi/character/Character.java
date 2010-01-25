@@ -2079,6 +2079,21 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
 
+        // Ensure the facial animation group exists
+        if (m_skeleton.getAnimationComponent().getGroupCount() < 2)
+            m_skeleton.getAnimationComponent().addGroup(new AnimationGroup("FacialAnimations"));
+
+        // Add all the cycles to the original skeletons facial animation
+        for (AnimationGroup group : newHeadSkeleton.getAnimationComponent().getGroups())
+            for (AnimationCycle cycle : group.getCycles())
+                m_skeleton.getAnimationGroup(1).addCycle(cycle);
+
+
+        // synch up animation states with groups
+        while (m_skeleton.getAnimationComponent().getGroupCount() < m_skeleton.getAnimationStateCount())
+            m_skeleton.addAnimationState(new AnimationState(m_skeleton.getAnimationStateCount()));
+
+
         // Finally, apply the default shaders
         setDefaultHeadShaders();
 
