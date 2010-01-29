@@ -189,6 +189,8 @@ public class AvatarController extends CharacterController
         bTurning         = true;
     }
 
+
+    private static boolean nanReported = false;
     /**
      * Update the controller
      * @param deltaTime The timestep
@@ -220,6 +222,7 @@ public class AvatarController extends CharacterController
 
         // Accelerate
         Vector3f currentDirection = body.getTransform().getWorldMatrix(false).getLocalZ();
+        Vector3f tmpVelocity = new Vector3f(velocity);
         if (!bSlide)
         {
             velocity = currentDirection.normalize().mult(currentDirection.dot(velocity));
@@ -249,6 +252,27 @@ public class AvatarController extends CharacterController
             position.addLocal(velocity.mult(-deltaTime));
         else
             position.addLocal(velocity.mult(deltaTime));
+
+        if (Float.isNaN(position.x)) {
+            if (!nanReported) {
+                Logger logger = Logger.getLogger(this.getClass().getName());
+                logger.severe("POSTION IS NAN, added velocity "+(velocity.mult(deltaTime))+"   velVector "+velocity);
+                logger.severe("tmpVelocity "+tmpVelocity);
+                logger.severe("currentDir "+currentDirection+"  normalized "+currentDirection.normalize()+"  length "+currentDirection.length());
+                logger.severe("Initial "+currentDirection.normalize().mult(currentDirection.dot(tmpVelocity)));
+                logger.severe("addLocal "+currentDirection.mult(fwdAcceleration * (-deltaTime)));
+                logger.severe("addLocal accel "+acceleration);
+                logger.severe("addLocal grav "+gravityAcc);
+                logger.severe("fwdAccel "+fwdAcceleration);
+
+                if (!bSlide) {
+                    logger.severe("STARTED WITH "+currentDirection.normalize().mult(fwdAcceleration*(-deltaTime)));
+                    logger.severe("CURRENT DIR "+currentDirection);
+                }
+                nanReported = true;
+            }
+            position = body.getTransform().getLocalMatrix(false).getTranslation();
+        }
         
         // Dampen
         dampCounter += deltaTime;
