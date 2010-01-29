@@ -59,6 +59,8 @@ public class JScene extends Node implements CharacterMotionListener {
 
     private boolean kidsChanged = false;
 
+    private boolean printCullInfo = false;
+
     /**
      * Constructor, takes in the PScene for this Node (JScene is intended to be used as a render component that supports a PScene)
      * @param scene
@@ -326,6 +328,32 @@ public class JScene extends Node implements CharacterMotionListener {
             else
                 drawScene(r);
         }
+
+        if (printCullInfo) {
+            System.err.print("Draw "+System.nanoTime()+"  ");
+            printCullHint(this);
+            System.err.println();
+        }
+    }
+
+    private void printCullHint(Spatial n) {
+        if (n==null)
+            return;
+        System.err.println("   "+n.getCullHint()+" "+n.getWorldBound());
+        if (n instanceof Node) {
+            for(Spatial c : ((Node)n).getChildren()) {
+                printCullHint(c);
+            }
+        }
+    }
+
+    public void setPrintCullInfo(boolean print) {
+        System.err.println("PRINTING AVATAR PARENTS");
+        Node n = getParent();
+        while(n!=null) {
+            System.err.println(n.getClass().getName()+"  "+n.getName()+"  "+n.getWorldBound()+"  "+n.getCullHint());
+        }
+        this.printCullInfo = print;
     }
 
     /**
