@@ -80,6 +80,16 @@ public class SynchronizedQueue <E>
     {
         return m_collection.isEmpty();
     }
+
+    public synchronized int size()
+    {
+        return m_collection.size();
+    }
+
+    public synchronized E get(int index)
+    {
+        return (E)m_collection.get(index);
+    }
     
     
 }

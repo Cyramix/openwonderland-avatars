@@ -38,6 +38,7 @@ import java.util.logging.Logger;
  */
 public class PMeshMaterial extends PNode
 {
+    private static final ColorRGBA defaultAmbient = new ColorRGBA(0.30f, 0.30f, 0.30f, 1.0f);
     /** Alpha transparency enumeration **/
     public enum AlphaTransparencyType
     {
@@ -48,7 +49,7 @@ public class PMeshMaterial extends PNode
     /** Diffuse material color **/
     private ColorRGBA  m_Diffuse   = null;
     /** Ambient material color **/
-    private ColorRGBA  m_Ambient   = null;
+    private ColorRGBA  m_Ambient   = defaultAmbient;
     /** Emissive material color **/
     private ColorRGBA  m_Emissive  = null;
     /** Specular material color **/
@@ -86,7 +87,6 @@ public class PMeshMaterial extends PNode
     public PMeshMaterial()
     {
         m_Diffuse  = new ColorRGBA(ColorRGBA.white);
-        m_Ambient  = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Emissive = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Specular = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
     }
@@ -99,7 +99,6 @@ public class PMeshMaterial extends PNode
     public PMeshMaterial(ColorRGBA diffuseColor) 
     {
         m_Diffuse  = new ColorRGBA(diffuseColor);
-        m_Ambient  = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Emissive = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Specular = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
     }
@@ -176,7 +175,6 @@ public class PMeshMaterial extends PNode
         setName(name);
         
         m_Diffuse  = new ColorRGBA(1.0f, 0.0f, 1.0f, 0.0f);
-        m_Ambient  = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Emissive = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         m_Specular = new ColorRGBA(0.0f, 0.0f, 0.0f, 0.0f);
         

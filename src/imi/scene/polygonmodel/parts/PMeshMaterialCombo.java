@@ -17,7 +17,6 @@
  */
 package imi.scene.polygonmodel.parts;
 
-import com.jme.image.Texture;
 import com.jme.renderer.ColorRGBA;
 
 /**
@@ -33,7 +32,7 @@ public class PMeshMaterialCombo
     // Our own material
     private PMeshMaterial   m_MaterialCombo = new PMeshMaterial(m_DefaultMaterial); // TODO this is shity
     
-    static private final PMeshMaterial m_DefaultMaterial = new PMeshMaterial("defualt material", ColorRGBA.white, ColorRGBA.black, ColorRGBA.black, ColorRGBA.black, 0.5f, null, Texture.ApplyMode.Modulate);;
+    static private final PMeshMaterial m_DefaultMaterial = PMeshMaterial.DEFAULT_MATERIAL;
     
     static public enum MaterialCombineMode   {    MCM_UseMat1, MCM_UseMat2, MCM_Combine     }
     

@@ -31,7 +31,7 @@ public class TransitionQueue implements AnimationListener
     private Animated    m_target = null; // The target to affect
     private AnimationState m_state = null; // The animation state of the target
     /** The list of animation commands being processed **/
-    private SynchronizedQueue<TransitionCommand>   m_commandQueue  = new SynchronizedQueue<TransitionCommand>();
+    private final SynchronizedQueue<TransitionCommand>   m_commandQueue  = new SynchronizedQueue<TransitionCommand>();
     
     /**
      * Default constructor. A target must be specified before use
@@ -177,4 +177,27 @@ public class TransitionQueue implements AnimationListener
         }
     }
     
+    /**
+     * Calculates the total of all transitions remaining in the queue and accounts
+     * for the amount of time into the current transition.
+     * @return Total time until the queue is emptied given its current state
+     */
+    public float calculateTotalRemainingTime()
+    {
+        float result = 0.0f;
+        if (m_state.isTransitioning()) // Make sure something relevant is happening
+        {
+            // Account for the time aleady spent transitioning
+            result -= m_state.getTimeInTransition();
+            // Make sure we have a reliable state
+            synchronized(m_commandQueue)
+            {
+                for (int i = 0; i < m_commandQueue.size(); ++i)
+                {
+                    result += m_commandQueue.get(i).getTransitionLength();
+                }
+            }
+        }
+        return result;
+    }
 }

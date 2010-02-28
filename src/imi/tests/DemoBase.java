@@ -215,7 +215,7 @@ public class DemoBase
         // Material State
         MaterialState matState  = null;
         matState = (MaterialState) wm.getRenderManager().createRendererState(RenderState.RS_MATERIAL);
-        matState.setAmbient(new ColorRGBA(0.1f, 0.1f, 0.1f, 1.0f));
+        matState.setAmbient(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
         matState.setDiffuse(ColorRGBA.white);
         matState.setEmissive(ColorRGBA.black);
         
@@ -244,10 +244,11 @@ public class DemoBase
         // Must be a PointLight to function
         PointLight pointLight = new PointLight();
         pointLight.setDiffuse(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
-        pointLight.setAmbient(new ColorRGBA(0.2f, 0.2f, 0.2f, 0.2f));
+        pointLight.setAmbient(new ColorRGBA(1.0f, 1.0f, 1.0f, 1.0f));
         pointLight.setEnabled(true);
         // attach it to the LightNode
         lightNode.setLight(pointLight);
+
         lightNode.setLocalTranslation(0.0f, 50.0f, 50.0f);
         // add it to the render manager
         wm.getRenderManager().addLight(lightNode);
@@ -667,6 +668,8 @@ public class DemoBase
         {
             monkeyTexture.setWrap(Texture.WrapAxis.S, Texture.WrapMode.Clamp);
             monkeyTexture.setWrap(Texture.WrapAxis.T, Texture.WrapMode.Clamp);
+            monkeyTexture.setMinificationFilter(Texture.MinificationFilter.BilinearNoMipMaps);
+            monkeyTexture.setMagnificationFilter(Texture.MagnificationFilter.NearestNeighbor);
         }
         return monkeyTexture;
     }
