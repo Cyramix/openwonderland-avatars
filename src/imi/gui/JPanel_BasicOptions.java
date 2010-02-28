@@ -52,6 +52,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
     protected Component               m_Parent;
     protected CharacterAttributes     m_Attributes, m_newAttribs;
     protected String[]                m_PrevHeadAttachments         = new String[4];
+    protected String                  m_protocol                    = "http://www.zeitgeistgames.com/";
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS METHODS - BEGIN
@@ -411,7 +412,9 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), meshes);
         }
         else {
-            m_sceneData.addAvatarHeadDAEURL(true, m_Parent, data.get(0));
+            String relpath  = data.get(0)[3];
+            String fullpath = m_protocol + relpath;
+            m_sceneData.addAvatarHeadDAEURL(true, m_Parent, fullpath);
         }
 
         jButton_ApplyHead.setEnabled(true);
@@ -463,7 +466,9 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadAvatarHeadDAEURL(true, this, data.get(0), meshes);
         }
         else {
-            m_sceneData.addAvatarHeadDAEURL(true, m_Parent, data.get(0));
+            String relpath  = data.get(0)[3];
+            String fullpath = m_protocol + relpath;
+            m_sceneData.addAvatarHeadDAEURL(true, m_Parent, fullpath);
         }
 
         jButton_ApplyHead1.setEnabled(true);
@@ -515,7 +520,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
         else {
             try {
-                URL upperbody = new URL(data.get(0)[3]);
+                URL upperbody = new URL(m_protocol + data.get(0)[3]);
                 m_sceneData.addSMeshDAEURLToModel(upperbody, "UpperBody");
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
@@ -570,7 +575,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
         else {
             try {
-                URL lowerbody = new URL(data.get(0)[3]);
+                URL lowerbody = new URL(m_protocol + data.get(0)[3]);
                 m_sceneData.addSMeshDAEURLToModel(lowerbody, "LowerBody");
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
@@ -625,7 +630,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
             m_sceneData.loadSMeshDAEURL(true, this, data.get(0), meshes);
         else {
             try {
-                URL shoes = new URL(data.get(0)[3]);
+                URL shoes = new URL(m_protocol + data.get(0)[3]);
                 m_sceneData.addSMeshDAEURLToModel(shoes, "Feet");
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
@@ -679,6 +684,7 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (isViewMode)
             m_sceneData.loadMeshDAEURL(true, this, data.get(0));
         else {
+
             m_sceneData.addMeshDAEURLToModel(data.get(0), "Head", "Hair");
         }
 
@@ -918,17 +924,18 @@ public class JPanel_BasicOptions extends javax.swing.JPanel {
         if (m_gender == 1) {
             query = "SELECT url FROM DefaultAvatars WHERE id = 1";
             data = m_sceneData.loadSQLData(query);
-            head = "http://www.zeitgeistgames.com/assets/collada/Avatars/Head/MHead6/MaleCHead_Bind.dae";
-            hands = "http://www.zeitgeistgames.com/assets/collada/Avatars/Male/Male_Hands.dae";
+            head = "assets/models/collada/Heads/MaleHead/MaleCHead.dae";
+            hands = "assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae";
         }
         else {
             query = "SELECT url FROM DefaultAvatars WHERE id = 2";
             data = m_sceneData.loadSQLData(query);
-            head = null;
-            hands = null;
+            head = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
+            hands = "assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
         }
 
-        m_sceneData.loadAvatarDAEURL(true, m_Parent, data.get(0)[0], head, hands, null, m_gender);
+        CharacterAttributes attribs = m_sceneData.createDefaultAttributes(m_gender, data.get(0)[0], head, hands, m_protocol);
+        m_sceneData.loadAvatarDAEURL(true, m_Parent, data.get(0)[0], head, hands, attribs, m_gender);
         
         while (!m_sceneData.getAvatar().isInitialized() || m_sceneData.getAvatar().getModelInst() == null) {
 

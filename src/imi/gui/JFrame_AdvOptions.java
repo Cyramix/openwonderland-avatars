@@ -748,20 +748,32 @@ public class JFrame_AdvOptions extends javax.swing.JFrame {
         SkeletonNode    skelnode    = m_sceneData.getAvatar().getSkeleton();
         if (skelnode == null) { return; }
 
-        Vector3f scale  = skelnode.getTransform().getLocalMatrix(true).getScaleVector();
-
+        Vector3f scale  = ((SkinnedMeshJoint)skelnode.findChild("Hips")).getBindPose().getScaleVector();  //skelnode.getTransform().getLocalMatrix(true).getScaleVector();
+        Vector3f move   = ((SkinnedMeshJoint)skelnode.findChild("Hips")).getBindPose().getTranslation();
+        Vector3f scaleL = ((SkinnedMeshJoint)skelnode.findChild("leftShoulder")).getBindPose().getScaleVector();
+        Vector3f scaleR = ((SkinnedMeshJoint)skelnode.findChild("rightShoulder")).getBindPose().getScaleVector();
         switch(type)
         {
             case uniformHeight:
             {
                 scale.y += mod * 3;
-                skelnode.getTransform().getLocalMatrix(true).setScale(scale);
+                move.y  += mod * 3;
+                scaleL.y += mod *3;
+                scaleR.y += mod *3;
+//                skelnode.getTransform().getLocalMatrix(true).setScale(scale);
+                ((SkinnedMeshJoint)skelnode.findChild("leftShoulder")).getBindPose().setScale(scaleL);
+                ((SkinnedMeshJoint)skelnode.findChild("rightShoulder")).getBindPose().setScale(scaleR);
                 break;
             }
             case uniformThickness:
             {
                 scale.x += mod * 3; scale.z += mod * 3;
-                skelnode.getTransform().getLocalMatrix(true).setScale(scale);
+                move.x  += mod * 3; move.z  += mod * 3;
+                scaleL.x += mod *3; scaleL.z += mod *3;
+                scaleR.x += mod *3; scaleR.z += mod *3;
+//                skelnode.getTransform().getLocalMatrix(true).setScale(scale);
+                ((SkinnedMeshJoint)skelnode.findChild("leftShoulder")).getBindPose().setScale(scaleL);
+                ((SkinnedMeshJoint)skelnode.findChild("rightShoulder")).getBindPose().setScale(scaleR);
                 break;
             }
         }

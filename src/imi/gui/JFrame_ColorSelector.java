@@ -198,7 +198,7 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
         color[2]        = ((float)selection.getBlue()/255);
 
         for (int j = 0; j < lUpperBody.size(); j++) {
-            if (!lUpperBody.get(j).getName().toLowerCase().contains("nude") || !lUpperBody.get(j).getName().toLowerCase().contains("arms")) {
+            if (!lUpperBody.get(j).getName().toLowerCase().contains("nude") && !lUpperBody.get(j).getName().toLowerCase().contains("arms")) {
                PPolygonMeshInstance mesh = (PPolygonMeshInstance)lUpperBody.get(j);
                setSkinnedMeshColor(mesh, color);
             }
@@ -225,7 +225,7 @@ public class JFrame_ColorSelector extends javax.swing.JFrame implements ChangeLi
         color[2]        = ((float)selection.getBlue()/255);
 
         for (int j = 0; j < lLowerBody.size(); j++) {
-            if (!lLowerBody.get(j).getName().toLowerCase().contains("nude") || !lLowerBody.get(j).getName().toLowerCase().contains("legs")) {
+            if (!lLowerBody.get(j).getName().toLowerCase().contains("nude") && !lLowerBody.get(j).getName().toLowerCase().contains("legs")) {
                PPolygonMeshInstance mesh = (PPolygonMeshInstance)lLowerBody.get(j);
                setSkinnedMeshColor(mesh, color);
             }

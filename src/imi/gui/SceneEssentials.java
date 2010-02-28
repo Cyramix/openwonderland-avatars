@@ -756,7 +756,7 @@ public class SceneEssentials {
             CharacterAttributes attribs = createDefaultAttributes(m_gender, bindPose, null, null);
 
             if (m_avatar != null) {
-                m_worldManager.removeEntity(m_avatar);
+                m_avatar.destroy();
                 setAvatar(null);
             }
 
@@ -964,8 +964,11 @@ public class SceneEssentials {
 
             PNode mesh = m_avatar.getSkeleton().findChild(parentJoint);
             ArrayList<PNode> meshesToDelete = new ArrayList<PNode>();
-            for (int i = 0; i < mesh.getChildrenCount(); i++)
-                meshesToDelete.add(mesh.getChild(i));
+
+            if (mesh.getChildrenCount() > 0) {
+                for (int i = 0; i < mesh.getChildrenCount(); i++)
+                    meshesToDelete.add(mesh.getChild(i));
+            }
 
             if (mesh != null)
                 m_avatar.getSkeleton().findAndRemoveChild(subGroup);
@@ -1121,9 +1124,9 @@ public class SceneEssentials {
                     szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
 
                 load.add(szAvatarModelFile);    // Load selected female skeleton
-                add.add(attribs.createSkinnedMeshParams("TorsoNudeShape",   "UpperBody"));
-                add.add(attribs.createSkinnedMeshParams("LegsNudeShape",    "LowerBody"));
-                add.add(attribs.createSkinnedMeshParams("ShoesShape",       "Feet"));
+                add.add(attribs.createSkinnedMeshParams("Torso_NudeShape",      "UpperBody"));
+                add.add(attribs.createSkinnedMeshParams("Legs_NudeShape",       "LowerBody"));
+                add.add(attribs.createSkinnedMeshParams("FemaleFeet_NudeShape", "Feet"));
                 load.add(szAvatarHandsModelFile);   // Load selected female hand meshes
                 add.add(attribs.createSkinnedMeshParams("Hands_NudeShape",  "Hands"));
                 attribs.setHeadAttachment(szAvatarHeadModelFile);
@@ -1132,6 +1135,73 @@ public class SceneEssentials {
         }
 
         attribs.setBaseURL(null);
+        attribs.setLoadInstructions(load);
+        attribs.setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
+        attribs.setAttachmentsInstructions(null);
+        attribs.setGender(iGender);
+
+        return attribs;
+    }
+
+    /**
+     * Sets up default attributes based on the current avatar standard being used.
+     * This will be obsolete if the avatar standards change.
+     * @param iGender - 1 for male and 2 for female
+     * @param szAvatarModelFile - the collada file containing the animations
+     * @return CharacterAttributes
+     */
+    public CharacterAttributes createDefaultAttributes(int iGender, String szAvatarModelFile, String szAvatarHeadModelFile, String szAvatarHandsModelFile, String protocol) {
+
+        // Create avatar attribs
+        CharacterAttributes             attribs     = new CharacterAttributes("Avatar");
+        ArrayList<String>               load        = new ArrayList<String>();
+        ArrayList<SkinnedMeshParams>    add         = new ArrayList<SkinnedMeshParams>();
+
+        String baseFilePath = "file:///" + System.getProperty("user.dir") + "/";
+
+        switch (iGender)
+        {
+            case 1:
+            {
+                if (szAvatarModelFile == null)
+                    szAvatarModelFile = "assets/models/collada/Avatars/MaleAvatar/Male_Bind.dae";
+                if (szAvatarHandsModelFile == null)
+                    szAvatarHandsModelFile = "assets/models/collada/Avatars/MaleAvatar/Male_Hands.dae";
+                if (szAvatarHeadModelFile == null)
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/MaleHead/MaleCHead.dae";
+
+                load.add(szAvatarModelFile);    // Load selected male body meshes
+                add.add(attribs.createSkinnedMeshParams("RFootNudeShape",   "Feet"));
+                add.add(attribs.createSkinnedMeshParams("LFootNudeShape",   "Feet"));
+                add.add(attribs.createSkinnedMeshParams("TorsoNudeShape",   "UpperBody"));
+                add.add(attribs.createSkinnedMeshParams("LegsNudeShape",    "LowerBody"));
+                load.add(szAvatarHandsModelFile);   // Load selected hand meshes
+                add.add(attribs.createSkinnedMeshParams("RHandShape",       "Hands"));
+                add.add(attribs.createSkinnedMeshParams("LHandShape",       "Hands"));
+                attribs.setHeadAttachment(szAvatarHeadModelFile);
+                break;
+            }
+            case 2:
+            {
+                if (szAvatarModelFile == null)
+                    szAvatarModelFile = "assets/models/collada/Avatars/FemaleAvatar/Female_Bind.dae";
+                if (szAvatarHandsModelFile == null)
+                    szAvatarHandsModelFile = "assets/models/collada/Avatars/FemaleAvatar/Female_Hands.dae";
+                if (szAvatarHeadModelFile == null)
+                    szAvatarHeadModelFile = "assets/models/collada/Heads/FemaleHead/FemaleCHead.dae";
+
+                load.add(szAvatarModelFile);    // Load selected female skeleton
+                add.add(attribs.createSkinnedMeshParams("Torso_NudeShape",      "UpperBody"));
+                add.add(attribs.createSkinnedMeshParams("Legs_NudeShape",       "LowerBody"));
+                add.add(attribs.createSkinnedMeshParams("FemaleFeet_NudeShape", "Feet"));
+                load.add(szAvatarHandsModelFile);   // Load selected female hand meshes
+                add.add(attribs.createSkinnedMeshParams("Hands_NudeShape",  "Hands"));
+                attribs.setHeadAttachment(szAvatarHeadModelFile);
+                break;
+            }
+        }
+
+        attribs.setBaseURL(protocol);
         attribs.setLoadInstructions(load);
         attribs.setAddInstructions(add.toArray(new SkinnedMeshParams[add.size()]));
         attribs.setAttachmentsInstructions(null);
@@ -1268,16 +1338,16 @@ public class SceneEssentials {
      * @param data - string array containing information about the model
      *        { 0= meshname, 1= description, 2= male/female, 3= file location, 4= meshtype, 5= table id }
      */
-    public void addAvatarHeadDAEURL(boolean useRepository, Component arg0, String[] data) {
+    public void addAvatarHeadDAEURL(boolean useRepository, Component arg0, String data) {
         if (m_avatar == null) {
             System.out.println("You have not loaded an avatar yet... Please load one first");
             return;
         }
 
         try {
-            URL urlHead = new URL(data[3]);
+            URL urlHead = new URL(data);
             m_avatar.installHead(urlHead);
-            m_avatar.getAttributes().setHeadAttachment(data[3]);
+            m_avatar.getAttributes().setHeadAttachment(data);
         } catch (MalformedURLException ex) {
             Logger.getLogger(SceneEssentials.class.getName()).log(Level.SEVERE, null, ex);
         }
