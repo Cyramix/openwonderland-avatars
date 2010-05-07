@@ -49,6 +49,7 @@ import javolution.util.FastTable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
@@ -185,10 +186,26 @@ public class PColladaEffect
                     if (someElement.getTagName().equals("bump")) // normal mapped
                     {
                         NodeList textureList = someElement.getElementsByTagName("texture");
+                        
+                        // OWL issue 41: make sure to check for elements in a different
+                        // namespace
+                        Node textureNode = null;
+                        if (textureList.getLength() == 0) {
+                            for (Node child = someElement.getFirstChild(); child != null; child = child.getNextSibling()) {
+                                if (child instanceof Element && "texture".equals(child.getLocalName())) {
+                                    textureNode = child;
+                                    break;
+                                }
+                            }
+                        } else {
+                            // only grab texture zero and assign it as the normal map
+                            textureNode = textureList.item(0);
+                        }
+
                         // only grab texture zero and assign it as the normal map
-                        if (textureList.getLength() > 0)
+                        if (textureNode != null)
                         {
-                            String stringID = textureList.item(0).getAttributes().getNamedItem("texture").getTextContent();
+                            String stringID = textureNode.getAttributes().getNamedItem("texture").getTextContent();
                             m_NormalMapImageFilename = getTextureFilename(stringID);
                             if (m_NormalMapImageFilename == null) // oh no! try something!
                             {
