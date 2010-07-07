@@ -1,4 +1,22 @@
 /**
+ * Open Wonderland
+ *
+ * Copyright (c) 2010, Open Wonderland Foundation, All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * The Open Wonderland Foundation designates this particular file as
+ * subject to the "Classpath" exception as provided by the Open Wonderland
+ * Foundation in the License file that accompanied this code.
+ */
+
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -22,9 +40,7 @@ import com.jme.math.Quaternion;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Renderer;
 import com.jme.scene.Node;
-import com.jme.scene.SharedMesh;
 import com.jme.scene.Spatial;
-import com.jme.scene.TriMesh;
 import com.jme.scene.state.LightState;
 import com.jme.scene.state.RenderState;
 import com.jme.scene.state.WireframeState;
@@ -42,6 +58,7 @@ import imi.scene.utils.visualizations.DebugRenderer;
  * @author Chris Nagle
  */
 public class JScene extends Node implements CharacterMotionListener {
+    public enum ExternalKidsType { TRANSFORMED, UNTRANSFORMED };
 
     private final PScene    m_PScene;
     private boolean         m_bRender           = true;
@@ -54,6 +71,9 @@ public class JScene extends Node implements CharacterMotionListener {
     private Node        m_externalJmeKidsRoot = new Node("external Kids");
     private Vector3f    m_ExternalKidsRootPosition = new Vector3f(); // applied by the PScene
     private Quaternion  m_ExternalKidsRootRotation = new Quaternion();
+
+    /** An untransformed jme kids root */
+    private Node m_externalJmeKidsRootUntransformed = new Node("external Kids untransformed");
 
     private Vector3f worldPos = new Vector3f();
 
@@ -75,7 +95,25 @@ public class JScene extends Node implements CharacterMotionListener {
      * @return
      */
     public Node getExternalKidsRoot() {
-        return m_externalJmeKidsRoot;
+        return getExternalKidsRoot(ExternalKidsType.TRANSFORMED);
+    }
+
+    /**
+     * Get a jme node to attach external (not PScene related) nodes. There
+     * are two nodes available: a transformed node moves with the avatar,
+     * while the untransformed node does not.
+     */
+    public Node getExternalKidsRoot(ExternalKidsType kidsType) {
+        switch (kidsType) {
+            case TRANSFORMED:
+                return m_externalJmeKidsRoot;
+            case UNTRANSFORMED:
+                return m_externalJmeKidsRootUntransformed;
+
+            default:
+                throw new IllegalArgumentException("Unknown type: " +
+                            kidsType);
+        }
     }
 
     /**

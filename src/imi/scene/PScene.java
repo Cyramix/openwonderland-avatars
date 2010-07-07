@@ -1,4 +1,22 @@
 /**
+ * Open Wonderland
+ *
+ * Copyright (c) 2010, Open Wonderland Foundation, All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * The Open Wonderland Foundation designates this particular file as
+ * subject to the "Classpath" exception as provided by the Open Wonderland
+ * Foundation in the License file that accompanied this code.
+ */
+
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -29,6 +47,7 @@ import imi.repository.RepositoryUser;
 import imi.repository.SharedAsset;
 import imi.repository.SharedAsset.SharedAssetType;
 import imi.repository.SharedAssetPlaceHolder;
+import imi.scene.JScene.ExternalKidsType;
 import imi.scene.polygonmodel.PPolygonMesh;
 import imi.scene.polygonmodel.PPolygonMeshInstance;
 import imi.scene.polygonmodel.PPolygonModelInstance;
@@ -162,11 +181,15 @@ public class PScene extends PNode implements RepositoryUser, Serializable
         kids.addAll(helper.getSharedMeshes());
 
         // Add external kids
-        Node externalKids = m_JScene.getExternalKidsRoot();
+        Node externalKids = m_JScene.getExternalKidsRoot(ExternalKidsType.TRANSFORMED);
         externalKids.setLocalTranslation(m_JScene.getExternalKidsRootPosition());
         externalKids.setLocalRotation(m_JScene.getExternalKidsRootRotation());
         m_WorldManager.addToUpdateList(externalKids);
         kids.add(externalKids);
+
+        Node externalKidsUntransformed = m_JScene.getExternalKidsRoot(ExternalKidsType.UNTRANSFORMED);
+        m_WorldManager.addToUpdateList(externalKidsUntransformed);
+        kids.add(externalKidsUntransformed);
 
         ////////////////////////////////////////
         /**
