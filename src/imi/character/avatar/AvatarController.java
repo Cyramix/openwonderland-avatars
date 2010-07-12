@@ -350,13 +350,17 @@ public class AvatarController extends CharacterController
         if (pi.size() != 0) {
             // Grab the first collidable
             PickDetails pd = null;
-            int i = 0;
-            pd = pi.get(i);
-            while(!pd.getCollisionComponent().isCollidable() && ++i < pi.size()) {
-                pd = pi.get(i);
+
+            for (int i = 0; i < pi.size(); i++) {
+                PickDetails cur = pi.get(i);
+
+                if (cur.getCollisionComponent().isCollidable()) {
+                    pd = cur;
+                    break;
+                }
             }
 
-            if (pd!=null) {
+            if (pd != null) {
                 dy = pd.getDistance() - yDelta;
 
                 newPos.y -= dy;
