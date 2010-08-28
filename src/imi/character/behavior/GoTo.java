@@ -1,4 +1,22 @@
 /**
+ * Open Wonderland
+ *
+ * Copyright (c) 2010, Open Wonderland Foundation, All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * The Open Wonderland Foundation designates this particular file as
+ * subject to the "Classpath" exception as provided by the Open Wonderland
+ * Foundation in the License file that accompanied this code.
+ */
+
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -48,7 +66,7 @@ public class GoTo implements Task
     private boolean bAvoidObstacles = false;
     private float approvedDistanceFromGoal = 1.0f;
     private float directionSensitivity = 0.1f;
-    
+
     private float       currentDistanceFromGoal  = 0.0f;
     private Vector3f    currentCharacterPosition = new Vector3f();
     
@@ -67,7 +85,8 @@ public class GoTo implements Task
     public GoTo(Vector3f goalPosition, GameContext context) 
     {
         this.context = context;
-        this.goalPosition.set(goalPosition);
+//        this.goalPosition.set(goalPosition);
+        this.goalPosition.set(goalPosition.x, 0.0f, goalPosition.z);
     }
     
     public GoTo(Vector3f goalPosition, Vector3f directionAtGoal, GameContext context) 
@@ -92,9 +111,11 @@ public class GoTo implements Task
     public void update(float deltaTime) 
     {
         // Update local variables
-        currentCharacterPosition.set(context.getController().getPosition());
+        Vector3f v3f = context.getController().getPosition();
+        currentCharacterPosition.set(v3f.x, 0.0f, v3f.z);
+//        currentCharacterPosition.set(context.getController().getPosition());
         currentDistanceFromGoal = goalPosition.distance(currentCharacterPosition);
-        
+
         // Check if we are at the goal
         if (currentDistanceFromGoal <= approvedDistanceFromGoal)
         {
