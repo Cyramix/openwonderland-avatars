@@ -1,4 +1,22 @@
 /**
+ * Open Wonderland
+ *
+ * Copyright (c) 2010, Open Wonderland Foundation, All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * The Open Wonderland Foundation designates this particular file as
+ * subject to the "Classpath" exception as provided by the Open Wonderland
+ * Foundation in the License file that accompanied this code.
+ */
+
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -63,6 +81,7 @@ public class SitState extends GameState
         context = master;
         setName("Sit");
         setCycleMode(PlaybackMode.PlayOnce);
+        // System.out.println("Enter SitState Constructor");
     }
     
     /**
@@ -87,7 +106,7 @@ public class SitState extends GameState
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
-        
+
         // Set the chair to not occupied
         if (chair != null)
         {
@@ -109,7 +128,8 @@ public class SitState extends GameState
         // If any of the animations are not found or 
         // If using the simple sphere\scene model for the avatar the animation
         // these will never be set so this safry lets us get out of the state
-        if( owner.getCharacter().getCharacterParams().isUseSimpleStaticModel() || context.getSkeleton() != null && (
+        if( owner.getCharacter().getCharacterParams().isUseSimpleStaticModel() ||
+                context.getSkeleton() != null && (
                 context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1 ||
                 context.getSkeleton().getAnimationComponent().findCycle(getIdleSittingAnimationName(), 0) == -1 ||
                 context.getSkeleton().getAnimationComponent().findCycle(getGettingUpAnimationName(), 0) == -1 ))
@@ -122,7 +142,7 @@ public class SitState extends GameState
         
         // Stop the character
         context.getController().stop();
-        
+
         // Set the chair to occupied
         if (context.getBehaviorManager().getGoal() instanceof ChairObject)
         {
@@ -131,6 +151,12 @@ public class SitState extends GameState
             chair.setOccupied(true);
         }
     }
+
+    private void triggerRelease(int trigger)
+    {
+        if (context.getTriggerState().isKeyPressed(trigger))
+            context.triggerReleased(trigger);
+    }
     
     @Override
     public void update(float deltaTime)
@@ -138,8 +164,8 @@ public class SitState extends GameState
         super.update(deltaTime);
         
         // If we no longer own the chair; set the FallFromSitState
-        if (checkForFalling())
-            return;
+//        if (checkForFalling())
+//            return;
                     
         if (!context.isTransitioning()) 
             counter += deltaTime;
@@ -172,12 +198,15 @@ public class SitState extends GameState
         else
         {
             if (counter > sittingAnimationTime && !bIdleSittingAnimationSet)
-                setIdleAnimation();   
+            {
+                setIdleAnimation();
+                triggerRelease(TriggerNames.GoSit.ordinal());
+            }
         }
     }
 
     private boolean checkForFalling() 
-    {    
+    {
         if (chair.getOwner() != context.getCharacter())
         {
             FallFromSitState fall = (FallFromSitState) context.getStateMapping().get(FallFromSitState.class);
@@ -195,7 +224,7 @@ public class SitState extends GameState
      * transition duration.
      */
     private void setIdleAnimation() 
-    { 
+    {
         // Character's skeleton might be null untill loaded
         SkeletonNode skeleton = gameContext.getSkeleton();
         if (skeleton != null)

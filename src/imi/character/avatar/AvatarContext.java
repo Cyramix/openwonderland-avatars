@@ -1,4 +1,22 @@
 /**
+ * Open Wonderland
+ *
+ * Copyright (c) 2010, Open Wonderland Foundation, All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * The Open Wonderland Foundation designates this particular file as
+ * subject to the "Classpath" exception as provided by the Open Wonderland
+ * Foundation in the License file that accompanied this code.
+ */
+
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -55,6 +73,7 @@ import imi.character.statemachine.corestates.CycleActionState;
 import imi.character.statemachine.corestates.RunState;
 import imi.character.statemachine.corestates.StrafeState;
 import imi.character.statemachine.corestates.transitions.ActionToStrafe;
+import imi.character.statemachine.corestates.transitions.IdleToSit;
 import imi.character.statemachine.corestates.transitions.IdleToStrafe;
 import imi.character.statemachine.corestates.transitions.RunToWalk;
 import imi.character.statemachine.corestates.transitions.StrafeToAction;
@@ -163,6 +182,7 @@ public class AvatarContext extends GameContext
         gameStates.put(FallFromSitState.class,   new FallFromSitState(this));
         gameStates.put(SitOnGroundState.class,   new SitOnGroundState(this));
         gameStates.put(RunState.class,   new RunState(this));
+        gameStates.put(SitState.class,   new SitState(this));
         
         // Set the state to start with
         setCurrentState(gameStates.get(IdleState.class));
@@ -176,6 +196,7 @@ public class AvatarContext extends GameContext
         registerStateEntryPoint(gameStates.get(FlyState.class),   "toFly");
         registerStateEntryPoint(gameStates.get(SitOnGroundState.class),   "toSitOnGround");
         registerStateEntryPoint(gameStates.get(RunState.class),   "toRun");
+        registerStateEntryPoint(gameStates.get(SitState.class),   "toSit");
                 
         // Add transitions (exit points)
         gameStates.get(IdleState.class).addTransition(new IdleToTurn());
@@ -184,6 +205,7 @@ public class AvatarContext extends GameContext
         gameStates.get(IdleState.class).addTransition(new IdleToAction());
         gameStates.get(IdleState.class).addTransition(new IdleToFly());
         gameStates.get(IdleState.class).addTransition(new IdleToSitOnGround());
+        gameStates.get(IdleState.class).addTransition(new IdleToSit());
         gameStates.get(WalkState.class).addTransition(new WalkToIdle());
         gameStates.get(WalkState.class).addTransition(new WalkToAction());
         gameStates.get(WalkState.class).addTransition(new WalkToRun());
@@ -209,7 +231,6 @@ public class AvatarContext extends GameContext
         if (!genericAnimations.isEmpty())
             genericAnimations.get(0).apply((CycleActionState) gameStates.get(CycleActionState.class));
     }
-
 
     /**
      * Performs the default mapping of actions to triggers

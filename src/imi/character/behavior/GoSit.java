@@ -82,6 +82,7 @@ public class GoSit implements Task
         goalPosition.set(goal.getTargetPositionRef());
         goalDirection.set(goal.getTargetForwardVector());
         go = new GoTo(goalPosition, context);
+        go.setApprovedDistanceFromGoal(0.1f);
         go.setGoal(goal);
     }
     
@@ -139,7 +140,8 @@ public class GoSit implements Task
             {
                 goalReached = true;
                 triggerRelease(TriggerNames.Move_Forward.ordinal());
-                go.reset(goalPosition, goalDirection);
+//                go.reset(goalPosition, goalDirection);
+                go.reset(goalPosition);
                 go.setAvoidObstacles(false);
                 go.setApprovedDistanceFromGoal(approvedDistanceFromGoal);
                 //go.setApprovedDistanceFromGoal(goal.getBoundingSphere().getRadius());
@@ -175,10 +177,18 @@ public class GoSit implements Task
                             mathContext);
         localMat.set(look);
         
+        triggerPress(TriggerNames.GoSit.ordinal());
+
         // Initiate SitState
-        SitState sit = (SitState) context.getStateMapping().get(SitState.class);
-        if (sit != null && sit.toSit(null))
-            context.setCurrentState(sit);
+//        SitState sit = (SitState) context.getStateMapping().get(SitState.class);
+//        if (sit != null && sit.toSit(null))
+//            context.setCurrentState(sit);
+    }
+
+    private void triggerPress(int trigger)
+    {
+        if (!context.getTriggerState().isKeyPressed(trigger))
+            context.triggerPressed(trigger);
     }
     
     private void triggerRelease(int trigger)
