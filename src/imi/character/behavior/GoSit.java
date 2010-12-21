@@ -82,7 +82,7 @@ public class GoSit implements Task
         goalPosition.set(goal.getTargetPositionRef());
         goalDirection.set(goal.getTargetForwardVector());
         go = new GoTo(goalPosition, context);
-        go.setApprovedDistanceFromGoal(0.1f);
+        go.setApprovedDistanceFromGoal(0.5f);
         go.setGoal(goal);
     }
     
