@@ -1,4 +1,22 @@
 /**
+ * Open Wonderland
+ *
+ * Copyright (c) 2011, Open Wonderland Foundation, All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * The Open Wonderland Foundation designates this particular file as
+ * subject to the "Classpath" exception as provided by the Open Wonderland
+ * Foundation in the License file that accompanied this code.
+ */
+
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -76,17 +94,11 @@ public class StrafeState extends GameState
      
     protected void takeAction(float deltaTime) 
     {
-        float x = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
+        Vector3f accel = new Vector3f();
+        accel.x = context.getActions()[AvatarContext.ActionNames.Movement_X.ordinal()];
+        accel.multLocal(impulse);
         
-        CharacterController controller = context.getController();
-        PPolygonModelInstance modelInst = controller.getModelInstance();
-        Vector3f localX = null;
-        if (modelInst != null)
-            localX = modelInst.getTransform().getLocalMatrix(false).getLocalXNormalized();
-        // Side step
-        if (x != 0.0f && localX != null) {
-            controller.accelerate(localX.mult(x * impulse));
-        }
+        context.getController().accelerate(accel);
     }
     
     @Override

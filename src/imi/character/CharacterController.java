@@ -1,4 +1,22 @@
 /**
+ * Open Wonderland
+ *
+ * Copyright (c) 2011, Open Wonderland Foundation, All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * The Open Wonderland Foundation designates this particular file as
+ * subject to the "Classpath" exception as provided by the Open Wonderland
+ * Foundation in the License file that accompanied this code.
+ */
+
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -134,12 +152,26 @@ public abstract class CharacterController implements CollisionListener
      * @param translation A non-null position vector
      * @param orientation A non-null orientation matrix
      */
-    public void notifyTransfromUpdate(Vector3f translation, PMatrix orientation)
+    public void notifyTransformUpdate(Vector3f translation, PMatrix orientation)
+    {
+        notifyTransformUpdate(translation, orientation, false);
+    }
+    
+    /**
+     * Notify any motion listeners that the transform has been updated. The
+     * force parameter allows the sender to force an update even if
+     * translation and orientation haven't changed.
+     * @param translation A non-null position vector
+     * @param orientation A non-null orientation matrix
+     * @param force true to force an update
+     */
+    public void notifyTransformUpdate(Vector3f translation, PMatrix orientation,
+                                      boolean force)
     {
         if (listeners.size() == 0) // Any listeners?
             return;
 
-        if (previousTranslation.equals(translation) &&
+        if (!force && previousTranslation.equals(translation) &&
                 previousOrientation.equals(orientation))
             return;
 
@@ -188,6 +220,15 @@ public abstract class CharacterController implements CollisionListener
      */
     public float getVelocityScalar() {
         return 0.0f;
+    }
+    
+    /**
+     * Override point
+     * <p>This implementation does nothing.</p>
+     * @return Vector3f.ZERO
+     */
+    public Vector3f getVelocity() {
+        return Vector3f.ZERO;
     }
 
     /**
@@ -238,6 +279,24 @@ public abstract class CharacterController implements CollisionListener
      * @param projection
      */
     public void colliding(Vector3f projection) {
+    }
+    
+    /**
+     * Get the character's current height above the ground, or 0 if there
+     * is no ground or gravity is disabled.
+     * @return 0
+     */
+    public float getHeight() {
+        return 0f;
+    }
+    
+    /**
+     * Return whether the character is currently colliding with something
+     * that is preventing movement.
+     * @return false
+     */
+    public boolean isColliding() {
+        return false;
     }
 
     /**

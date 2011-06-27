@@ -1,7 +1,7 @@
 /**
  * Open Wonderland
  *
- * Copyright (c) 2010, Open Wonderland Foundation, All Rights Reserved
+ * Copyright (c) 2010 - 2011, Open Wonderland Foundation, All Rights Reserved
  *
  * Redistributions in source code form must reproduce the above
  * copyright and this condition.
@@ -170,12 +170,7 @@ public class SitState extends GameState
         if (!context.isTransitioning()) 
             counter += deltaTime;
         
-        if (bIdleSittingAnimationSet && (context.getTriggerState().isKeyPressed(TriggerNames.MiscAction.ordinal()) ||
-            context.getTriggerState().isKeyPressed(TriggerNames.Move_Forward.ordinal()) ||
-            context.getTriggerState().isKeyPressed(TriggerNames.Move_Back.ordinal()) ||
-            context.getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal()) ||
-            context.getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal()) ))
-        {
+        if (bIdleSittingAnimationSet && ActionState.isExitRepeat(context)) {
             bGettingUp = true;
         }
         

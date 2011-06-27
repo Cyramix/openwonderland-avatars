@@ -1,4 +1,22 @@
 /**
+ * Open Wonderland
+ *
+ * Copyright (c) 2011, Open Wonderland Foundation, All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * The Open Wonderland Foundation designates this particular file as
+ * subject to the "Classpath" exception as provided by the Open Wonderland
+ * Foundation in the License file that accompanied this code.
+ */
+
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -36,6 +54,7 @@ import imi.character.statemachine.corestates.WalkState;
 import imi.character.behavior.FollowBakedPath;
 import imi.character.behavior.FollowPath;
 import imi.character.behavior.GoTo;
+import imi.character.statemachine.corestates.FallState;
 import imi.scene.PMatrix;
 import imi.serialization.xml.bindings.xmlCharacter;
 import java.awt.event.KeyEvent;
@@ -192,7 +211,8 @@ public class Avatar extends imi.character.Character
         m_context.getStateMapping().get(WalkState.class).setAnimationName("Male_Walk");
         m_context.getStateMapping().get(RunState.class).setAnimationName("Male_Run");
         m_context.getStateMapping().get(SitState.class).setAnimationName("Male_StandToSit");
-        m_context.getStateMapping().get(FlyState.class).setAnimationName("Male_Cheer");
+        m_context.getStateMapping().get(FlyState.class).setAnimationName("Male_Idle"); // XXX need an animation
+        m_context.getStateMapping().get(FallState.class).setAnimationName("Male_Idle"); // XXX need an animation
         ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");
     }
@@ -219,7 +239,8 @@ public class Avatar extends imi.character.Character
         m_context.getStateMapping().get(WalkState.class).setAnimationName("Female_Walk");
         m_context.getStateMapping().get(RunState.class).setAnimationName("Female_Run");
         m_context.getStateMapping().get(SitState.class).setAnimationName("Female_StandtoSit");
-        m_context.getStateMapping().get(FlyState.class).setAnimationName("Female_Cheer");
+        m_context.getStateMapping().get(FlyState.class).setAnimationName("Female_Idle"); // XXX need an animation
+        m_context.getStateMapping().get(FallState.class).setAnimationName("Female_Idle"); // XXX need an animation
         ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Female_Sitting");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Female_StandtoSit");
     }
@@ -231,18 +252,12 @@ public class Avatar extends imi.character.Character
 
         WalkState walk = (WalkState)m_context.getState(WalkState.class);
         walk.setImpulse(15.0f);
-        // RED: Werent actually used in calculations, methods removed until used
-//        walk.setWalkSpeedMax(2.5f);
-//        walk.setWalkSpeedFactor(1.3f);
         walk.setMinimumTimeBeforeTransition(0.05f);
         walk.setTransitionDuration(0.1f);
         walk.setAnimationSpeed(1.6f);
 
         RunState run = (RunState)m_context.getState(RunState.class);
         run.setImpulse(15.0f);
-        // RED: Werent actually used in calculations, methods removed until used
-//        run.setWalkSpeedMax(1.0f);
-//        run.setWalkSpeedFactor(1.0f);
         run.setMinimumTimeBeforeTransition(0.5f);
         run.setTransitionDuration(0.3f);
 
@@ -280,6 +295,9 @@ public class Avatar extends imi.character.Character
         sitGround.setAnimationSpeed(1.5f);
         sitGround.setGettingUpAnimationSpeed(2.0f);
         sitGround.setGettingUpAnimationTime(1.0f);
+        
+        FlyState fly = (FlyState)m_context.getState(FlyState.class);
+        fly.setRestoreGravity(true);
     }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 /**
  * Open Wonderland
  *
- * Copyright (c) 2010, Open Wonderland Foundation, All Rights Reserved
+ * Copyright (c) 2010 - 2011, Open Wonderland Foundation, All Rights Reserved
  *
  * Redistributions in source code form must reproduce the above
  * copyright and this condition.
@@ -84,9 +84,15 @@ import imi.character.statemachine.corestates.transitions.WalkToRun;
 import imi.character.behavior.FollowBakedPath;
 import imi.character.behavior.GoSit;
 import imi.character.behavior.GoTo;
+import imi.character.statemachine.corestates.FallState;
+import imi.character.statemachine.corestates.transitions.FallToFly;
+import imi.character.statemachine.corestates.transitions.FallToIdle;
+import imi.character.statemachine.corestates.transitions.FallToWalk;
+import imi.character.statemachine.corestates.transitions.FlyToFall;
+import imi.character.statemachine.corestates.transitions.IdleToFall;
+import imi.character.statemachine.corestates.transitions.WalkToFall;
 import imi.objects.AvatarObjectCollection;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import javolution.util.FastList;
@@ -146,6 +152,7 @@ public class AvatarContext extends GameContext
         Scorn,
         Move_Strafe_Left,
         Move_Strafe_Right,
+        Idle
     }
 
     /**
@@ -179,6 +186,7 @@ public class AvatarContext extends GameContext
         gameStates.put(CycleActionState.class, new CycleActionState(this));
         gameStates.put(SitState.class,   new SitState(this));
         gameStates.put(FlyState.class,   new FlyState(this));
+        gameStates.put(FallState.class,  new FallState(this));
         gameStates.put(FallFromSitState.class,   new FallFromSitState(this));
         gameStates.put(SitOnGroundState.class,   new SitOnGroundState(this));
         gameStates.put(RunState.class,   new RunState(this));
@@ -194,6 +202,7 @@ public class AvatarContext extends GameContext
         registerStateEntryPoint(gameStates.get(TurnState.class),  "toTurn");
         registerStateEntryPoint(gameStates.get(CycleActionState.class), "toAction");
         registerStateEntryPoint(gameStates.get(FlyState.class),   "toFly");
+        registerStateEntryPoint(gameStates.get(FallState.class), "toFall");
         registerStateEntryPoint(gameStates.get(SitOnGroundState.class),   "toSitOnGround");
         registerStateEntryPoint(gameStates.get(RunState.class),   "toRun");
         registerStateEntryPoint(gameStates.get(SitState.class),   "toSit");
@@ -204,12 +213,14 @@ public class AvatarContext extends GameContext
         gameStates.get(IdleState.class).addTransition(new IdleToStrafe());
         gameStates.get(IdleState.class).addTransition(new IdleToAction());
         gameStates.get(IdleState.class).addTransition(new IdleToFly());
+        gameStates.get(IdleState.class).addTransition(new IdleToFall());
         gameStates.get(IdleState.class).addTransition(new IdleToSitOnGround());
         gameStates.get(IdleState.class).addTransition(new IdleToSit());
         gameStates.get(WalkState.class).addTransition(new WalkToIdle());
         gameStates.get(WalkState.class).addTransition(new WalkToAction());
         gameStates.get(WalkState.class).addTransition(new WalkToRun());
         gameStates.get(WalkState.class).addTransition(new WalkToFly());
+        gameStates.get(WalkState.class).addTransition(new WalkToFall());
         gameStates.get(TurnState.class).addTransition(new TurnToIdle());
         gameStates.get(TurnState.class).addTransition(new TurnToWalk());
         gameStates.get(TurnState.class).addTransition(new TurnToAction());
@@ -220,6 +231,10 @@ public class AvatarContext extends GameContext
         gameStates.get(CycleActionState.class).addTransition(new ActionToStrafe());
         gameStates.get(SitState.class).addTransition(new SitToIdle());
         gameStates.get(FlyState.class).addTransition(new FlyToIdle());
+        gameStates.get(FlyState.class).addTransition(new FlyToFall());
+        gameStates.get(FallState.class).addTransition(new FallToIdle());
+        gameStates.get(FallState.class).addTransition(new FallToFly());
+        gameStates.get(FallState.class).addTransition(new FallToWalk());
         gameStates.get(FallFromSitState.class).addTransition(new SitOnGroundToIdle());
         gameStates.get(SitOnGroundState.class).addTransition(new SitOnGroundToIdle());
         gameStates.get(RunState.class).addTransition(new RunToWalk());
@@ -275,123 +290,111 @@ public class AvatarContext extends GameContext
     @Override
     protected void triggerAlert(int trigger, boolean pressed)
     {
-        // Force the action if the action button is pressed
-        if (trigger == TriggerNames.MiscAction.ordinal() && pressed)
-            setCurrentState((ActionState) gameStates.get(CycleActionState.class));
-        
-        // Toggle automatic steering behavior towards the current goal
-        if (trigger == TriggerNames.ToggleBehavior.ordinal() && pressed)
-            behavior.toggleEnable();
-        
-        // Toggle manual control over the right arm
-        if (trigger == TriggerNames.ToggleRightArm.ordinal() && pressed)
-        {
-            avatar.setCameraOnMe();
-            if (avatar.getRightArm() != null)
-                avatar.getRightArm().toggleEnabled();
-        }
-        // Toggle manual control over the left arm
-        if (trigger == TriggerNames.ToggleLeftArm.ordinal() && pressed)
-        {
-            avatar.setCameraOnMe();
-            if (avatar.getLeftArm() != null)
-                avatar.getLeftArm().toggleEnabled();
+        // only make changes on press
+        if (!pressed) {
+            return;
         }
         
-        // Toggle manual control mode over the left arm
-        if (trigger == TriggerNames.ToggleLeftArmManualDriveReachMode.ordinal() && pressed)
-        {
-            if (avatar.getLeftArm() != null)
-                avatar.getLeftArm().toggleManualDriveReachUp();
-        }
-        // Toggle manual control mode over the right arm
-        if (trigger == TriggerNames.ToggleRightArmManualDriveReachMode.ordinal() && pressed)
-        {
-            if (avatar.getRightArm() != null)
-                avatar.getRightArm().toggleManualDriveReachUp();
-        }
-    
-        // Point at the nearest chair
-        if (trigger == TriggerNames.Point.ordinal() && pressed)
-        {
-            if (avatar.getObjectCollection() == null || avatar.getRightArm() == null)
-                return;
-
-            SpatialObject obj = avatar.getObjectCollection().findNearestObjectOfType(ChairObject.class, avatar, 10000.0f, 1.0f, true);
-            if (obj == null)
-                return;
-
-            avatar.getRightArm().setPointAtLocation(obj.getPositionRef());
-        }
+        switch(TriggerNames.values()[trigger]) {
         
-        // Find nearest chair and sit on it
-        else if (trigger == TriggerNames.GoSit.ordinal() && pressed)
-        {
-//            AI.clearTasks();
-//            goToNearestChair();
-//
-//            // Safely attempt to start a multiplayer game
-//            if (avatar.getUpdateExtension() != null)
-//            {
-//                Updatable up = avatar.getUpdateExtension();
-//                if (up instanceof Client && ((Client)up).getExtension(CahuaClientExtention.class) != null)
-//                {
-//                    CahuaClientExtention cahua = (CahuaClientExtention)((Client)up).getExtension(CahuaClientExtention.class);
-//                    cahua.startGame(3);
-//                }
-//            }
-        }
-        
-        // GoTo to location - if path is available from the current location
-        else if (trigger == TriggerNames.GoTo1.ordinal() && pressed)
-        {
-           // System.out.println("fix: " + avatar.getPosition());
-            
-            behavior.clearTasks();
-            goToNearestLocation();
-            if (location != null)
-                behavior.addTaskToBottom(new FollowBakedPath("yellowRoom", location, this));
-        }
-        else if (trigger == TriggerNames.GoTo2.ordinal() && pressed)
-        {
-            behavior.clearTasks();
-            goToNearestLocation();
-            if (location != null)
-                behavior.addTaskToBottom(new FollowBakedPath("lobbyCenter", location, this));
-        }
-        else if (trigger == TriggerNames.GoTo3.ordinal() && pressed)
-        {
-            System.out.println("Sit on the nearest chair");
-            behavior.clearTasks();
-            goToNearestChair();
-        }
-
-        // Facial expressions
-        else if (trigger == TriggerNames.Smile.ordinal() && pressed)
-            avatar.initiateFacialAnimation(1, 0.2f, 1.0f);
-        else if (trigger == TriggerNames.Frown.ordinal() && pressed)
-            avatar.initiateFacialAnimation(2, 0.2f, 1.5f);
-        else if (trigger == TriggerNames.Scorn.ordinal() && pressed)
-            avatar.initiateFacialAnimation(3, 0.2f, 1.5f);
+            case MiscAction:
+                // Force the action if the action button is pressed
+                setCurrentState((ActionState) gameStates.get(CycleActionState.class));
+                break;
                 
-        // Reverse the animation for the punch state (for testing)
-        else if (trigger == TriggerNames.Reverse.ordinal() && pressed)
-        {
-            CycleActionState punch = (CycleActionState) gameStates.get(CycleActionState.class);
-            punch.setTransitionReverseAnimation(!punch.isTransitionReverseAnimation());
-        }
+            case Idle:
+                // Force idle state
+                setCurrentStateByType(IdleState.class);
+                break;
+                
+            case ToggleBehavior:
+                behavior.toggleEnable();
+                break;
+                
+            case ToggleRightArm:
+                avatar.setCameraOnMe();
+                if (avatar.getRightArm() != null)
+                    avatar.getRightArm().toggleEnabled();
+                break;
         
-        // Select the next animation to play for the facial animation test
-        else if (trigger == TriggerNames.NextAction.ordinal() && pressed)
-        {
-            CycleActionState action = (CycleActionState) gameStates.get(CycleActionState.class);
-            action.setAnimationSetBoolean(false);
+            case ToggleLeftArm:
+                avatar.setCameraOnMe();
+                if (avatar.getLeftArm() != null)
+                    avatar.getLeftArm().toggleEnabled();
+                break;
+                
+            case ToggleLeftArmManualDriveReachMode:
+                if (avatar.getLeftArm() != null)
+                    avatar.getLeftArm().toggleManualDriveReachUp();
+                break;
+                
+            case ToggleRightArmManualDriveReachMode:
+                if (avatar.getRightArm() != null)
+                    avatar.getRightArm().toggleManualDriveReachUp();
+                break;
+                
+            case Point:
+                if (avatar.getObjectCollection() == null || avatar.getRightArm() == null)
+                    return;
+
+                SpatialObject obj = avatar.getObjectCollection().findNearestObjectOfType(ChairObject.class, avatar, 10000.0f, 1.0f, true);
+                if (obj == null)
+                    return;
+
+                avatar.getRightArm().setPointAtLocation(obj.getPositionRef());
+                break;
+        
+            case GoSit:
+                break;
+                
+            case GoTo1:
+                behavior.clearTasks();
+                goToNearestLocation();
+                if (location != null)
+                    behavior.addTaskToBottom(new FollowBakedPath("yellowRoom", location, this));
+                break;
+                
+            case GoTo2:
+                behavior.clearTasks();
+                goToNearestLocation();
+                if (location != null)
+                    behavior.addTaskToBottom(new FollowBakedPath("lobbyCenter", location, this));
+                break;
+        
+            case GoTo3:
+                System.out.println("Sit on the nearest chair");
+                behavior.clearTasks();
+                goToNearestChair();
+                break;
+
+            // Facial expressions
+            case Smile:
+                avatar.initiateFacialAnimation(1, 0.2f, 1.0f);
+                break;
+                
+            case Frown:
+                avatar.initiateFacialAnimation(2, 0.2f, 1.5f);
+                break;
+                
+            case Scorn:
+                avatar.initiateFacialAnimation(3, 0.2f, 1.5f);
+                break;
+                
+            case Reverse:
+                CycleActionState punch = (CycleActionState) gameStates.get(CycleActionState.class);
+                punch.setTransitionReverseAnimation(!punch.isTransitionReverseAnimation());
+                break;
+        
+            case NextAction:
+                CycleActionState action = (CycleActionState) gameStates.get(CycleActionState.class);
+                action.setAnimationSetBoolean(false);
             
-            genericActionIndex++;
-            if (genericActionIndex >= genericAnimations.size())
-                genericActionIndex = 0;
+                genericActionIndex++;
+                if (genericActionIndex >= genericAnimations.size())
+                    genericActionIndex = 0;
             
-            genericAnimations.get(genericActionIndex).apply(action);
+                genericAnimations.get(genericActionIndex).apply(action);
+                break;
         }
     }
     

@@ -1,4 +1,22 @@
 /**
+ * Open Wonderland
+ *
+ * Copyright (c) 2011, Open Wonderland Foundation, All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * The Open Wonderland Foundation designates this particular file as
+ * subject to the "Classpath" exception as provided by the Open Wonderland
+ * Foundation in the License file that accompanied this code.
+ */
+
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -18,6 +36,7 @@
 package imi.character.statemachine.corestates;
 
 import imi.character.avatar.*;
+import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.GameContext;
 import imi.character.statemachine.GameState;
 import imi.scene.SkeletonNode;
@@ -87,6 +106,11 @@ public class IdleState extends GameState
     protected void stateExit(GameContext owner)
     {
         super.stateExit(owner);
+        
+        // Clear the idle trigger before moving out of this state
+        if (context.getTriggerState().isKeyPressed(TriggerNames.Idle.ordinal())) {
+            context.getTriggerState().keyReleased(TriggerNames.Idle.ordinal());
+        }
     }
     
     @Override

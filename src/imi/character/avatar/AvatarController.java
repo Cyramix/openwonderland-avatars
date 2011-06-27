@@ -95,9 +95,16 @@ public class AvatarController extends CharacterController
     private float    dampTick            = 1.0f / 60.0f;
     
     /** gravity **/
-    private Vector3f gravity             = new Vector3f();//new Vector3f(0.0f, 0.098f, 0.0f);
+    private Vector3f gravity             = new Vector3f(0.0f, 0.98f, 0.0f);
     private Vector3f gravityAcc          = new Vector3f();
 
+    private boolean bColliding           = false;
+    private float   height               = 0f;
+    
+    private boolean prevColliding        = false;
+    private float   prevHeight           = 0f;
+    
+    
     private boolean  bSlide              = false; // if false velocity and heading will be alligned
 
     private PMatrix currentRot = new PMatrix();
@@ -112,9 +119,7 @@ public class AvatarController extends CharacterController
      * This is primarily needed when the collision system is operating on the avatar.
      **/
     private boolean bUseTransformUpdateManager = false;
-    /** Used to enable / disabled ground clamping **/
-    private boolean groundClampEnabled = true;
-
+    
     /**
      * Construct a new avatar controller
      * @param theAvatar avatar to control
@@ -160,8 +165,11 @@ public class AvatarController extends CharacterController
     public void accelerate(float force) 
     {
         fwdAcceleration += force / mass;
-        if (fwdAcceleration > maxAcceleration)
+        if (fwdAcceleration > maxAcceleration) {
             fwdAcceleration = maxAcceleration;
+        } else if (fwdAcceleration < -maxAcceleration) {
+            fwdAcceleration = -maxAcceleration;
+        }
     }
 
     /**
@@ -248,22 +256,31 @@ public class AvatarController extends CharacterController
             velocity.set(0,0,0);
         }
         velocity.addLocal(currentDirection.mult(fwdAcceleration * (-deltaTime)));
-        velocity.addLocal(acceleration);
-        gravityAcc.addLocal(gravity);
-        velocity.addLocal(gravityAcc);
-        if (velocity.x > maxVelocity)
-            velocity.x = maxVelocity;
-        if (velocity.y > maxVelocity)
-            velocity.y = maxVelocity;
-        if (velocity.z > maxVelocity)
-            velocity.z = maxVelocity;
-        if (velocity.x < -maxVelocity)
-            velocity.x = -maxVelocity;
-        if (velocity.y < -maxVelocity)
-            velocity.y = -maxVelocity;
-        if (velocity.z < -maxVelocity)
-            velocity.z = -maxVelocity;
-         
+        
+        // rotate the acceleration by the current direction
+        Vector3f accelRot = acceleration.clone();
+        body.getTransform().getWorldMatrix(false).transformNormal(accelRot);
+        velocity.addLocal(accelRot);
+        
+        // for any dimension that is above the maximum, calculate the scale
+        // needed to make the value equal to the maximum
+        float scaleX = 1.0f;
+        float scaleY = 1.0f;
+        float scaleZ = 1.0f;
+        if (Math.abs(velocity.x) > maxVelocity) {
+            scaleX = maxVelocity / Math.abs(velocity.x);
+        }
+        if (Math.abs(velocity.y) > maxVelocity) {
+            scaleY = maxVelocity / Math.abs(velocity.y);
+        }
+        if (Math.abs(velocity.z) > maxVelocity) {
+            scaleZ = maxVelocity / Math.abs(velocity.z);
+        }
+        
+        // find the lowest scale value and apply that
+        float scale = Math.min(scaleX, Math.min(scaleY, scaleZ)); 
+        velocity.multLocal(scale); 
+        
         // Apply Velocity
         Vector3f position = body.getTransform().getLocalMatrix(false).getTranslation();
         if (bReverseHeading)
@@ -299,26 +316,75 @@ public class AvatarController extends CharacterController
             dampCounter = 0.0f;
             
             fwdAcceleration *= accelerationDamp;
-            if (fwdAcceleration < 0.5f)
+            if (Math.abs(fwdAcceleration) < 0.5f)
                 fwdAcceleration = 0.0f;
 
             acceleration.multLocal(accelerationDamp);
-            // TODO clamp down?
-            if (collisionController!=null && groundClampEnabled) {
-                if (collisionController.isGravityEnabled())
-                    checkGround(position);
-                if (collisionCheck(position, currentRot)) {   // Check for collision and notify listeners
-                    if (collisionController.isCollisionResponseEnabled()) {
-                        position.set(previousPos);
-                        currentRot.set(previousRot);
-                    } else {
-//                        System.err.println("CollisionResponse Disabled");
-                    }
+            
+            // if there is a collision control, find the current height.
+            // If there is no collision control, the height may be set 
+            // externally
+            if (collisionController != null) {
+                // set the height to the current distance to the ground
+                // or 0 if gravity is disabled
+                if (collisionController.isGravityEnabled()) {
+                    setHeight(calculateHeight(position));
+                } else {
+                    setHeight(0f);
                 }
             }
+            
+            // apply gravity if height is not equal to zero. If height is less
+            // than zero, that means there is a small step or something
+            // similar that we should hop onto
+            float gravityHeight = getHeight();
+            if (gravityHeight != 0f) {
+                // increase gravity by the appropriate amount
+                gravityAcc.addLocal(gravity.mult(deltaTime));
+                if (gravityAcc.y > maxVelocity) {
+                    gravityAcc.y = maxVelocity;
+                }
+                
+                if (gravityHeight > gravityAcc.y) {
+                    position.y -= gravityAcc.y;
+                    gravityHeight -= gravityAcc.y;
+                } else {
+                    position.y -= gravityHeight;
+                    gravityAcc.zero();
+                    gravityHeight = 0f;
+                }
+            }
+            
+            // now that all position updates have been applied, check for
+            // collision at the current position. If there is no collision
+            // controller, collision status may be set externally
+            if (collisionController != null) {
+                if (collisionCheck(position, currentRot) &&
+                    collisionController.isCollisionResponseEnabled())
+                {
+                    setColliding(true);
+                } else {
+                    setColliding(false);
+                }
+            }
+            
+            // apply collision if one was detected
+            if (isColliding()) {
+                 position.set(previousPos);
+                 currentRot.set(previousRot);
+            
+                 // no change in height
+                 gravityHeight = getHeight();
+            }
+            
+            // update final height
+            setHeight(gravityHeight);
 
-            if (fwdAcceleration < 1.0f && Math.max(Math.max(acceleration.x, acceleration.y), acceleration.z) < 1.0f)
+            if (Math.abs(fwdAcceleration) < 1.0f && 
+                Math.max(Math.max(Math.abs(acceleration.x), Math.abs(acceleration.y)), Math.abs(acceleration.z)) < 1.0f)
+            {
                 velocity.multLocal(velocityDamp);
+            }
         }
 
         TransformUpdateManager transformUpdateManager = (TransformUpdateManager) avatar.getWorldManager().getUserData(TransformUpdateManager.class);
@@ -330,21 +396,20 @@ public class AvatarController extends CharacterController
         {
             currentRot.setTranslation(position);
             body.getTransform().getLocalMatrix(true).set(currentRot);
-            notifyTransfromUpdate(position, currentRot);
+            notifyTransfromUpdate(position, currentRot, getHeight(), isColliding());
         }
     }
 
     ////// Ground clamping code
     private Ray heightRay = new Ray();
-    private Vector3f downVec = new Vector3f(0f,-1f,0f);
-    private float fallInc = 0.5f;
-    private void checkGround(Vector3f newPos) {
+    private static final Vector3f DOWN_VEC = new Vector3f(0f,-1f,0f);
+    private float calculateHeight(Vector3f position) {
         float yDelta = 1.0f;
         float dy = 0;
 
-        heightRay.origin.set(newPos);
+        heightRay.origin.set(position);
         heightRay.origin.y+=yDelta;
-        heightRay.direction = downVec;
+        heightRay.direction = DOWN_VEC;
         //System.out.println(newPos);
         PickInfo pi = collisionController.getCollisionSystem().pickAllWorldRay(heightRay, true, false);
         if (pi.size() != 0) {
@@ -362,12 +427,14 @@ public class AvatarController extends CharacterController
 
             if (pd != null) {
                 dy = pd.getDistance() - yDelta;
-
-                newPos.y -= dy;
+                return dy;
             }
         } else {
             //System.out.println("NO GROUND!!!");
         }
+        
+        // no height
+        return 0f;
     }
 
     private boolean collisionCheck(Vector3f potentialPos, PMatrix potentialRot) {
@@ -413,11 +480,17 @@ public class AvatarController extends CharacterController
             listener.processCollision(collision);
     }
 
-    @Override
-    public void notifyTransfromUpdate(Vector3f translation, PMatrix orientation)
+    public void notifyTransfromUpdate(Vector3f translation, PMatrix orientation,
+                                      float height, boolean colliding)
     {
         avatar.getJScene().setExternalKidsRootPosition(translation, orientation.getRotationJME());
-        super.notifyTransfromUpdate(translation, orientation);
+
+        boolean force = (colliding != prevColliding || height != prevHeight);
+        
+        super.notifyTransformUpdate(translation, orientation, force);
+        
+        prevColliding = colliding;
+        prevHeight = height;
     }
 
     @Override
@@ -425,6 +498,15 @@ public class AvatarController extends CharacterController
         gravityAcc.zero();
     }
 
+    @Override
+    public synchronized boolean isColliding() {
+        return bColliding;
+    }
+    
+    protected synchronized void setColliding(boolean colliding) {
+        this.bColliding = colliding;
+    }
+    
     public Vector3f getGravity() {
         return gravity;
     }
@@ -439,6 +521,15 @@ public class AvatarController extends CharacterController
 
     public void setGravityAcc(Vector3f gravityAcc) {
         this.gravityAcc.set(gravityAcc);
+    }
+    
+    @Override
+    public synchronized float getHeight() {
+        return height;
+    }
+    
+    protected synchronized void setHeight(float height) {
+        this.height = height;
     }
     
     /**
@@ -514,6 +605,7 @@ public class AvatarController extends CharacterController
         this.velocityDamp = 1.0f - velocityDamp;
     }
     
+    @Override
     public Vector3f getVelocity()
     {
         return velocity;
@@ -604,19 +696,5 @@ public class AvatarController extends CharacterController
     public boolean isUsingTransformUpdateManager()
     {
         return bUseTransformUpdateManager;
-    }
-
-    /**
-     * Arm / Disarm the simple ground clamping
-     * @param bUseIt
-     */
-    public void setSimpleGroundClamping(boolean enabled)
-    {
-        groundClampEnabled = enabled;
-    }
-
-    public boolean isUsingSimpleGroundClamping()
-    {
-        return groundClampEnabled;
     }
 }

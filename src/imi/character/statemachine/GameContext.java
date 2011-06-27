@@ -1,4 +1,22 @@
 /**
+ * Open Wonderland
+ *
+ * Copyright (c) 2011, Open Wonderland Foundation, All Rights Reserved
+ *
+ * Redistributions in source code form must reproduce the above
+ * copyright and this condition.
+ *
+ * The contents of this file are subject to the GNU General Public
+ * License, Version 2 (the "License"); you may not use this file
+ * except in compliance with the License. A copy of the License is
+ * available at http://www.opensource.org/licenses/gpl-license.php.
+ *
+ * The Open Wonderland Foundation designates this particular file as
+ * subject to the "Classpath" exception as provided by the Open Wonderland
+ * Foundation in the License file that accompanied this code.
+ */
+
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -30,6 +48,8 @@ import java.util.logging.Logger;
 import imi.input.InputState;
 import imi.scene.SkeletonNode;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * A character's context contains states and a registry of entry points (validation
@@ -67,6 +87,9 @@ public class GameContext
     protected boolean isNamed = false;
     protected boolean enabledState = true;
 
+    private enum KeyState { PRESSED, RELEASED, PRESSED_AND_RELEASED };
+    private final Map<Integer, KeyState> triggers = new LinkedHashMap<Integer, KeyState>();
+   
     private static final Logger logger = Logger.getLogger(GameContext.class.getName());
 
     /** Creates a new instance of GameContext */
@@ -220,8 +243,12 @@ public class GameContext
         if (!initalized)
             initialize();
 
+        Map<Integer, Boolean> afterActions = processTriggers();
+        
         if (currentState != null && currentState.enabledState)
             currentState.update(deltaTime);
+        
+        processAfterTriggers(afterActions);
     }
 
     /**
@@ -243,7 +270,17 @@ public class GameContext
      * @param trigger The trigger type
      */
     public void triggerPressed(int trigger)
-    {
+    {        
+        synchronized (triggers) {
+            // pressing a key sets the state to PRESSED, regardless of what
+            // state it was in previously
+            triggers.put(trigger, KeyState.PRESSED);
+            
+            logger.fine("Press " + trigger + " = " + KeyState.PRESSED.name());
+        }
+    }
+    
+    private void processTriggerPressed(int trigger) {
         if (actions == null)
             return;
            
@@ -276,6 +313,24 @@ public class GameContext
      */
     public void triggerReleased(int trigger)
     {
+        synchronized (triggers) {
+            // a release either sets the state to RELEASED if there was no
+            // previous press, or PRESSED_AND_RELEASED if there was a previous
+            // press
+            KeyState val = triggers.get(trigger);
+            if (val == KeyState.PRESSED) {
+                val = KeyState.PRESSED_AND_RELEASED;
+            } else {
+                val = KeyState.RELEASED;
+            }
+            
+            logger.fine("Release " + trigger + " = " + val.name());
+            
+            triggers.put(trigger, val);
+        }
+    }
+    
+    private void processTriggerReleased(int trigger) {
         if (actions == null)
             return;
 
@@ -303,6 +358,52 @@ public class GameContext
 
     }
 
+    /**
+     * Process queued triggers. This will call the state change methods, and
+     * return a list of actions to take after the state machine has updated.
+     */
+    private Map<Integer, Boolean> processTriggers() {
+        Map<Integer, Boolean> afterActions = new LinkedHashMap<Integer, Boolean>();
+        
+        synchronized (triggers) {
+            for (Map.Entry<Integer, KeyState> e : triggers.entrySet()) {
+                
+                logger.fine("Process " + e.getKey() + " = " + e.getValue().name());
+                
+                switch (e.getValue()) {
+                    case PRESSED:
+                        processTriggerPressed(e.getKey());
+                        break;
+                    case RELEASED:
+                        processTriggerReleased(e.getKey());
+                        break;
+                    case PRESSED_AND_RELEASED:
+                        // a trigger that was both pressed and released in the
+                        // frame. We want the event to happen for just one frame,
+                        // so trigger the press now, and schedule the release
+                        // for later
+                        processTriggerPressed(e.getKey());
+                        afterActions.put(e.getKey(), false);
+                        break;
+                }
+            }
+            
+            triggers.clear();
+        }
+        
+        return afterActions;
+    }
+    
+    private void processAfterTriggers(Map<Integer, Boolean> triggers) {
+        for (Map.Entry<Integer, Boolean> e : triggers.entrySet()) {
+            if (e.getValue()) {
+                processTriggerPressed(e.getKey());
+            } else {
+                processTriggerReleased(e.getKey());
+            }
+        }
+    }
+    
     /**
      * Inform the context of a new trigger event
      * @param pressed
