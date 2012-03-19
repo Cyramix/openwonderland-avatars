@@ -1,7 +1,7 @@
 /**
  * Open Wonderland
  *
- * Copyright (c) 2010, Open Wonderland Foundation, All Rights Reserved
+ * Copyright (c) 2010 - 2012, Open Wonderland Foundation, All Rights Reserved
  *
  * Redistributions in source code form must reproduce the above
  * copyright and this condition.
@@ -309,7 +309,8 @@ public class AvatarController extends CharacterController
             position = body.getTransform().getLocalMatrix(false).getTranslation();
         }
         
-        // Dampen
+        // Dampen, but only at a maximum of 60x per second. Any updates
+        // faster than that won't cause dampening.
         dampCounter += deltaTime;
         if (dampCounter > dampTick)
         {
@@ -321,71 +322,71 @@ public class AvatarController extends CharacterController
 
             acceleration.multLocal(accelerationDamp);
             
-            // if there is a collision control, find the current height.
-            // If there is no collision control, the height may be set 
-            // externally
-            if (collisionController != null) {
-                // set the height to the current distance to the ground
-                // or 0 if gravity is disabled
-                if (collisionController.isGravityEnabled()) {
-                    setHeight(calculateHeight(position));
-                } else {
-                    setHeight(0f);
-                }
-            }
-            
-            // apply gravity if height is not equal to zero. If height is less
-            // than zero, that means there is a small step or something
-            // similar that we should hop onto
-            float gravityHeight = getHeight();
-            if (gravityHeight != 0f) {
-                // increase gravity by the appropriate amount
-                gravityAcc.addLocal(gravity.mult(deltaTime));
-                if (gravityAcc.y > maxVelocity) {
-                    gravityAcc.y = maxVelocity;
-                }
-                
-                if (gravityHeight > gravityAcc.y) {
-                    position.y -= gravityAcc.y;
-                    gravityHeight -= gravityAcc.y;
-                } else {
-                    position.y -= gravityHeight;
-                    gravityAcc.zero();
-                    gravityHeight = 0f;
-                }
-            }
-            
-            // now that all position updates have been applied, check for
-            // collision at the current position. If there is no collision
-            // controller, collision status may be set externally
-            if (collisionController != null) {
-                if (collisionCheck(position, currentRot) &&
-                    collisionController.isCollisionResponseEnabled())
-                {
-                    setColliding(true);
-                } else {
-                    setColliding(false);
-                }
-            }
-            
-            // apply collision if one was detected
-            if (isColliding()) {
-                 position.set(previousPos);
-                 currentRot.set(previousRot);
-            
-                 // no change in height
-                 gravityHeight = getHeight();
-            }
-            
-            // update final height
-            setHeight(gravityHeight);
-
             if (Math.abs(fwdAcceleration) < 1.0f && 
                 Math.max(Math.max(Math.abs(acceleration.x), Math.abs(acceleration.y)), Math.abs(acceleration.z)) < 1.0f)
             {
                 velocity.multLocal(velocityDamp);
             }
         }
+            
+        // if there is a collision control, find the current height.
+        // If there is no collision control, the height may be set 
+        // externally
+        if (collisionController != null) {
+            // set the height to the current distance to the ground
+            // or 0 if gravity is disabled
+            if (collisionController.isGravityEnabled()) {
+                setHeight(calculateHeight(position));
+            } else {
+                setHeight(0f);
+            }
+        }
+
+        // apply gravity if height is not equal to zero. If height is less
+        // than zero, that means there is a small step or something
+        // similar that we should hop onto
+        float gravityHeight = getHeight();
+        if (gravityHeight != 0f) {
+            // increase gravity by the appropriate amount
+            gravityAcc.addLocal(gravity.mult(deltaTime));
+            if (gravityAcc.y > maxVelocity) {
+                gravityAcc.y = maxVelocity;
+            }
+
+            if (gravityHeight > gravityAcc.y) {
+                position.y -= gravityAcc.y;
+                gravityHeight -= gravityAcc.y;
+            } else {
+                position.y -= gravityHeight;
+                gravityAcc.zero();
+                gravityHeight = 0f;
+            }
+        }
+
+        // now that all position updates have been applied, check for
+        // collision at the current position. If there is no collision
+        // controller, collision status may be set externally
+        if (collisionController != null) {
+            if (collisionCheck(position, currentRot) &&
+                collisionController.isCollisionResponseEnabled())
+            {
+                setColliding(true);
+            } else {
+                setColliding(false);
+            }
+        }
+
+        // apply collision if one was detected
+        if (isColliding()) {
+            position.set(previousPos);
+            currentRot.set(previousRot);
+
+            // no change in height
+            gravityHeight = getHeight();
+        }
+
+        // update final height
+        setHeight(gravityHeight);
 
         TransformUpdateManager transformUpdateManager = (TransformUpdateManager) avatar.getWorldManager().getUserData(TransformUpdateManager.class);
         if(bUseTransformUpdateManager && transformUpdateManager != null)
