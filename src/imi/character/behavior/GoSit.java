@@ -1,7 +1,7 @@
 /**
  * Open Wonderland
  *
- * Copyright (c) 2010, Open Wonderland Foundation, All Rights Reserved
+ * Copyright (c) 2010 - 2012, Open Wonderland Foundation, All Rights Reserved
  *
  * Redistributions in source code form must reproduce the above
  * copyright and this condition.
@@ -112,7 +112,7 @@ public class GoSit implements Task
         {
             // Update local variables
         Vector3f v3f = context.getController().getPosition();
-        currentCharacterPosition.set(v3f.x, 0.0f, v3f.z);
+        currentCharacterPosition.set(v3f.x, goalPosition.y, v3f.z);
 //        currentCharacterPosition.set(context.getController().getPosition());
         currentDistanceFromGoal = goalPosition.distance(currentCharacterPosition);
 
