@@ -21,7 +21,7 @@ import com.jme.math.Vector2f;
 import com.jme.math.Vector3f;
 import com.jme.renderer.Camera;
 import com.jme.scene.Node;
-import imi.collision.TransformUpdateManager;
+import com.jogamp.opengl.util.awt.Screenshot;
 import imi.input.InputClient;
 import imi.input.InputManagerEntity;
 import imi.scene.PMatrix;
@@ -107,7 +107,7 @@ public final class FlexibleCameraProcessor extends ProcessorComponent implements
                 System.out.println("Taking screen shot " + file.getName());
                 try {
                     if (file.mkdirs() || file.exists())
-                        com.sun.opengl.util.Screenshot.writeToFile(file, 800, 600);
+                        Screenshot.writeToFile(file, 800, 600);
                 } catch (IOException ex) {
                     Logger.getLogger(FlexibleCameraProcessor.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (GLException ex) {

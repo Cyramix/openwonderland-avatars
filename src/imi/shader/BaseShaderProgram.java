@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import org.jdesktop.mtgame.RenderUpdater;
 import org.jdesktop.mtgame.WorldManager;
@@ -142,7 +143,7 @@ public abstract class BaseShaderProgram extends AbstractShaderProgram implements
         JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shaderState;
         if (m_propertyMap.containsKey("pose"))
         {
-            final GL gl = GLU.getCurrentGL();
+            final GL2 gl = GLU.getCurrentGL().getGL2();
             joglShader.setHasAttributes(true);
             gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
         }

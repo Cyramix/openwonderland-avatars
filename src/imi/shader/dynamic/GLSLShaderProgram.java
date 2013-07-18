@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.media.opengl.GL;
+import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import javolution.util.FastSet;
 import javolution.util.FastTable;
@@ -821,7 +822,7 @@ public class GLSLShaderProgram extends AbstractShaderProgram implements RenderUp
         JOGLShaderObjectsState joglShader = (JOGLShaderObjectsState)shaderState;
         if (m_propertyMap.containsKey("pose"))
         {
-            final GL gl = GLU.getCurrentGL();
+            final GL2 gl = GLU.getCurrentGL().getGL2();
             joglShader.setHasAttributes(true);
             gl.glBindAttribLocation(joglShader.getProgramIdentifier(), 1, "boneIndices");
         }
