@@ -1,4 +1,8 @@
 /**
+ * Copyright (c) 2014, WonderBuilders, Inc., All Rights Reserved
+ */
+
+/**
  * Open Wonderland
  *
  * Copyright (c) 2011, Open Wonderland Foundation, All Rights Reserved
@@ -76,9 +80,15 @@ public class IdleState extends GameState
      */
     public boolean toIdle(Object data)
     {
-        if (context.getController().getVelocityScalar() < velocityThreshhold)
+        // fix for page down issue.
+        if(data!=null && ((AvatarController)context.getController()).isGravityEnable()) {
             return true;
-        return false;
+        } else {
+            if (context.getController().getVelocityScalar() < velocityThreshhold) {
+                return true;
+            }
+            return false;
+        }
     }
 
     private void takeAction(float deltaTime) 

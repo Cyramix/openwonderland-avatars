@@ -1,4 +1,8 @@
 /**
+ * Copyright (c) 2014, WonderBuilders, Inc., All Rights Reserved
+ */
+
+/**
  * Open Wonderland
  *
  * Copyright (c) 2011, Open Wonderland Foundation, All Rights Reserved
@@ -38,6 +42,7 @@ package imi.character.statemachine;
 import imi.character.CharacterController;
 import imi.character.behavior.CharacterBehaviorManager;
 import imi.character.statemachine.GameState.Action;
+import imi.character.statemachine.corestates.transitions.FlyToIdle;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -129,7 +134,13 @@ public class GameContext
         
         Object bool = null;
         try {
-            bool = method.invoke(state, transition.getStateMessageArgs());
+            //fix for the page down issue.
+            if(transition instanceof FlyToIdle) {
+                transition.setStateMessageArgs(transition.toString());
+                bool = method.invoke(state, transition.getStateMessageArgs());
+            } else {
+                bool = method.invoke(state, transition.getStateMessageArgs());
+            }
         } catch (IllegalAccessException ex) {
             logger.log(Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {

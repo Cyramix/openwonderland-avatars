@@ -1,4 +1,8 @@
 /**
+ * Copyright (c) 2014, WonderBuilders, Inc., All Rights Reserved
+ */
+
+/**
  * Open Wonderland
  *
  * Copyright (c) 2010 - 2012, Open Wonderland Foundation, All Rights Reserved
@@ -42,17 +46,26 @@ import com.jme.scene.Spatial;
 import imi.character.CharacterController;
 import imi.collision.CollisionController;
 import imi.collision.TransformUpdateManager;
+
+import com.jme.intersection.CollisionData;
+import org.jdesktop.mtgame.CollisionDetails;
+import org.jdesktop.mtgame.JMECollisionDetails;
+import com.jme.math.Triangle;
+import com.jme.scene.TriMesh;
+
 import imi.scene.PMatrix;
 import imi.scene.PTransform;
 import imi.scene.polygonmodel.PPolygonModelInstance;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 import org.jdesktop.mtgame.CollisionInfo;
 import org.jdesktop.mtgame.PickDetails;
 import org.jdesktop.mtgame.PickInfo;
 import org.jdesktop.wonderland.common.ExperimentalAPI;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *  Concrete character controller.
@@ -66,6 +79,19 @@ import org.jdesktop.wonderland.common.ExperimentalAPI;
 @ExperimentalAPI
 public class AvatarController extends CharacterController
 {
+    protected class SetCollidingTask extends TimerTask
+    {
+        private AvatarController aController = null;
+        
+        SetCollidingTask(AvatarController controller) {
+            this.aController = controller;
+        }
+        
+        public void run() {
+            this.aController.setColliding(false);
+        }
+    }
+    
     /** The avatar being controller **/
     private Avatar    avatar               = null;
     /** True if initialization has completed **/
@@ -109,6 +135,11 @@ public class AvatarController extends CharacterController
 
     private PMatrix currentRot = new PMatrix();
     
+    /** Timer and task for calling setColliding() to prevent dead reckoning to be used during collisions **/
+    private Timer collisionTimer = new Timer();
+    private SetCollidingTask collisionTask = null;
+    private long collisionTimerDelay = 1000;
+    
     /** Collision Controller **/
     private CollisionController collisionController = null;
 
@@ -142,6 +173,7 @@ public class AvatarController extends CharacterController
             initalized = true;
         }
 
+        //collisionTask = new SetCollidingTask(this);
         // Diagnostic / Debug output
         Logger.getLogger(AvatarController.class.getName()).log(Level.INFO, "GOT BODY " + body);
     }
@@ -282,11 +314,7 @@ public class AvatarController extends CharacterController
         velocity.multLocal(scale); 
         
         // Apply Velocity
-        Vector3f position = body.getTransform().getLocalMatrix(false).getTranslation();
-        if (bReverseHeading)
-            position.addLocal(velocity.mult(-deltaTime));
-        else
-            position.addLocal(velocity.mult(deltaTime));
+        Vector3f position = applyVelocity(body.getTransform().getLocalMatrix(false).getTranslation(), deltaTime);
 
         if (Float.isNaN(position.x)) {
             if (!nanReported) {
@@ -363,31 +391,49 @@ public class AvatarController extends CharacterController
             }
         }
 
-        // now that all position updates have been applied, check for
-        // collision at the current position. If there is no collision
-        // controller, collision status may be set externally
-        if (collisionController != null) {
-            if (collisionCheck(position, currentRot) &&
-                collisionController.isCollisionResponseEnabled())
-            {
-                setColliding(true);
-            } else {
-                setColliding(false);
+        Vector3f correction = new Vector3f();
+        // Check for collisions and if necessary apply correction to velocity
+        if(collisionController != null && collisionController.isCollisionResponseEnabled() && !velocity.equals(Vector3f.ZERO)) {
+            correction = collisionCheck(previousPos, position, currentRot, velocity);
+            
+            // If no collision was found, try again in movement mid point
+            if(correction.equals(Vector3f.ZERO)) {
+                Vector3f midPos = previousPos.add(position.subtract(previousPos).divide(2.0f));
+                correction = collisionCheck(previousPos, midPos, currentRot, velocity);
+            }
+            
+            if(!correction.equals(Vector3f.ZERO)) {
+                velocity.addLocal(correction);
+                setCollidingInternal();
             }
         }
 
-        // apply collision if one was detected
-        if (isColliding()) {
-            position.set(previousPos);
-            currentRot.set(previousRot);
+        // Apply velocity again if collision was detected
+        if (isColliding()) 
+        {
+            position = applyVelocity(previousPos, deltaTime);
 
-            // no change in height
-            gravityHeight = getHeight();
+            // Apply new gravity
+            if(collisionController != null && collisionController.isGravityEnabled())
+                gravityHeight = calculateHeight(position);
+            else {
+                avatar.getJScene().setExternalKidsRootPosition(previousPos, previousRot.getRotationJME());
+                return;
+            }
         }
 
         // update final height
         setHeight(gravityHeight);
 
+        // update the position.y
+        if (gravityHeight != 0.0F) {
+            if (gravityHeight > this.gravityAcc.y) {
+                position.y -= this.gravityAcc.y;
+            } else {
+                position.y -= gravityHeight;
+            }
+        }
+        
         TransformUpdateManager transformUpdateManager = (TransformUpdateManager) avatar.getWorldManager().getUserData(TransformUpdateManager.class);
         if(bUseTransformUpdateManager && transformUpdateManager != null)
         {
@@ -438,12 +484,16 @@ public class AvatarController extends CharacterController
         return 0f;
     }
 
-    private boolean collisionCheck(Vector3f potentialPos, PMatrix potentialRot) {
-        boolean collision = false;
+    ////// Checks for collision and returns velocity correction if found
+    private Vector3f collisionCheck(Vector3f previousPos, Vector3f potentialPos, PMatrix potentialRot, Vector3f currentVel) {
         Spatial collisionGraph = collisionController.getCollisionGraph();
         collisionGraph.setLocalTranslation(potentialPos.x, potentialPos.y, potentialPos.z);
         collisionGraph.setLocalRotation(potentialRot.getRotationJME());
         collisionGraph.updateGeometricState(0, true);
+
+        float coefRestitution = 0.0f;
+        Vector3f correction = new Vector3f();
+        
 
         // For high quality avatars need to transform the boxes that enclose the body parts
         // int jointIndex = skeleton.getSkinnedMeshJointIndex(jointName)  gets the int index of a joint  (cache the jointIndex, recompute if avatar changes)
@@ -451,14 +501,68 @@ public class AvatarController extends CharacterController
         // specificJoint.getTransform().getWorldMatrix(false)
 
         CollisionInfo collisionInfo = collisionController.getCollisionSystem().findAllCollisions(collisionGraph, true);
-        if (collisionInfo.size() != 0) {
-            collision = true;
-//                System.err.println("OUCH ! "+tris.size());
-//                TriMesh mesh = (TriMesh)tcr.getCollisionData(i).getSourceMesh();
-            //computeCollisionResponse(position, potentialPos, rotatedFwdDirection, triData2, walkInc);
+        if(collisionInfo.size() > 0) {
             notifyCollisionListeners(collisionInfo);
+            Vector3f normal = new Vector3f();
+            
+            // Get normals for all collisions detected
+            for(int index = 0; index < collisionInfo.size(); index++) {
+                CollisionDetails details = collisionInfo.get(index);
+                CollisionData data = ((JMECollisionDetails) details).getPickData();
+              
+                if(data != null) {           
+                    normal.addLocal(getCollisionNormal(data));
         }
-        return collision;
+    }
+
+            normal.normalizeLocal();
+            
+            float normalVelMag = normal.dot(currentVel);
+            
+            // Moving away from the collision
+            if(normalVelMag > 0) {
+                return correction;
+            }
+            
+            Vector3f normalVel = normal.mult(normalVelMag);
+            correction = normalVel.mult(-(1 + coefRestitution));
+        }
+        
+        return correction;
+    }
+    
+    private Vector3f getCollisionNormal(CollisionData data) {
+        Vector3f normal = new Vector3f();
+
+        TriMesh mesh = (TriMesh) data.getTargetMesh();
+        Triangle[] triangles = mesh.getMeshAsTriangles(null);
+        ArrayList<Integer> triIndex = data.getTargetTris();
+
+        for(Integer i : triIndex) {
+            Triangle t = triangles[i];
+            t.calculateNormal();
+            
+            Vector3f n = data.getTargetMesh().getLocalRotation().mult(t.getNormal());
+            n.y = 0;
+            
+            float dot = n.dot(velocity.normalize());
+            
+            if(dot <= 0)
+                normal.addLocal(n);
+        }  
+        
+        return normal.normalizeLocal();
+    }
+    
+    ////// Applies current velocity to given position
+    private Vector3f applyVelocity(Vector3f position, float deltaTime)
+    {
+        if (bReverseHeading)
+            position.addLocal(velocity.mult(-deltaTime));
+        else
+            position.addLocal(velocity.mult(deltaTime));
+        
+        return position;
     }
 
     public void addCollisionListener(AvatarCollisionListener listener) {
@@ -506,6 +610,19 @@ public class AvatarController extends CharacterController
     
     protected synchronized void setColliding(boolean colliding) {
         this.bColliding = colliding;
+    }
+    
+    protected synchronized void setCollidingInternal() {
+        if(!isColliding()) {
+            setColliding(true);
+        }
+        
+        if(collisionTask != null) {
+            collisionTask.cancel();
+        }
+        
+        collisionTask = new SetCollidingTask(this);
+        collisionTimer.schedule(collisionTask, collisionTimerDelay);
     }
     
     public Vector3f getGravity() {
@@ -697,5 +814,9 @@ public class AvatarController extends CharacterController
     public boolean isUsingTransformUpdateManager()
     {
         return bUseTransformUpdateManager;
+    }
+    
+    public boolean isGravityEnable() {
+        return this.collisionController.isGravityEnabled();
     }
 }
