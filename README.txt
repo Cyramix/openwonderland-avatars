@@ -1,2 +1,2 @@
-Welcome to the Avatar system for Wonderland 0.5!
+Welcome to the Avatar system for Wonderland 0.5! 
 This project has a few dependencies, all of which are satisfied by the contents of the lib directory. It is possible for the contents of this directory to be out of date with the latest version of MTGame (the multithreaded platform on which the system is built). The latest version of the MTGame project can be found at https://mtgame.dev.java.net/
