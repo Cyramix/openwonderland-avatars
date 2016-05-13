@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Copyright (c) 2014, WonderBuilders, Inc., All Rights Reserved
  */
 
@@ -48,6 +51,7 @@ import imi.scene.SkeletonNode;
 /**
  * Represents the character's idling behavior
  * @author Lou Hayt
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class IdleState extends GameState
 {
@@ -132,6 +136,8 @@ public class IdleState extends GameState
                 
         // Stop moving
         context.getController().stop();
+        
+        context.getCharacter().enableShadow(true);
     }
     
     @Override

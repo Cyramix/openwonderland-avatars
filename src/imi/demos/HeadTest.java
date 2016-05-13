@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -96,6 +99,7 @@ import org.jdesktop.mtgame.WorldManager;
 /**
  *
  * @author ptruong
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class HeadTest extends JFrame implements BufferUpdater {
 ////////////////////////////////////////////////////////////////////////////////
@@ -802,6 +806,10 @@ public class HeadTest extends JFrame implements BufferUpdater {
                 pendingAnimations = ((pendingAnimations -= 2) < 0) ? 0 : pendingAnimations;
 
             }
+        }
+
+        public void receiveAnimationMessage(AnimationMessageType message, int stateID, String messageString) {
+            receiveAnimationMessage(message, stateID);
         }
 
     }

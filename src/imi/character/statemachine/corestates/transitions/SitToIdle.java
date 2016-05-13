@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -17,12 +20,14 @@
  */
 package imi.character.statemachine.corestates.transitions;
 
+import imi.character.avatar.AvatarContext;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.TransitionObject;
 
 /**
  * This class represents the transition from the Sit state to the Idle state.
  * @author Lou Hayt
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class SitToIdle extends TransitionObject
 {
@@ -31,12 +36,12 @@ public class SitToIdle extends TransitionObject
     {
         stateMessageName = "toIdle";
         
-//        if (state.getContext().getTriggerState().isKeyPressed(TriggerNames.Punch.ordinal()) ||
-//                state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Forward.ordinal()) ||
-//                state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Back.ordinal()) ||
-//                state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal()) ||
-//                state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal()) )
+        if(!state.getContext().getTriggerState().isKeyPressed(AvatarContext.TriggerNames.MiscAction.ordinal())
+                && !state.getContext().getTriggerState().isKeyPressed(AvatarContext.TriggerNames.MiscActionInSitting.ordinal())) {
             return state.getContext().excecuteTransition(this);
+        } else {
+            return false;
+        }
         
         //return false;
     }

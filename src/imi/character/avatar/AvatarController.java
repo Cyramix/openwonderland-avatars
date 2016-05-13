@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Copyright (c) 2014, WonderBuilders, Inc., All Rights Reserved
  */
 
@@ -75,6 +78,7 @@ import java.util.TimerTask;
  *  threading issues that come up that may cause visible jitter).
  * 
  * @author Lou Hayt
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 @ExperimentalAPI
 public class AvatarController extends CharacterController
@@ -817,6 +821,11 @@ public class AvatarController extends CharacterController
     }
     
     public boolean isGravityEnable() {
-        return this.collisionController.isGravityEnabled();
+        if(collisionController!=null) {
+            return collisionController.isGravityEnabled();
+        } else {
+            return false;
+        }
+        
     }
 }

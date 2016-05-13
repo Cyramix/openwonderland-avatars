@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Open Wonderland
  *
  * Copyright (c) 2011, Open Wonderland Foundation, All Rights Reserved
@@ -67,6 +70,7 @@ import org.jdesktop.mtgame.WorldManager;
  * layout are provided as a starting point.
  * 
  * @author Lou Hayt
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class Avatar extends imi.character.Character
 {
@@ -215,6 +219,9 @@ public class Avatar extends imi.character.Character
         m_context.getStateMapping().get(FallState.class).setAnimationName("Male_Idle"); // XXX need an animation
         ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Male_Sitting");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Male_StandToSit");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleLieDownAnimationName("Male_LieDownIdle");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpFromLieDownAnimationName("Male_LieDown");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setLieDownAnimationName("Male_LieDown");
     }
     
     protected void femaleContextSetup() {
@@ -243,6 +250,9 @@ public class Avatar extends imi.character.Character
         m_context.getStateMapping().get(FallState.class).setAnimationName("Female_Idle"); // XXX need an animation
         ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleSittingAnimationName("Female_Sitting");
         ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpAnimationName("Female_StandtoSit");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setIdleLieDownAnimationName("Female_LieDownIdle");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setGettingUpFromLieDownAnimationName("Female_LieDown");
+        ((SitState)m_context.getStateMapping().get(SitState.class)).setLieDownAnimationName("Female_LieDown");
     }
 
     protected void commonContextSetup() {

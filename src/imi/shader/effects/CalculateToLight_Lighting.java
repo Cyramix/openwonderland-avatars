@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -28,6 +31,7 @@ import javolution.util.FastTable;
  * to the gl_LightSource position specified by the uniform. This effect does
  * not use the TBN matrix
  * @author Ronald E Dahlgren
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class CalculateToLight_Lighting extends GLSLShaderEffect
 {
@@ -45,8 +49,11 @@ public class CalculateToLight_Lighting extends GLSLShaderEffect
         m_vertexGlobals = new GLSLShaderVariable[1];
         m_vertexGlobals[0] = GLSLDefaultVariables.Position;
         
-        m_varying = new GLSLShaderVarying[1];
+        m_varying = new GLSLShaderVarying[4];
         m_varying[0] = GLSLDefaultVariables.ToLight;
+        m_varying[1] = GLSLDefaultVariables.VNormal;
+        m_varying[2] = GLSLDefaultVariables.ToLight1;
+        m_varying[3] = GLSLDefaultVariables.ToLight2;
         
         // TODO: expose the light number uniform
         
@@ -60,10 +67,14 @@ public class CalculateToLight_Lighting extends GLSLShaderEffect
         createVertexLogic();
     }
     
-    
+    // Consider all the lightsource
     private void createVertexLogic()
     {
         m_vertexLogic = m_varying[0].getName() + " = normalize(vec3((gl_ModelViewMatrixInverse * gl_LightSource[0].position) - "
+                + m_vertexGlobals[0].getName() + "));" + NL;
+        m_vertexLogic = m_vertexLogic + m_varying[2].getName() + " = normalize(vec3((gl_ModelViewMatrixInverse * gl_LightSource[1].position) - "
+                + m_vertexGlobals[0].getName() + "));" + NL;
+        m_vertexLogic = m_vertexLogic + m_varying[3].getName() + " = normalize(vec3((gl_ModelViewMatrixInverse * gl_LightSource[2].position) - "
                 + m_vertexGlobals[0].getName() + "));" + NL;
     }
 }

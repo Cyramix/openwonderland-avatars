@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -17,6 +20,7 @@
  */
 package imi.character.statemachine;
 
+import imi.character.CharacterEyes;
 import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
@@ -32,6 +36,7 @@ import java.util.logging.Logger;
  * and game logic.
  * @author Shawn Kendall
  * @author Lou Hayt
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class GameState
 {
@@ -180,7 +185,17 @@ public class GameState
             skeleton.getAnimationState().setTransitionDuration(transitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(animationSpeed);
             skeleton.getAnimationState().setTransitionCycleMode(cycleMode);
-            bAnimationSet = skeleton.transitionTo(animationName, bTransitionReverseAnimation);
+            if (animationName != null && animationName.equals("Male_Wink")) {
+                CharacterEyes eyes = getContext().getCharacter().getEyes();
+                eyes.wink(true);
+                bAnimationSet = true;
+            } else if (animationName != null && animationName.equals("Female_Wink")) {
+                CharacterEyes eyes = getContext().getCharacter().getEyes();
+                eyes.wink(true);
+                bAnimationSet = true;
+            } else {
+                bAnimationSet = skeleton.transitionTo(animationName, bTransitionReverseAnimation);
+            }
         }
     }
     
@@ -193,6 +208,11 @@ public class GameState
         // Debugging / Dianostic output
         if (logger.isLoggable(Level.FINE))
             logger.fine(getName() + " Exit, animation:"+getAnimationName());
+        
+        // call method of listener
+        for (GameStateChangeListener lis : GameStateChangeListenerRegisterar.getRegisteredListeners()) {
+            lis.exitfromState(this);
+        }
     }
 
     /**
@@ -212,9 +232,14 @@ public class GameState
              gameContext.getCharacter().initiateFacialAnimation(facialAnimationName, facialAnimationTransitionTime, facialAnimationExpressionHoldTime);
         
         bAnimationSet = false;
-        
+
         // Transition to the animation
         setAnimation();
+      
+        // call listener's method
+        for (GameStateChangeListener lis : GameStateChangeListenerRegisterar.getRegisteredListeners()) {
+            lis.enterInState(this);
+        }
     }
  
     @Override
@@ -331,6 +356,15 @@ public class GameState
      * @param message
      */
     public void notifyAnimationMessage(AnimationMessageType message) {
+    }
+    
+    /**
+     * Notify an animation event with message
+     *
+     * @param message
+     * @param messageString
+     */
+    public void notifyAnimationMessage(AnimationMessageType message, String messageString) {
     }
 
     /**

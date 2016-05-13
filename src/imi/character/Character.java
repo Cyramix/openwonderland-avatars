@@ -1,4 +1,7 @@
- /**
+/**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -136,6 +139,7 @@ import org.jdesktop.wonderland.common.InternalAPI;
  * @author Lou Hayt
  * @author Ronald E Dahlgren
  * @author Paul Viet Truong
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public abstract class Character extends Entity implements SpatialObject, AnimationListener {
 
@@ -226,7 +230,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private   CharacterInitializationInterface      m_initialization        = null;
     /** index of the 'default' facial animation **/
     private   int                                   m_defaultFacePose       = 0; // No more 'playAll' cycle
-    
+
     private   VerletSkeletonFlatteningManipulator   m_skeletonManipulator   = null;
 
     private static JAXBContext                      context;
@@ -450,7 +454,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      * @see FacialAnimationController
      */
     FacialAnimationController getFacialAnimationController() {
-        if (m_facialAnimations == null && m_skeleton != null)
+        if (m_facialAnimations == null && m_skeleton != null) 
         {
             if (m_skeleton.getAnimationComponent().getGroupCount() > 1)
                 m_facialAnimations = new FacialAnimationController(this, 1);
@@ -536,7 +540,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public void setContext(GameContext context) {
         if (context == null)
             throw new IllegalArgumentException("Null context provided");
-        
+
         if (m_context != null && m_context.getController() != null) // remove jscene
             m_context.getController().removeCharacterMotionListener(m_jscene);
 
@@ -694,21 +698,21 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             }
         }
         // Order matters do the head last
-        if (!characterParams.isApplySkinToneOnHead())
+        if (!characterParams.isApplySkinToneOnHead()) 
         {
             skinColorFloats[0] = 1.0f;
             skinColorFloats[1] = 1.0f;
             skinColorFloats[2] = 1.0f;
         }
-        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getMeshesBySubGroup("Head"))
+        for (PPolygonSkinnedMeshInstance meshInst : m_skeleton.getMeshesBySubGroup("Head")) 
         {
             String lowerCaseName = meshInst.getName().toLowerCase();
-            if (lowerCaseName.contains("head"))
+            if (lowerCaseName.contains("head")) 
             {
                 headShader = meshInst.getMaterialRef().getShader();
                 try {
                     headShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColorFloats));
-                } catch (NoSuchPropertyException ex)
+                } catch (NoSuchPropertyException ex) 
                 {
                     logger.warning("No skin tone property for this mesh's shader: " + meshInst.getName());
                 }
@@ -716,7 +720,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         }
         applyMaterials();
     }
-    
+
     /**
      * Sets shaders on the parts according to the defaults.
      *
@@ -741,20 +745,20 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         characterParams.getSkinTone(skinColor);
         AbstractShaderProgram fleshShader       = null;
         AbstractShaderProgram headShader        = null;
-        
+
         if (characterParams.isUsingPhongLightingForHead())
             headShader = repo.newShader(PhongFleshShader.class);
         else
             headShader = repo.newShader(FleshShader.class);
         // Set the skin color
         float[] headSkinColor = new float[3];
-        if (characterParams.isApplySkinToneOnHead())
+        if (characterParams.isApplySkinToneOnHead()) 
         {
             headSkinColor[0] = skinColor[0];
             headSkinColor[1] = skinColor[1];
             headSkinColor[2] = skinColor[2];
-        }
-        else
+        } 
+        else 
         {
             headSkinColor[0] = 1.0f;
             headSkinColor[1] = 1.0f;
@@ -808,10 +812,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 //                    meshMat.setTexture(meshMat.getTextureRef(0), 2);
 //                    meshMat.setTexture(normalMapLocation, 1);
 //                    meshMat.getTextureRef(1).loadTexture(m_pscene.getRepository());
-                    // Change the textures, because we know they load incorrectly.
-                    specialHairShader = repo.newShader(VertDeformerWithSpecAndNormalMap.class);
-                    meshMat.setDefaultShader(specialHairShader);
-                    meshMat.setCullFace(CullState.Face.None);
+                // Change the textures, because we know they load incorrectly.
+                specialHairShader = repo.newShader(VertDeformerWithSpecAndNormalMap.class);
+                meshMat.setDefaultShader(specialHairShader);
+                meshMat.setCullFace(CullState.Face.None);
 //                }
 //                catch (MalformedURLException ex)
 //                {
@@ -847,7 +851,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                         clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, color));
                     } catch (NoSuchPropertyException ex) {
                         Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
-                }
+                    }
                 else if (meshInst.getParent().getName().equals("Feet"))
                 {
                     try {
@@ -859,7 +863,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                         clothingShader.setProperty(new ShaderProperty("specColor", GLSLDataType.GLSL_VEC3, color));
                     } catch (NoSuchPropertyException ex) {
                         Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex); }
-                }
+                    }
                 else    // White is the default
                 {
                     float[] colorWhite = { 1, 1, 1 };
@@ -925,7 +929,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 queue.addAll(current.getChildren());
         }
     }
-    
+
     /**
      * A subset of the functionality in setDefaultShaders that only affects
      * head meshes.
@@ -957,11 +961,11 @@ public abstract class Character extends Entity implements SpatialObject, Animati
            skinColor[1] = (197.0f/255.0f);
            skinColor[2] = (190.0f/255.0f);
         }
-        if (!characterParams.isApplySkinToneOnHead())
+        if (!characterParams.isApplySkinToneOnHead()) 
         {
-           skinColor[0] = (1.0f);
-           skinColor[1] = (1.0f);
-           skinColor[2] = (1.0f);
+            skinColor[0] = (1.0f);
+            skinColor[1] = (1.0f);
+            skinColor[2] = (1.0f);
         }
         try {
             fleshShader.setProperty(new ShaderProperty("materialColor", GLSLDataType.GLSL_VEC3, skinColor));
@@ -973,7 +977,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         Iterable<PPolygonSkinnedMeshInstance> smInstances = m_skeleton.retrieveSkinnedMeshes("Head");
         if (smInstances == null) // no subgroup found
             logger.severe("No \"Head\" meshes found during head installation!");
-        else
+        else 
         {
             AbstractShaderProgram specialEyeLashesShader = repo.newShader(VertexDeformer.class);
             for (PPolygonSkinnedMeshInstance meshInst : smInstances)
@@ -993,7 +997,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                     if (meshMat.getTextureRef(0) != null)
                         meshMat.getTextureRef(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
                     meshMat.setDefaultShader(eyeballShader.duplicate());
-                }
+                } 
                 else if(tempName.toLowerCase().startsWith("eyeao"))
                     meshMat.setDefaultShader(specialEyeLashesShader);
                 else
@@ -1020,11 +1024,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     private void addShadow() {
         if (m_shadowMesh == null) // Not parameterized, no sense in remaking shadows
         {
+            //just to avoid z-fighting with other avatar's shadow
+            //set the shadow height to 0.011, so that the shadow is not rendered at the ankel 
+            String yValue = "0.011" + hashCode();
+            logger.log(Level.FINE, "hashcode == {0} yvalue == {1}", new Object[]{hashCode(), yValue});
             // make shadow, minor offset to avoid Z-fighting with the y=0 plane
-            Vector3f pointOne =     new Vector3f( 0.45f, 0.003f,  0.5f);
-            Vector3f pointTwo =     new Vector3f(-0.45f, 0.003f,  0.5f);
-            Vector3f pointThree =   new Vector3f(-0.45f, 0.003f, -0.5f);
-            Vector3f pointFour =    new Vector3f( 0.45f, 0.003f, -0.5f);
+            Vector3f pointOne =     new Vector3f(0.45f, Float.parseFloat(yValue), 0.5f);
+            Vector3f pointTwo =     new Vector3f(-0.45f, Float.parseFloat(yValue), 0.5f);
+            Vector3f pointThree =   new Vector3f(-0.45f, Float.parseFloat(yValue), -0.5f);
+            Vector3f pointFour =    new Vector3f(0.45f, Float.parseFloat(yValue), -0.5f);
             // UV sets, standard texturing
             Vector2f uvSetOne =     new Vector2f(0, 0);
             Vector2f uvSetTwo =     new Vector2f(1, 0);
@@ -1042,9 +1050,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             textureProp.setAlphaCombineMode(CombinerFunctionAlpha.Modulate);
             textureProp.setApplyMode(ApplyMode.Replace);
             PPolygonMesh shadowMesh = PMeshUtils.createQuad("ShadowQuad",
-                                                            pointOne, pointTwo, pointThree, pointFour,
-                                                            ColorRGBA.cyan,
-                                                            uvSetOne, uvSetTwo, uvSetThree, uvSetFour);
+                    pointOne, pointTwo, pointThree, pointFour,
+                    ColorRGBA.cyan,
+                    uvSetOne, uvSetTwo, uvSetThree, uvSetFour);
             shadowMesh.setMaterial(shadowMaterial);
             shadowMesh.setNumberOfTextures(1);
             // Add it to the scene
@@ -1213,7 +1221,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 0.366f, 0.907f, -0.208f,    0.024f,
                 0.078f, 0.193f, 0.978f,		0.004f,
                 0,		0,		0,          1
-            };
+                    };
 
             getSkeleton().getSkinnedMeshJoint("leftPalm").getBindPoseRef().set(matFloats);
         }
@@ -1405,7 +1413,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Finish the initialization
         finalizeInitialization(characterDOM); // If not null, we are loading a configuration
     }
-    
+
     /**
      * Instantiate the GameContext for this character
      *
@@ -1550,8 +1558,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         if (leftEye != null) {
             m_skeletonManipulator = new VerletSkeletonFlatteningManipulator(m_leftArm, m_rightArm,
-                                                                            leftEye, rightEye,
-                                                                            m_skeleton, m_modelInst);
+                    leftEye, rightEye,
+                    m_skeleton, m_modelInst);
             m_rightArm.setSkeletonManipulator(m_skeletonManipulator);
             m_leftArm.setSkeletonManipulator(m_skeletonManipulator);
         }
@@ -1566,7 +1574,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         // Associate ourselves with our animation states
         for (AnimationState animState : m_skeleton.getAnimationStates())
             animState.addListener(this);
-        
+
         // Initialization extension
         if (m_initialization != null)
             m_initialization.initialize(this);
@@ -1611,9 +1619,9 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // eat the skeleton ;)
         if (characterParams.isMale())
-           m_skeleton = m_pscene.getRepository().getSkeleton("MaleSkeleton");
+            m_skeleton = m_pscene.getRepository().getSkeleton("MaleSkeleton");
         else
-           m_skeleton = m_pscene.getRepository().getSkeleton("FemaleSkeleton");
+            m_skeleton = m_pscene.getRepository().getSkeleton("FemaleSkeleton");
     }
 
     public void setEnableFacialAnimation(boolean enable) {
@@ -1648,7 +1656,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 else
                     installHeadConfiguration(headLocation);
             } catch (MalformedURLException ex) {
-                    logger.severe("Error creating URL");
+                logger.severe("Error creating URL");
             }
         }
 
@@ -1893,10 +1901,10 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         else
         {
             // Try to convert to a cycleIndex before giving up
-            try { 
+            try {
                 int cycleIndex = Integer.valueOf(cycleName);
                 initiateFacialAnimation(cycleIndex, fTransitionTime, fExpressionDuration);
-            }
+            } 
             catch (NumberFormatException ex) {
                 logger.info("failed to play facial animation cycle index: " + cycle + " name: " + cycleName); }
         }
@@ -1918,17 +1926,17 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 m_facialAnimations = new FacialAnimationController(this, 1);
             }
             else
-                 logger.warning("No facial animation group present!");
+                logger.warning("No facial animation group present!");
         }
         if (m_facialAnimations != null && m_skeleton.getAnimationGroup(1).isValidCycleIndex(cycleIndex))
             m_facialAnimations.queueFacialAnimation(fTransitionTime, // Time in
-                                                    fTransitionTime, // Time out
-                                                    fExpressionDuration, // Hold time
-                                                    cycleIndex, // Cycle to play
-                                                    PlaybackMode.PlayOnce); // Play mode
+                    fTransitionTime, // Time out
+                    fExpressionDuration, // Hold time
+                    cycleIndex, // Cycle to play
+                    PlaybackMode.PlayOnce); // Play mode
         else
             logger.info("failed to play facial animation cycle index: " + cycleIndex);
-     }
+    }
 
     /**
      * If the model instance doesn't have kids then it is not loaded yet,
@@ -2009,13 +2017,13 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         // Create parameters for the collada loader we will use
         ColladaLoaderParams params = new ColladaLoaderParams.Builder()
-                                                .setLoadSkeleton(true)
-                                                .setLoadGeometry(true)
-                                                .setLoadAnimation(false)
-                                                .setShowDebugInfo(false)
-                                                .setMaxWeights(4)
-                                                .setName("HeadSkeleton")
-                                                .build();
+                .setLoadSkeleton(true)
+                .setLoadGeometry(true)
+                .setLoadAnimation(false)
+                .setShowDebugInfo(false)
+                .setMaxWeights(4)
+                .setName("HeadSkeleton")
+                .build();
 
 
         // Load the skeleton
@@ -2123,7 +2131,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             throw new RuntimeException("No AvatarRepoComponent found in the Repository. Was AvatarSystem.initialize() called?");
         else
             attachHeadSkeleton(avatarRepo.getBinaryHead(headLocation, m_pscene));
-        
+
         // Re-enable all the processors that affect us.
         m_AnimationProcessor.setEnabled(animProcEnabled);
         m_characterProcessor.setEnabled(charProcEnabled);
@@ -2159,7 +2167,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
         for (AnimationGroup group : headSkeleton.getAnimationComponent().getGroups())
             for (AnimationCycle cycle : group.getCycles())
                 m_skeleton.getAnimationGroup(1).addCycle(cycle);
-        
+
 
         // synch up animation states with groups
         while (m_skeleton.getAnimationComponent().getGroupCount() < m_skeleton.getAnimationStateCount())
@@ -2171,8 +2179,8 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 // Deprecated Methods
 ////////////////////////////////////////////////////////////////////////////////
 
-    public void setClothesColors(ColorRGBA topColor, ColorRGBA topSpecColor, ColorRGBA bottomColor, 
-                                 ColorRGBA bottomSpecColor, ColorRGBA shoesColor, ColorRGBA shoesSpecColor) {
+    public void setClothesColors(ColorRGBA topColor, ColorRGBA topSpecColor, ColorRGBA bottomColor,
+            ColorRGBA bottomSpecColor, ColorRGBA shoesColor, ColorRGBA shoesSpecColor) {
 //        Repository repo = (Repository)m_wm.getUserData(Repository.class);
 //
 //        // first the skinned meshes
@@ -2247,10 +2255,16 @@ public abstract class Character extends Entity implements SpatialObject, Animati
      */
     @Override
     @InternalAPI
-    public void receiveAnimationMessage(AnimationMessageType message, int stateID) {
+    public void receiveAnimationMessage(AnimationMessageType message, int stateID, String messageString) {
         if (m_context != null)
-            m_context.notifyAnimationMessage(message, stateID);
+            m_context.notifyAnimationMessage(message, stateID, messageString);
 
+    }
+
+    @Override
+    @InternalAPI
+    public void receiveAnimationMessage(AnimationMessageType message, int stateID) {
+        receiveAnimationMessage(message, stateID, "");
     }
 
     /**
@@ -2372,7 +2386,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
     public String getName() {
         return characterParams.getName();
     }
-    
+
     /**
      * {@inheritDoc SpatialObject}
      */
@@ -2433,7 +2447,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
 
         this.worldManager        = builder.worldManager;
         PMatrix origin = new PMatrix();
-        
+
         if (builder.attributeParams != null) 
         {
             this.characterParams     = builder.attributeParams;
@@ -2473,7 +2487,7 @@ public abstract class Character extends Entity implements SpatialObject, Animati
                 logger.log(Level.SEVERE, ex.getErrorCode() + " : " + ex.getLocalizedMessage() + " : " + ex.toString());
                 throw new ExceptionInInitializerError("JAXB was unable to parse " + builder.configurationFile);
 
-            }
+            } 
             catch (IOException ex) {
                 throw new RuntimeException("Failed to open InputStream to " +
                                         builder.configurationFile.toString() + "! " + ex.getMessage());
@@ -2486,5 +2500,15 @@ public abstract class Character extends Entity implements SpatialObject, Animati
             this.characterParams = null;
             throw new RuntimeException("No valid character params or configuration file!");
         }
+    }
+
+    private static String thisCharId = null;
+
+    public static String getThisCharId() {
+        return thisCharId;
+    }
+
+    public static void setThisCharId(String id) {
+        thisCharId = id;
     }
 }

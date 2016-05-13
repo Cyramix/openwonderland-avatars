@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -29,6 +32,7 @@ import java.awt.event.MouseWheelEvent;
  * parameters may be manipulated via an instance of {@code ChaseCamState}. This
  * class is <b>NOT THREAD SAFE FOR MULTIPLE</b> camera states.
  * @author Lou Hayt
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public final class ChaseCamModel extends CameraModel
 {
@@ -226,7 +230,7 @@ public final class ChaseCamModel extends CameraModel
         ChaseCamState activeState = (ChaseCamState)state;
         transform.set2(q, activeState.getCameraTransform().getTranslation(), 1.0f);
     }
-    
+
     public boolean isStateClassValid(Class<? extends AbstractCameraState> classz) {
         return (classz == ChaseCamState.class);
     }
@@ -240,4 +244,13 @@ public final class ChaseCamModel extends CameraModel
         // Desired offsets
         System.out.println("Pos offset: " + state.getDesiredPositionOffsetRef() + ", LookAt offset: " + state.getLookAtOffsetRef());
     }
+    
+    /**
+     * added for reset camera in view menu
+     * @param zoom 
+     */
+    public void setZoom(int zoom) {
+        this.zoom = zoom;
+    }
+
 }

@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -21,6 +24,7 @@ package imi.scene.animation;
  * This interface provides a mechanism for receiving events from the animation
  * system about when an animation cycle has started, looped, or completed.
  * @author Ronald E Dahlgren
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public interface AnimationListener 
 {
@@ -33,6 +37,10 @@ public interface AnimationListener
         EndOfCycle, 
         TransitionComplete,
         PlayOnceComplete, // This will potentially fire multiple times in succession, write code to handle this!
+        Restart,//restart the cycle action state
+        RestartAndSave,//restart the cycle action state and save the current animation
+        EndOfCycleWithoutExitAnim,//exit from the current animation and don't play exit animmation
+        ExitAnimation,//play the exit animation of current animation
         // Others...?
     }
     
@@ -44,6 +52,9 @@ public interface AnimationListener
      * is meaningful within the AnimationComponent(s) using it.</p>
      * @param message The animation type
      * @param stateID The "ID" of the affected state.
+     * @param messageString The message string
      */
+    public void receiveAnimationMessage(AnimationMessageType message, int stateID, String messageString);
+    
     public void receiveAnimationMessage(AnimationMessageType message, int stateID);
 }

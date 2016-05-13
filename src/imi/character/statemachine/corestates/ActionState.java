@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Open Wonderland
  *
  * Copyright (c) 2011, Open Wonderland Foundation, All Rights Reserved
@@ -38,12 +41,14 @@ package imi.character.statemachine.corestates;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.GameContext;
+import imi.scene.animation.AnimationComponent;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 
 /**
  * This class represents a character's general action behavior, it may
  * be played once and exit or repeat with oscilation (back and forth) or loop.
  * @author Lou Hayt
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class ActionState extends GameState 
 {
@@ -88,6 +93,10 @@ public class ActionState extends GameState
         
         if (context.getSkeleton() != null)
             context.getSkeleton().getAnimationState().setReverseAnimation(false);
+        
+        // mark gesture playing to false
+        context.setGesturePlayingInSitting(false);
+        
     }
 
     /**
@@ -104,13 +113,18 @@ public class ActionState extends GameState
         // to exit the state
         if (context.getSkeleton() != null)
         {
-            if (owner.getCharacter().getCharacterParams().isUseSimpleStaticModel() ||
+            if ((owner.getCharacter().getCharacterParams().isUseSimpleStaticModel() ||
                     context.getSkeleton().getAnimationComponent().findCycle(getAnimationName(), 0) == -1)
+                    && !((getAnimationName()!=null && getAnimationName().equals("Male_Wink")) 
+                            || (getAnimationName()!=null && getAnimationName().equals("Female_Wink"))))
                 bPlayedOnce = true;
         }
         
         // Stop the character
         context.getController().stop();
+        
+        if(bRepeat)
+            gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(AnimationComponent.PlaybackMode.Loop);
     }
 
     /**
@@ -127,7 +141,7 @@ public class ActionState extends GameState
     }
     
     @Override
-    public void notifyAnimationMessage(AnimationMessageType message) 
+    public void notifyAnimationMessage(AnimationMessageType message, String messageString) 
     {
         if (message == AnimationMessageType.TransitionComplete)
         {
@@ -192,9 +206,12 @@ public class ActionState extends GameState
     /**
      * Return true if the context indicates that the current repeating state
      * should exit
+     * @param context
+     * @return 
      */
     public static boolean isExitRepeat(GameContext context) {
         return (context.getTriggerState().isKeyPressed(TriggerNames.MiscAction.ordinal())        ||
+                context.getTriggerState().isKeyPressed(TriggerNames.MiscActionInSitting.ordinal())        ||
                 context.getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal())        ||
                 context.getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal())         ||
                 context.getTriggerState().isKeyPressed(TriggerNames.Move_Forward.ordinal())      ||
@@ -204,5 +221,58 @@ public class ActionState extends GameState
                 context.getTriggerState().isKeyPressed(TriggerNames.Move_Strafe_Left.ordinal())  ||
                 context.getTriggerState().isKeyPressed(TriggerNames.Move_Strafe_Right.ordinal()) ||
                 context.getTriggerState().isKeyPressed(TriggerNames.Idle.ordinal()));
+    }
+    
+    public static boolean isExitRepeat1(GameContext context) {
+        return (context.getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal())        ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal())         ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Forward.ordinal())      ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Back.ordinal())         ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Up.ordinal())           ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Down.ordinal())         ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Strafe_Left.ordinal())  ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Strafe_Right.ordinal()) ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Idle.ordinal()) ||
+                context.getTriggerState().isKeyPressed(TriggerNames.GoSit.ordinal()) ||
+                context.getTriggerState().isKeyPressed(TriggerNames.LieDown.ordinal()) ||
+                context.getTriggerState().isKeyPressed(TriggerNames.GoSitLieDown.ordinal()));
+    }
+    
+    /**
+     * Used in sitting component
+     * @param context
+     * @return 
+     */
+    public static boolean isExitRepeatWithGoSit(GameContext context) {
+        return (isExitRepeat(context) || 
+                context.getTriggerState().isKeyPressed(TriggerNames.GoSit.ordinal()) ||
+                context.getTriggerState().isKeyPressed(TriggerNames.LieDown.ordinal()) ||
+                context.getTriggerState().isKeyPressed(TriggerNames.GoSitLieDown.ordinal()));
+    }
+    
+    /**
+     * Used in sitting component for lie down
+     * @param context
+     * @return 
+     */
+    public static boolean lieDownOnLeftClick(GameContext context) {
+        return context.getTriggerState().isKeyPressed(TriggerNames.LieDownOnClick.ordinal());
+    }
+    
+    /**
+     * just to check if any movement happens or not
+     * @param context
+     * @return 
+     */
+    public static boolean isExitForMovements(GameContext context) {
+        return (context.getTriggerState().isKeyPressed(TriggerNames.Move_Right.ordinal())        ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Left.ordinal())         ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Forward.ordinal())      ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Back.ordinal())         ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Up.ordinal())           ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Down.ordinal())         ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Strafe_Left.ordinal())  ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Idle.ordinal())             ||
+                context.getTriggerState().isKeyPressed(TriggerNames.Move_Strafe_Right.ordinal()));  
     }
 }

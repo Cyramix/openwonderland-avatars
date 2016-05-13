@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -29,6 +32,7 @@ import javolution.util.FastTable;
  * This effect is responsible for performing specular mapping, given a specular map
  * and an exponent value.
  * @author Ronald E Dahlgren
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class DiffuseAsSpecular_Lighting extends GLSLShaderEffect
 {
@@ -97,6 +101,7 @@ public class DiffuseAsSpecular_Lighting extends GLSLShaderEffect
 
     /**
      * Create the fragment logic for this piece
+     * Consider all the lightsource
      */
     private void createFragmentLogic()
     {
@@ -106,6 +111,8 @@ public class DiffuseAsSpecular_Lighting extends GLSLShaderEffect
         fragmentLogic.append("vec4 diffuseColor = texture2D(" + m_fragmentUniforms[2].getName() + ", gl_TexCoord[0].st);" + NL);
         fragmentLogic.append("if (NdotL > 0.0) {" +
                 " NdotHV = max(dot(" + m_FragmentDependencies.get(0).getName() + ", gl_LightSource[0].halfVector.xyz), 0.0);" + NL +
+                " NdotHV = max(NdotHV, max(dot(" + m_FragmentDependencies.get(0).getName() + ", gl_LightSource[1].halfVector.xyz), 0.0));" + NL +
+                " NdotHV = max(NdotHV, max(dot(" + m_FragmentDependencies.get(0).getName() + ", gl_LightSource[2].halfVector.xyz), 0.0));" + NL +
                 " vec4 specularComponent = diffuseColor * gl_LightSource[0].specular *" + NL +
                 "       pow(NdotHV, " + m_fragmentUniforms[0].getName() +");" + NL +
                 "};" + NL);

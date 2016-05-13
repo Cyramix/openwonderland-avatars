@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -26,6 +29,7 @@ import java.util.HashMap;
  * embedding the names. This will keep your shader code somewhat generalized
  * and help prevent brittle code failings.
  * @author Ronald E Dahlgren
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class GLSLDefaultVariables 
 {
@@ -138,9 +142,14 @@ public class GLSLDefaultVariables
     /**
      * This is the vector from the vertex "the" (a?) given light source. It
      * is interpolated between verts to provide per-pixel approximations.
+     * Add other light sources
      */
     public static final GLSLShaderVarying ToLight = 
             new GLSLShaderVarying("ToLight", GLSLDataType.GLSL_VEC3);
+    public static final GLSLShaderVarying ToLight1 = 
+            new GLSLShaderVarying("ToLight1", GLSLDataType.GLSL_VEC3);
+    public static final GLSLShaderVarying ToLight2 = 
+            new GLSLShaderVarying("ToLight2", GLSLDataType.GLSL_VEC3);
     /**
      * This is the vector that points to the camera from the current position.
      * As a varying, it should always be normalized prior to use in fragment
@@ -175,6 +184,8 @@ public class GLSLDefaultVariables
         DefaultInitializers.put("finalColor", "finalColor = gl_Color;" + ShaderNewline);
         DefaultInitializers.put("NdotL", "NdotL = 1.0;" + ShaderNewline);
         DefaultInitializers.put("ToLight", "ToLight = vec3(0,0,0);" + ShaderNewline);
+        DefaultInitializers.put("ToLight1", "ToLight1 = vec3(0,0,0);" + ShaderNewline);
+        DefaultInitializers.put("ToLight2", "ToLight2 = vec3(0,0,0);" + ShaderNewline);
         DefaultInitializers.put("VNormal", "VNormal = gl_Normal;" + ShaderNewline);
         DefaultInitializers.put("Position", "Position = gl_Vertex;" + ShaderNewline);
     }

@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -17,7 +20,6 @@
  */
 package imi.character;
 
-import com.jme.math.Vector3f;
 import com.jme.renderer.ColorRGBA;
 import imi.repository.SharedAsset;
 import imi.scene.PMatrix;
@@ -50,11 +52,14 @@ import javolution.util.FastList;
  *                                      .setOrigin(...)}</pre>
  * @author Lou Hayt
  * @author Ronald E Dahlgren
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
-public class CharacterParams
+public class CharacterParams 
 {
     /** Name of the character **/
     private String                  name                    = "Character";
+    /** Unique id of the character **/
+    private String id;
     /** The SharedAsset associated with this character's COLLADA model **/
     private SharedAsset             asset                   = null;
     /** A string to be applied to the beginning of all paths, if null asumming it's a local path **/
@@ -109,7 +114,7 @@ public class CharacterParams
         new ColorRGBA(38.0f  / f255,  45.0f  / f255, 44.0f  / f255, 1), // Dark
         new ColorRGBA(182.0f / f255,  192.0f / f255, 191.0f / f255, 1), // Off White
     };
-    
+
     /** Collection of skin tone shades**/
     static final ColorRGBA[] skinTones = new ColorRGBA[]
     {
@@ -133,7 +138,7 @@ public class CharacterParams
         "assets/models/collada/Heads/EyeTextures/Blue_Eye.png",
         "assets/models/collada/Heads/EyeTextures/Brown2_Eye.png", // dark brown
         "assets/models/collada/Heads/EyeTextures/Brown_Eye.png",
-        "assets/models/collada/Heads/EyeTextures/Green_Eye.png", 
+        "assets/models/collada/Heads/EyeTextures/Green_Eye.png",
         "assets/models/collada/Heads/EyeTextures/eyeColor01.png", // blue and orange in the middle
         "assets/models/collada/Heads/EyeTextures/eyeColor02.png", // light blue, slight orange specs
         "assets/models/collada/Heads/EyeTextures/eyeColor03.png", // green and yellow
@@ -154,13 +159,13 @@ public class CharacterParams
         "assets/models/collada/Heads/EyeTextures/eyeColor18.png", // light blue and brown middle
         "assets/models/collada/Heads/EyeTextures/eyeColor19.png", // darl blue brown
         "assets/models/collada/Heads/EyeTextures/eyeColor20.png", // bright blue with middle brown
-        //"assets/models/collada/Heads/EyeTextures/eyeColor21.png"// snakes!
+    //"assets/models/collada/Heads/EyeTextures/eyeColor21.png"// snakes!
     };
-    
+
     /////////////////////////////////////////
     //////  Not Saved in XML format /////////
     /////////////////////////////////////////
-
+    
     /** Skin tone RGB **/
     private final float []  skinTone        = new float [3];
     /** Hair color RGB **/
@@ -211,7 +216,7 @@ public class CharacterParams
         skinTone[0] = 230.0f/255.0f;
         skinTone[1] = 197.0f/255.0f;
         skinTone[2] = 190.0f/255.0f;
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++) 
         {
             hairColor[i]      = 1.0f;
             shirtColor[i]     = 1.0f;
@@ -360,7 +365,7 @@ public class CharacterParams
      * @param value The value
      */
     public void putMetaData(String key, String value) {
-         metadataMap.put(key, value);
+        metadataMap.put(key, value);
     }
 
     /**
@@ -391,7 +396,7 @@ public class CharacterParams
     public String getName() {
         return name;
     }
-    
+
     /**
      * Returns the key-value meta-data map.
      * @return The metadata Map
@@ -408,7 +413,7 @@ public class CharacterParams
     public SharedAsset getAsset() {
         return asset;
     }
-    
+
     /**
      * Retrieve the relative path to the head attachment as a string.
      * <p>For instance, if the head attachment uses a file named headAttach.bhf,
@@ -481,7 +486,7 @@ public class CharacterParams
     public Iterable<SkinnedMeshParams> getSkinnedMeshInstructions() {
         return addInstructions;
     }
-    
+
     /**
      * Retrieve an iterable view of the loading instructions.
      * <p>This is a collection of relative paths to collada files that should
@@ -492,7 +497,7 @@ public class CharacterParams
     public Iterable<String> getLoadInstructions() {
         return loadInstructions;
     }
-    
+
     /**
      * Retrieve an iterable view of the attachment params being used.
      * @return Iterable view of attachments
@@ -849,10 +854,10 @@ public class CharacterParams
     }
 
     /**
-     * Set the gender integer. 
+     * Set the gender integer.
      * <p>Currently the system maps 1 to male, and 2 to female.</p>
      * @param sex A non-negative integer
-     * @throws IllegalArgumentException If sex is negative 
+     * @throws IllegalArgumentException If sex is negative
      */
     public CharacterParams setGender(int sex) {
         if (sex < 0)
@@ -1360,7 +1365,7 @@ public class CharacterParams
         this();
         applyAttributesDOM(attributesDOM);
     }
-    
+
     /**
      * Package private method to apply the provided DOM information to this instance.
      * @param attributesDOM
@@ -1562,5 +1567,13 @@ public class CharacterParams
             return hash;
         }
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

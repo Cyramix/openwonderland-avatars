@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -41,6 +44,7 @@ import org.jdesktop.mtgame.WorldManager;
  * @author Lou Hayt
  * @author Ronald E. Dahlgren
  * @author Shawn Kendall
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public final class EyeBall extends PPolygonSkinnedMeshInstance implements Serializable
 {
@@ -72,6 +76,10 @@ public final class EyeBall extends PPolygonSkinnedMeshInstance implements Serial
     private transient Vector3f forwardVec = new Vector3f();
     private transient Vector3f directionToTarget = new Vector3f();
     private transient PMatrix eyeWorldMatrix = new PMatrix();
+    /**
+     * if head is in turned position then don't rotate the eye balls *
+     */
+    private boolean rotateEyeBall = false;
 
     /**
      * Construct a new eyeball using the provided mesh as the eye mesh, the model
@@ -95,8 +103,11 @@ public final class EyeBall extends PPolygonSkinnedMeshInstance implements Serial
      * @param matrix The matrix being modified
      * @param jointIndex Joint to modify
      */
-    void lookAtTarget(PMatrix matrix)
+    void lookAtTarget(PMatrix matrix) 
     {
+        if (!rotateEyeBall) {
+            return;
+        }
         // RED : Modified to reduce object creation
         // grab the scale
         matrix.getLocalX(translationStorage);
@@ -201,7 +212,7 @@ public final class EyeBall extends PPolygonSkinnedMeshInstance implements Serial
         }
         myMaterial.getTextureRef(0).setMinFilter(MinificationFilter.BilinearNoMipMaps);
         myMaterial.setAlphaState(PMeshMaterial.AlphaTransparencyType.NO_TRANSPARENCY);
-       
+
         applyMaterial();
     }
 
@@ -238,5 +249,9 @@ public final class EyeBall extends PPolygonSkinnedMeshInstance implements Serial
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         mathContext = MathUtils.getContext();
+    }
+
+    public void setRotateEyeBall(boolean rotateEyeBall) {
+        this.rotateEyeBall = rotateEyeBall;
     }
 }

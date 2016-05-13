@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Open Wonderland
  *
  * Copyright (c) 2010, Open Wonderland Foundation, All Rights Reserved
@@ -24,6 +27,7 @@ import imi.character.statemachine.TransitionObject;
 /**
  *
  * @author morrisford
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class IdleToSit extends TransitionObject {
 
@@ -32,9 +36,11 @@ public class IdleToSit extends TransitionObject {
         stateMessageName = "toSit";
 
         // If the sit on ground trigger is on
-        if (state.getContext().getTriggerState().isKeyPressed(TriggerNames.GoSit.ordinal()))
+        if (state.getContext().getTriggerState().isKeyPressed(TriggerNames.GoSit.ordinal())
+            || state.getContext().getTriggerState().isKeyPressed(TriggerNames.GoSitLieDown.ordinal())
+            || state.getContext().getTriggerState().isKeyPressed(TriggerNames.LieDown.ordinal())) {
             return state.getContext().excecuteTransition(this);
-
+        }
 
         return false;
     }

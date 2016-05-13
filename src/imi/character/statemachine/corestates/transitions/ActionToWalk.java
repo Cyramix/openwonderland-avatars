@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -24,6 +27,7 @@ import imi.character.statemachine.TransitionObject;
 /**
  * This class represents the transition from the Punch state to the Walk state.
  * @author Lou
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class ActionToWalk extends TransitionObject
 {
@@ -33,6 +37,7 @@ public class ActionToWalk extends TransitionObject
         stateMessageName = "toWalk";
         
         if ( !state.getContext().getTriggerState().isKeyPressed(TriggerNames.MiscAction.ordinal()) &&
+                !state.getContext().getTriggerState().isKeyPressed(TriggerNames.MiscActionInSitting.ordinal()) && 
                 (state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Forward.ordinal())
                 || state.getContext().getTriggerState().isKeyPressed(TriggerNames.Move_Back.ordinal()) ))
             return state.getContext().excecuteTransition(this);

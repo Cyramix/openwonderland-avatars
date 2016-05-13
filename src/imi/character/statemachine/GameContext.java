@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Copyright (c) 2014, WonderBuilders, Inc., All Rights Reserved
  */
 
@@ -62,6 +65,7 @@ import java.util.Map;
  * transition attempt is always validated at the entry point.
  * @author Shawn Kendall
  * @author Lou Hayt
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class GameContext
 {
@@ -201,10 +205,12 @@ public class GameContext
      * Sends the provided message to the currentState (if that state is non-null)
      * @param message
      * @param stateID - AnimationState ID, currently 0 for body, 1 for face
+     * @param messageString - extra message for the gesture
      */
-    public void notifyAnimationMessage(AnimationMessageType message, int stateID) {
-        if (currentState != null && stateID == 0)
-            currentState.notifyAnimationMessage(message);
+    public void notifyAnimationMessage(AnimationMessageType message, int stateID, String messageString) {
+        if (currentState != null && stateID == 0) {
+            currentState.notifyAnimationMessage(message,messageString);
+        }
     }
 
     /**
@@ -606,5 +612,18 @@ public class GameContext
      */
     public boolean isEnabled() {
         return enabledState;
+    }
+
+    /**
+     * flag to check if gesture is playing
+     */
+    private boolean gesturePlayingInSitting = false;
+
+    public void setGesturePlayingInSitting(boolean playing) {
+        this.gesturePlayingInSitting = playing;
+    }
+
+    public boolean isGesturePlayingInSitting() {
+        return this.gesturePlayingInSitting;
     }
 }

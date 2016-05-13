@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -30,6 +33,8 @@ import org.jdesktop.wonderland.common.InternalAPI;
  * 
  * @author Ronald E Dahlgren
  * @author Lou Hayt
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
+ * 
  */
 public class AnimationState
 {
@@ -395,11 +400,20 @@ public class AnimationState
      */
     void sendMessage(AnimationListener.AnimationMessageType message)
     {
+        sendMessage(message, "");
+    }
+    
+    /**
+     * Send the message to all registered animation listeners
+     * @param message
+     */
+    void sendMessage(AnimationListener.AnimationMessageType message, String messageString)
+    {
         m_animCursor.makeNegativeOne();
         if (m_listeners == null)
             return;
         for (AnimationListener listener : m_listeners)
-            listener.receiveAnimationMessage(message, m_ID);
+            listener.receiveAnimationMessage(message, m_ID, messageString);
     }
 
     /**

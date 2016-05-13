@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -31,6 +34,7 @@ import javolution.util.FastTable;
  * normal and a vector to the light. This is used to modulate the color, and
  * then an ambient contribution is mixed in.
  * @author Ronald E Dahlgren
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class AmbientNdotL_Lighting extends GLSLShaderEffect
 {
@@ -68,9 +72,14 @@ public class AmbientNdotL_Lighting extends GLSLShaderEffect
         m_fragmentUniforms[0] = new GLSLShaderUniform("ambientPower", GLSLDataType.GLSL_FLOAT);
         
         // variants that are referenced
-        m_varying = new GLSLShaderVarying[2];
+        m_varying = new GLSLShaderVarying[4];
         m_varying[0] = GLSLDefaultVariables.ToLight;
         m_varying[1] = GLSLDefaultVariables.VNormal;
+        m_varying[2] = GLSLDefaultVariables.ToLight1;
+        m_varying[3] = GLSLDefaultVariables.ToLight2;
+        
+        m_vertexGlobals = new GLSLShaderVariable[1];
+        m_vertexGlobals[0] = GLSLDefaultVariables.Position;
         
         // declare dependencies, modifications, and initializations
         m_FragmentDependencies = new FastTable<GLSLShaderVariable>();
@@ -95,6 +104,7 @@ public class AmbientNdotL_Lighting extends GLSLShaderEffect
     /**
      * Build the text of the fragment source, always using indirection to get
      * variable names rather than explicitely writing them.
+     * Consider all the lightsource
      */
     private void createFragmentLogic()
     {
@@ -102,10 +112,14 @@ public class AmbientNdotL_Lighting extends GLSLShaderEffect
         fragmentLogic.append("float alpha = " + m_fragmentGlobals[1].getName() + ".a;" + NL);
         // normalize ToLight and VNormal
         fragmentLogic.append("vec3 lightVec  = " + m_varying[0].normalize() + ";" + NL);
-        //fragmentLogic.append("vec3 normalVec = " + m_varying[1].normalize() + ";" + NL); <-- this is necessary but currently problematic
+        fragmentLogic.append("vec3 lightVec1  = " + m_varying[2].normalize() + ";" + NL);
+        fragmentLogic.append("vec3 lightVec2  = " + m_varying[3].normalize() + ";" + NL);
+        fragmentLogic.append("vec3 normalVec = " + m_varying[1].normalize() + ";" + NL);
         // calculate NdotL 
-        fragmentLogic.append(m_fragmentGlobals[0].getName() + " = clamp(dot(" + m_fragmentGlobals[2].getName() + ", lightVec), 0.0, 1.0);" + NL);
-        //fragmentLogic.append(m_fragmentGlobals[0].getName() + " = max(0.0, dot(normalVec.xyz, lightVec.xyz));" + NL); <-- this is the correct way
+//        fragmentLogic.append(m_fragmentGlobals[0].getName() + " = clamp(dot(" + m_fragmentGlobals[2].getName() + ", lightVec), 0.0, 1.0);" + NL);
+        fragmentLogic.append(m_fragmentGlobals[0].getName() + " = max(max(0.0, dot(normalVec.xyz, lightVec.xyz)),max(max(0.0, dot(normalVec.xyz, lightVec1.xyz)),max(0.0, dot(normalVec.xyz, lightVec2.xyz))));" + NL);
+//        fragmentLogic.append(m_fragmentGlobals[0].getName() + " = " + m_fragmentGlobals[0].getName() + " + max(0.0, dot(normalVec.xyz, lightVec1.xyz));" + NL);
+//        fragmentLogic.append(m_fragmentGlobals[0].getName() + " = " + m_fragmentGlobals[0].getName() + " + max(0.0, dot(normalVec.xyz, lightVec2.xyz));" + NL);
         // modify final frag color
         fragmentLogic.append("vec4 afterLighting = " + m_fragmentGlobals[1].getName() + " * " + m_fragmentGlobals[0].getName() + ";" + NL);
         fragmentLogic.append("afterLighting *= (1.0 - " + m_fragmentUniforms[0].getName() + ");" + NL);

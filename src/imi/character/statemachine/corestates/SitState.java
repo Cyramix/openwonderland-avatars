@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Open Wonderland
  *
  * Copyright (c) 2010 - 2011, Open Wonderland Foundation, All Rights Reserved
@@ -35,12 +38,17 @@
  */
 package imi.character.statemachine.corestates;
 
+import com.jme.math.Quaternion;
+import com.jme.math.Vector3f;
 import imi.character.avatar.AvatarContext;
 import imi.character.avatar.AvatarContext.TriggerNames;
 import imi.objects.ChairObject;
 import imi.objects.TargetObject;
 import imi.character.statemachine.GameState;
 import imi.character.statemachine.GameContext;
+import imi.character.statemachine.GameStateChangeListener;
+import imi.character.statemachine.GameStateChangeListenerRegisterar;
+import imi.scene.PTransform;
 import imi.scene.animation.AnimationComponent.PlaybackMode;
 import imi.scene.animation.AnimationListener.AnimationMessageType;
 import imi.scene.SkeletonNode;
@@ -48,6 +56,7 @@ import imi.scene.SkeletonNode;
 /**
  * This state represents a character's behavior whilst sitting.
  * @author Lou
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class SitState extends GameState 
 {
@@ -55,21 +64,51 @@ public class SitState extends GameState
     GameContext context = null;
     /** The chair we will be sitting in **/
     TargetObject chair = null;
-    
+
     private float   counter = 0.0f;
     private float   sittingAnimationTime = 0.7f;
-    
+    private float lieDownAnimationTime = 3.0f;
+
     private boolean bIdleSittingAnimationSet      = false;
     private float   idleSittingTransitionDuration = 0.3f;
     private float   idleSittingAnimationSpeed     = 1.0f;
     private String  idleSittingAnimationName      = null;
-    
+    private boolean bIdleLieDownAnimationSet = false;
+    private float idleLieDownTransitionDuration = 0.3f;
+    private float idleLieDownAnimationSpeed = 1.0f;
+    private String idleLieDownAnimationName = null;
+    private boolean bLieDownAnimationSet = false;
+    private float lieDownTransitionDuration = 0.3f;
+    private float lieDownAnimationSpeed = 1.0f;
+    private String lieDownAnimationName = null;
+
     private boolean bGettingUp                  = false;
     private boolean bGettingUpAnimationSet      = false;
     private float   gettingUpAnimationTime      = 0.8f;
     private float   gettingUpTransitionDuration = 0.05f;
     private float   gettingUpAnimationSpeed     = 1.0f;
     private String  gettingUpAnimationName      = null;
+    private boolean bGettingUpFromLieDown = false;
+    private boolean bGettingUpFromLieDownAnimationSet = false;
+    private float gettingUpFromLieDownAnimationTime = 3.0f;
+    private float gettingUpFromLieDownTransitionDuration = 0.05f;
+    private float gettingUpFromLieDownAnimationSpeed = 1.0f;
+    private String gettingUpFromLieDownAnimationName = null;
+
+    private boolean lieDownEnable = false;
+    private boolean lieDownImmediately = false;
+    public Vector3f liePos = null;
+    public Quaternion lieDir = null;
+    public Vector3f sittingPos = null;
+    public Quaternion sittingDir = null;
+    private boolean sleeping = false;
+    private boolean sitting = false;
+    private boolean processLieDown = false;
+    /**
+     * if we want to lock avatar in sleep
+     */
+    private boolean lock = false;
+
 
     /**
      * Construct a new sitting state with the provided context as its owner
@@ -81,50 +120,86 @@ public class SitState extends GameState
         context = master;
         setName("Sit");
         setCycleMode(PlaybackMode.PlayOnce);
-        // System.out.println("Enter SitState Constructor");
     }
-    
+
     /**
      * Entry point method, validates the transition if the chair is not occupied
      * @param data - not used
      * @return true if the transition is validated
      */
-    public boolean toSit(Object data)
+    public boolean toSit(Object data) 
     {
+        // check if gesture is playing then set the sitting animation
+        if (context.isGesturePlayingInSitting()) {
+            if (context.getCharacter().getCharacterParams().isMale()) {
+                setAnimationName("Male_Sitting");
+            } else {
+                setAnimationName("Female_Sitting");
+            }
+        }
+
         // is the chair occupied?
-        if (context.getBehaviorManager().getGoal() instanceof ChairObject)
+        if (context.getBehaviorManager().getGoal() instanceof ChairObject) 
         {
             chair = (TargetObject)context.getBehaviorManager().getGoal();
-            if (chair.isOccupied())
+            if (chair.isOccupied()) 
                 return false;
         }
-        
+
         return true;
     }
+
+    public void setLieDownPosition(Vector3f liePos1, Quaternion lieDir1) {
+        liePos = liePos1;
+        lieDir = lieDir1;
+    }
+
+    public void setSittingPosition(Vector3f liePos1, Quaternion lieDir1) {
+        sittingPos = liePos1;
+        sittingDir = lieDir1;
+    }
+
+    public void setLieDownEnable(boolean liedownEnable, boolean liedownImgEnable) {
+        lieDownEnable = liedownEnable;
+        lieDownImmediately = liedownImgEnable;
+    }
     
+    public Vector3f getLieDownPosition() {
+        return liePos;
+    }
+    
+    public Vector3f getSittingDownPosition() {
+        return sittingPos;
+    }
+
     @Override
-    protected void stateExit(GameContext owner)
+    protected void stateExit(GameContext owner) 
     {
         super.stateExit(owner);
 
         // Set the chair to not occupied
-        if (chair != null)
+        if (chair != null) 
         {
             chair.setOwner(null);
             chair.setOccupied(false);
         }
     }
-    
+
     @Override
-    protected void stateEnter(GameContext owner)
-    {       
+    protected void stateEnter(GameContext owner) 
+    {
         super.stateEnter(owner);
-        
+
         counter = 0.0f;
         bGettingUp = false;
         bIdleSittingAnimationSet = false;
         bGettingUpAnimationSet = false;
-        
+
+        bGettingUpFromLieDown = false;
+        bIdleLieDownAnimationSet = false;
+        bGettingUpFromLieDownAnimationSet = false;
+        bLieDownAnimationSet = false;
+
         // If any of the animations are not found or 
         // If using the simple sphere\scene model for the avatar the animation
         // these will never be set so this safry lets us get out of the state
@@ -136,76 +211,199 @@ public class SitState extends GameState
         {
             bGettingUpAnimationSet   = true;
             bIdleSittingAnimationSet = true;
+            bGettingUpFromLieDownAnimationSet = true;
+            bIdleLieDownAnimationSet = true;
         }
-        
+
         setTransitionReverseAnimation(false); // Play this animation forward
-        
+
         // Stop the character
         context.getController().stop();
 
         // Set the chair to occupied
-        if (context.getBehaviorManager().getGoal() instanceof ChairObject)
+        if (context.getBehaviorManager().getGoal() instanceof ChairObject) 
         {
             chair = (TargetObject)context.getBehaviorManager().getGoal();
             chair.setOwner(context.getCharacter());
             chair.setOccupied(true);
         }
+
+        if (context.getTriggerState().isKeyPressed(TriggerNames.GoSit.ordinal())) {
+            lieDownEnable = false;
+        } else if (context.getTriggerState().isKeyPressed(TriggerNames.GoSitLieDown.ordinal())) {
+            lieDownEnable = true;
+            lieDownImmediately = false;
+        } else if (context.getTriggerState().isKeyPressed(TriggerNames.LieDown.ordinal())) {
+            lieDownEnable = true;
+            lieDownImmediately = true;
+        }
+        context.getCharacter().enableShadow(false);
     }
 
-    private void triggerRelease(int trigger)
+    private void triggerRelease(int trigger) 
     {
-        if (context.getTriggerState().isKeyPressed(trigger))
+        if (context.getTriggerState().isKeyPressed(trigger)) 
             context.triggerReleased(trigger);
     }
-    
+
     @Override
-    public void update(float deltaTime)
+    public void update(float deltaTime) 
     {
         super.update(deltaTime);
+
+        if ((ActionState.lieDownOnLeftClick(context))) {
+            triggerRelease(TriggerNames.LieDownOnClick.ordinal());
+            logger.info("-----processing the trigger...");
+            processLieDown = true;
+        }
         
-        // If we no longer own the chair; set the FallFromSitState
-//        if (checkForFalling())
-//            return;
-                    
         if (!context.isTransitioning()) 
             counter += deltaTime;
-        
-        if (bIdleSittingAnimationSet && ActionState.isExitRepeat(context)) {
-            bGettingUp = true;
+
+        if (lieDownEnable && bIdleSittingAnimationSet) {
+
+            if (!lieDownImmediately) {
+                if (processLieDown) {
+                    processLieDown = false;
+                    logger.info("-----lie down trigger pressed...");
+                    if (!bIdleLieDownAnimationSet) {
+                        try {
+                            PTransform xform = new PTransform(lieDir, liePos,
+                                    new Vector3f(1, 1, 1));
+                            context.getCharacter().getModelInst().setTransform(xform);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        setLieDownAnimation();
+                        counter = 0;
+                    } else {
+                        try {
+                            PTransform xform = new PTransform(sittingDir, sittingPos,
+                                    new Vector3f(1, 1, 1));
+                            context.getCharacter().getModelInst().setTransform(xform);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        bGettingUpFromLieDown = true;
+                    }
+                }
+                if (!bLieDownAnimationSet && ActionState.isExitRepeat(context)) {
+                    bGettingUp = true;
+                }
+            }
+
+            if (lieDownEnable && !bLieDownAnimationSet && lieDownImmediately) {
+                try {
+                    PTransform xform = new PTransform(lieDir, liePos,
+                            new Vector3f(1, 1, 1));
+                    context.getCharacter().getModelInst().setTransform(xform);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                setLieDownAnimation();
+                counter = 0;
+            }
+
+            if (bLieDownAnimationSet && counter > lieDownAnimationTime
+                    && !bIdleLieDownAnimationSet && !context.isTransitioning()) {
+                setLieDownIdleAnimation();
+                counter = 0;
+            }
+
+            if (bIdleLieDownAnimationSet && ActionState.isExitRepeat(context)
+                    && !lock) {
+                try {
+                    PTransform xform = new PTransform(sittingDir, sittingPos,
+                            new Vector3f(1, 1, 1));
+                    context.getCharacter().getModelInst().setTransform(xform);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                bGettingUpFromLieDown = true;
+            }
+
+            //for lying down
+            if (bGettingUpFromLieDown) {
+                if (!bGettingUpFromLieDownAnimationSet) {
+                    logger.info("-----Playing reverse lying down");
+                    setLieDownToSitAnimation();
+                    if (bGettingUpFromLieDownAnimationSet) {
+                        counter = 0.0f;
+                    }
+                }
+                if (counter > gettingUpFromLieDownAnimationTime && !context.isTransitioning()) {
+                    logger.info("-----Playing reverse lying down finish");
+                    if (lieDownImmediately) {
+                        bGettingUp = true;
+                        counter = 0;
+                    } else {
+                        bIdleSittingAnimationSet = false;
+                        bGettingUpFromLieDown = false;
+                        bIdleLieDownAnimationSet = false;
+                        bGettingUpFromLieDownAnimationSet = false;
+                        bLieDownAnimationSet = false;
+
+                        counter = 0;
+                    }
+                }
+            }
+        } else {
+            if (bIdleSittingAnimationSet && ActionState.isExitRepeat(context)) {
+                bGettingUp = true;
+            }
         }
-        
-        if (bGettingUp)
+
+        //for sitting
+        if (bGettingUp) 
         {
-            if (!bGettingUpAnimationSet)
+            if (!bGettingUpAnimationSet) 
             {
-                setGettingUpAnimation();   
-                if (bGettingUpAnimationSet)
+                // do not get up if gesture is playing
+                if (!context.isGesturePlayingInSitting() && !context.getTriggerState().isKeyPressed(TriggerNames.MiscActionInSitting.ordinal())) {
+                    logger.info("-----Playing getting up...");
+                    setGettingUpAnimation();
+                }
+                if (bGettingUpAnimationSet) 
                     counter = 0.0f;
             }
-            
-            if (counter > gettingUpAnimationTime)
+
+            if (counter > gettingUpAnimationTime) 
             {
                 // Check for possible transitions
-                if (!context.isTransitioning() && bGettingUpAnimationSet)
-                    transitionCheck();   
+                if (context.isGesturePlayingInSitting() || context.getTriggerState().isKeyPressed(TriggerNames.MiscActionInSitting.ordinal())) 
+                {
+                    if (!context.isTransitioning()) {
+                        transitionCheck();
+                    }
+                } else {
+                    if ((!context.isTransitioning() && bGettingUpAnimationSet)) {
+                        transitionCheck();
+                    }
+                }
             }
-        }
-        else
-        {
-            if (counter > sittingAnimationTime && !bIdleSittingAnimationSet)
-            {
+        } else {
+            if (counter > sittingAnimationTime && !bIdleSittingAnimationSet) {
+                logger.info("-----Playing Sitting Idel Animation...");
                 setIdleAnimation();
-                triggerRelease(TriggerNames.GoSit.ordinal());
+                if (lieDownEnable) {
+                    if (lieDownImmediately) {
+                        triggerRelease(TriggerNames.LieDown.ordinal());
+                    } else {
+                        triggerRelease(TriggerNames.GoSitLieDown.ordinal());
+                    }
+                } else {
+                    triggerRelease(TriggerNames.GoSit.ordinal());
+                }
             }
         }
     }
 
     private boolean checkForFalling() 
     {
-        if (chair.getOwner() != context.getCharacter())
+        if (chair.getOwner() != context.getCharacter()) 
         {
             FallFromSitState fall = (FallFromSitState) context.getStateMapping().get(FallFromSitState.class);
-            if (fall != null && fall.toFallFromSit(null))
+            if (fall != null && fall.toFallFromSit(null)) 
             {
                 context.setCurrentState(fall);
                 return true;
@@ -215,14 +413,14 @@ public class SitState extends GameState
     }
 
     /**
-     * Transitions to the idle sitting animation and sets the speed and 
+     * Transitions to the idle sitting animation and sets the speed and
      * transition duration.
      */
     private void setIdleAnimation() 
     {
         // Character's skeleton might be null untill loaded
         SkeletonNode skeleton = gameContext.getSkeleton();
-        if (skeleton != null)
+        if (skeleton != null) 
         {
             skeleton.getAnimationState().setTransitionDuration(idleSittingTransitionDuration);
             skeleton.getAnimationState().setAnimationSpeed(idleSittingAnimationSpeed);
@@ -230,9 +428,54 @@ public class SitState extends GameState
             skeleton.getAnimationState().setTransitionCycleMode(PlaybackMode.Loop);
             bIdleSittingAnimationSet = skeleton.transitionTo(idleSittingAnimationName, false);
             setAnimationSetBoolean(true);
+            sitting = true;
+            
+            // call method of listener
+            for(GameStateChangeListener lis : GameStateChangeListenerRegisterar.getRegisteredListeners()) {
+                lis.changeInState(this,"sitting",true,"enter");
+            }
         }
     }
-    
+
+    private void setLieDownIdleAnimation() {
+        // Character's skeleton might be null untill loaded
+        SkeletonNode skeleton = gameContext.getSkeleton();
+        if (skeleton != null) {
+            skeleton.getAnimationState().setTransitionDuration(idleLieDownTransitionDuration);
+            skeleton.getAnimationState().setAnimationSpeed(idleLieDownAnimationSpeed);
+            skeleton.getAnimationState().setReverseAnimation(false);
+            skeleton.getAnimationState().setTransitionCycleMode(PlaybackMode.Loop);
+            bIdleLieDownAnimationSet = skeleton.transitionTo(idleLieDownAnimationName, false);
+            setAnimationSetBoolean(true);
+//            inLie = false;
+
+            // call method of listener
+            for (GameStateChangeListener lis : GameStateChangeListenerRegisterar.getRegisteredListeners()) {
+                lis.changeInState(this, "liedown", true, "enter");
+            }
+        }
+    }
+
+    private void setLieDownAnimation() {
+        // Character's skeleton might be null untill loaded
+        SkeletonNode skeleton = gameContext.getSkeleton();
+        if (skeleton != null) {
+            skeleton.getAnimationState().setTransitionDuration(lieDownTransitionDuration);
+            skeleton.getAnimationState().setAnimationSpeed(lieDownAnimationSpeed);
+            skeleton.getAnimationState().setReverseAnimation(false);
+            skeleton.getAnimationState().setTransitionCycleMode(PlaybackMode.PlayOnce);
+            bLieDownAnimationSet = skeleton.transitionTo(lieDownAnimationName, false);
+            setAnimationSetBoolean(true);
+            sleeping = true;
+            sitting = false;
+
+            // call method of listener
+            for (GameStateChangeListener lis : GameStateChangeListenerRegisterar.getRegisteredListeners()) {
+                lis.changeInState(this, "sitting", true, "exit");
+            }
+        }
+    }
+
     /**
      * Transitions to the getting up animation and sets the speed and 
      * transition duration.
@@ -249,14 +492,44 @@ public class SitState extends GameState
             bGettingUpAnimationSet = skeleton.transitionTo(gettingUpAnimationName, true);
             // If sitting down and getting up is the same animation transitionTo will return false
             // when trying to get up immediatly after deciding to sit down... so
-            if (skeleton.getAnimationState().getCurrentCycle() == skeleton.getAnimationGroup().findAnimationCycleIndex(gettingUpAnimationName))
+            if (skeleton.getAnimationState().getCurrentCycle() == skeleton.getAnimationGroup().findAnimationCycleIndex(gettingUpAnimationName)) 
             {
                 bGettingUpAnimationSet = true;
             }
             setAnimationSetBoolean(true);
+            sitting = false;
+            
+            // call method of listener
+            for(GameStateChangeListener lis : GameStateChangeListenerRegisterar.getRegisteredListeners()) {
+                lis.changeInState(this,"sitting",true,"exit");
+            }
         }
     }
-    
+
+    private void setLieDownToSitAnimation() {
+        // Character's skeleton might be null untill loaded
+        SkeletonNode skeleton = gameContext.getSkeleton();
+        if (skeleton != null) {
+            skeleton.getAnimationState().setTransitionDuration(gettingUpFromLieDownTransitionDuration);
+            skeleton.getAnimationState().setAnimationSpeed(gettingUpFromLieDownAnimationSpeed);
+            skeleton.getAnimationState().setTransitionCycleMode(PlaybackMode.PlayOnce);
+            bGettingUpFromLieDownAnimationSet = skeleton.transitionTo(lieDownAnimationName, true);
+            // If sitting down and getting up is the same animation transitionTo will return false
+            // when trying to get up immediatly after deciding to sit down... so
+            if (skeleton.getAnimationState().getCurrentCycle() == skeleton.getAnimationGroup().findAnimationCycleIndex("Male_LieDown")) {
+                bGettingUpFromLieDownAnimationSet = true;
+            }
+            setAnimationSetBoolean(true);
+            sleeping = false;
+            sitting = true;
+
+            // call method of listener
+            for (GameStateChangeListener lis : GameStateChangeListenerRegisterar.getRegisteredListeners()) {
+                lis.changeInState(this, "liedown", true, "exit");
+            }
+        }
+    }
+
     public String getIdleSittingAnimationName() {
         return idleSittingAnimationName;
     }
@@ -288,14 +561,13 @@ public class SitState extends GameState
     public void setSittingAnimationTime(float sittingAnimationTime) {
         this.sittingAnimationTime = sittingAnimationTime;
     }
-    
+
     public void setSittingAnimationTime() {
-        if (context.getSkeleton() != null)
+        if (context.getSkeleton() != null) 
         {
             int index = context.getSkeleton().getAnimationGroup().findAnimationCycleIndex(getAnimationName());
             float duration = context.getSkeleton().getAnimationGroup().getCycle(index).getDuration();
-            this.sittingAnimationTime = duration / getAnimationSpeed();   
-//            System.out.println("ddddddddddddddddddddddddddddddddddddddddddd       " +  this.sittingAnimationTime);
+            this.sittingAnimationTime = duration / getAnimationSpeed();
         }
     }
 
@@ -330,10 +602,46 @@ public class SitState extends GameState
     public void setGettingUpTransitionDuration(float gettingUpTransitionDuration) {
         this.gettingUpTransitionDuration = gettingUpTransitionDuration;
     }
+
+    public String getIdleLieDownAnimationName() {
+        return idleLieDownAnimationName;
+    }
+
+    public void setIdleLieDownAnimationName(String idleLieDownAnimationName) {
+        this.idleLieDownAnimationName = idleLieDownAnimationName;
+    }
+
+    public String getLieDownAnimationName() {
+        return lieDownAnimationName;
+    }
+
+    public void setLieDownAnimationName(String lieDownAnimationName) {
+        this.lieDownAnimationName = lieDownAnimationName;
+    }
+
+    public String getGettingUpFromLieDownAnimationName() {
+        return gettingUpFromLieDownAnimationName;
+    }
+
+    public void setGettingUpFromLieDownAnimationName(String gettingUpFromLieDownAnimationName) {
+        this.gettingUpFromLieDownAnimationName = gettingUpFromLieDownAnimationName;
+    }
+
+    public boolean isSleeping() {
+        return sleeping;
+    }
+
+    public boolean isSitting() {
+        return sitting;
+    }
+
+    public void setLock(boolean lock) {
+        this.lock = lock;
+    }
     
     @Override
     public void notifyAnimationMessage(AnimationMessageType message) {
-        
+
 //        if (message == AnimationMessageType.TransitionComplete)
 //        {
 //            if (bGettingUp || !bIdleSittingAnimationSet)
@@ -342,5 +650,5 @@ public class SitState extends GameState
 //                gameContext.getSkeleton().getAnimationState().setCurrentCyclePlaybackMode(PlaybackMode.Loop);
 //        }
     }
-    
+
 }

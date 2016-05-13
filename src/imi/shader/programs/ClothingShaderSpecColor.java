@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -31,6 +34,7 @@ import org.jdesktop.mtgame.WorldManager;
  * This shader is used for clothing. It allows for multitexturing (base and
  * pattern) and color modulation of both layers independently.
  * @author Ronald E Dahlgren
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class ClothingShaderSpecColor extends BaseShaderProgram implements Serializable
 {
@@ -39,10 +43,13 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Serial
 
     private static final Logger logger = Logger.getLogger(ClothingShaderSpecColor.class.getName());
     // The following two strings are the default source code for this effect
+    // Consider all the lightsource
     private static final String VertexSource = 
         "attribute vec4 boneIndices;" +
         "uniform mat4 pose[55];" +
         "varying vec3 ToLight; " +
+            "varying vec3 ToLight1; " +
+            "varying vec3 ToLight2; " +
         "varying vec3 position;" +
         "void main(void)" +
         "{" +
@@ -68,12 +75,18 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Serial
         "	    mat3 TBNMatrix = mat3(TangentVec, binormal, Normal); " +
         "  	    ToLight = (gl_ModelViewMatrixInverse * gl_LightSource[0].position).xyz - position;" +
         "  	    ToLight *= TBNMatrix;  " +
+            "  	    ToLight1 = (gl_ModelViewMatrixInverse * gl_LightSource[1].position).xyz - position;" +
+        "  	    ToLight1 *= TBNMatrix;  " +
+            "  	    ToLight2 = (gl_ModelViewMatrixInverse * gl_LightSource[2].position).xyz - position;" +
+        "  	    ToLight2 *= TBNMatrix;  " +
         "       position = (gl_ModelViewMatrix * gl_Vertex).xyz;" +
 //        " ToLight = vec3(gl_Normal.rgb);"+ // debugging visualization
         "       position *= TBNMatrix;" +
         "}";
     private static final String FragmentSource = 
         "varying vec3 ToLight;" +
+            "varying vec3 ToLight1;" +
+            "varying vec3 ToLight2;" +
         "varying vec3 position;" +
         "uniform sampler2D   BaseDiffuseMapIndex;" +
         "uniform sampler2D   NormalMapIndex;" +
@@ -88,13 +101,20 @@ public class ClothingShaderSpecColor extends BaseShaderProgram implements Serial
         "    	vec4 normalMapValue = texture2D(NormalMapIndex, gl_TexCoord[0].st, 0.5);" +
         "    	vec3 normal      = normalize(normalMapValue.xyz * 2.0 - 1.0);" +
         "	    vec3 lightVector = normalize(ToLight);" +
-        "  	    float nxDir = max(0.0, dot(normal, lightVector));" +
+            "	    vec3 lightVector1 = normalize(ToLight1);" +
+            "	    vec3 lightVector2 = normalize(ToLight2);" +
+        "  	    float nxDir = max(max(0.0, dot(normal, lightVector)), max(max(0.0, dot(normal, lightVector1)), max(0.0, dot(normal, lightVector2))));" +
+        "           if(dot(normal, lightVector) > dot(normal, lightVector2) && dot(normal, lightVector) > dot(normal, lightVector1)) {" +
+        "               nxDir = nxDir * 0.7; } " +
         "       texColor *= vec4(baseColor, 1);" +
         "  	    vec4 diffuse = texColor * (gl_LightSource[0].diffuse * nxDir);" +
         "	    vec4 color = diffuse * (1.0 - ambientPower) + texColor * ambientPower;" +
         "	    color = clamp(color, 0.0, 1.0);" +
         "	    color.a = 1.0;" +
         "       float RDotV = dot(normalize((reflect(-lightVector, normal))), normalize(vec3(-position)));" +
+            "       float RDotV1 = dot(normalize((reflect(-lightVector1, normal))), normalize(vec3(-position)));" +
+            "       float RDotV2 = dot(normalize((reflect(-lightVector2, normal))), normalize(vec3(-position)));" +
+            "RDotV = max(max(RDotV, RDotV1), RDotV2);" +
         "       vec4 specular = vec4(specColor, 1.0);" +
         "       specular *= gl_LightSource[0].specular * pow(max(0.0, RDotV), SpecularExponent);" +
 //        "    	gl_FragColor = vec4(ToLight.x,ToLight.y,ToLight.z,1);" + // Debugging visuals

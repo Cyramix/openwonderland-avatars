@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -27,6 +30,7 @@ import javolution.util.FastTable;
  * 
  * @author Lou Hayt
  * @author Ronald E Dahlgren
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class AnimationComponent implements Serializable
 {
@@ -58,18 +62,16 @@ public class AnimationComponent implements Serializable
     /**
      * Initiate a transition to an animation cycle by index
      * @param cycleIndex - cycle to transition to
+     * @param cycleName
      * @param state      - the state of the instance to animate
      * @param animationGroupIndex - the animation group to use
      * @param bReverse   - true if the animation being transitioned to should run in reverse
      * @return false if the transition is already happening or not possible
      */
-    public boolean transitionTo(int cycleIndex, AnimationState state, int animationGroupIndex, boolean bReverse)
+    public boolean transitionTo(int cycleIndex,String cycleName, AnimationState state, int animationGroupIndex, boolean bReverse)
     {
         if(cycleIndex == -1)
             return false;
-        if (cycleIndex == state.getTransitionCycle()) // Already transitioning there!
-            return false;
-        
         
         state.setTimeInTransition(0.0f);
         state.setTransitionCycle(cycleIndex);
@@ -104,11 +106,9 @@ public class AnimationComponent implements Serializable
     public boolean transitionTo(String cycleName, AnimationState state, int animationGroupIndex, boolean bReverse) 
     {
         int index = findCycle(cycleName, animationGroupIndex);
-        
         if (index == -1)
             return false;
-        
-        return transitionTo(index, state, animationGroupIndex, bReverse);
+        return transitionTo(index, cycleName, state, animationGroupIndex, bReverse);
     }
 
     /**

@@ -1,4 +1,7 @@
 /**
+ * Copyright (c) 2016, Envisiture Consulting, LLC, All Rights Reserved
+ */
+/**
  * Project Wonderland
  *
  * Copyright (c) 2004-2008, Sun Microsystems, Inc., All Rights Reserved
@@ -25,6 +28,7 @@ import imi.character.statemachine.corestates.ActionState;
 /**
  * This class represents the transition from the Punch state to the Idle state.
  * @author Lou Hayt
+ * @author Abhishek Upadhyay <abhiit61@gmail.com>
  */
 public class ActionToIdle extends TransitionObject
 {
@@ -35,9 +39,14 @@ public class ActionToIdle extends TransitionObject
         if (action.isRepeat())
             return false;
         
+        if(state.getContext().isGesturePlayingInSitting()) {
+            return false;
+        }
+        
         stateMessageName = "toIdle";
         
-        if (!state.getContext().getTriggerState().isKeyPressed(TriggerNames.MiscAction.ordinal()))
+        if (!state.getContext().getTriggerState().isKeyPressed(TriggerNames.MiscAction.ordinal()) &&
+                !state.getContext().getTriggerState().isKeyPressed(TriggerNames.MiscActionInSitting.ordinal()))
             return state.getContext().excecuteTransition(this);
         
         return false;
